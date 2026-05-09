@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typography Poster Prompt Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap');
+        
+        :root {
+            --font-sans: 'Inter', 'Noto Sans JP', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: #f9fafb;
+            color: #111827;
+        }
+
+        .chip {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .chip.active {
+            background-color: #111827;
+            color: #ffffff;
+            border-color: #111827;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(229, 231, 235, 1);
+        }
+
+        input:focus, textarea:focus {
+            border-color: #111827;
+            ring: 2px;
+            ring-color: #111827;
+            outline: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen py-10 px-4 sm:px-6">
+    <div class="max-w-2xl mx-auto">
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl font-black tracking-tighter text-gray-900 uppercase">Typography Generator</h1>
+        </header>
+
+        <div class="glass-panel rounded-3xl shadow-xl p-8 space-y-8">
+            <!-- 名前入力 -->
+            <section>
+                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-3">
+                    名前 / ニックネーム
+                </label>
+                <input id="inp-name" type="text"
+                    class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-xl font-bold text-gray-900 focus:bg-white transition-all">
+            </section>
+
+            <!-- キーワード入力 -->
+            <section>
+                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-3">
+                    キーワード（スペース区切り）
+                </label>
+                <textarea id="inp-keywords" 
+                    class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-lg font-bold text-gray-900 focus:bg-white transition-all min-h-[100px]"></textarea>
+            </section>
+
+            <!-- テイスト選択 -->
+            <section>
+                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-4">
+                    デザイン・テーマ
+                </label>
+                <div id="taste-grid" class="flex flex-wrap gap-2">
+                    <!-- JSで動的に生成 -->
+                </div>
+                <div id="font-preview" class="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <p class="text-[10px] font-black uppercase text-gray-400 mb-2">使用する4つの書体カテゴリ</p>
+                    <p id="font-hint" class="text-xs text-gray-700 leading-relaxed font-medium"></p>
+                </div>
+            </section>
+
+            <!-- カラー入力 -->
+            <section>
+                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-3">
+                    カラーパレット
+                </label>
+                <input id="inp-color" type="text" 
+                    class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-lg font-bold text-gray-900 focus:bg-white transition-all">
+            </section>
+
+            <!-- ボタン -->
+            <div class="flex flex-col sm:flex-row gap-4 pt-4 border-t border-gray-100">
+                <button id="btn-generate" onclick="generate()" class="flex-1 bg-black text-white px-8 py-5 rounded-2xl font-black text-lg hover:bg-gray-800 transition-all flex items-center justify-center gap-3">
+                    <i class="ti ti-sparkles text-2xl"></i> プロンプトを生成
+                </button>
+                <button onclick="resetAll()" class="px-8 py-5 bg-gray-100 text-gray-700 rounded-2xl font-bold hover:bg-gray-200 transition-all">
+                    リセット
+                </button>
+            </div>
+        </div>
+
+        <!-- 出力エリア -->
+        <div id="output-area" class="hidden mt-10">
+            <div class="bg-white border border-gray-200 rounded-3xl p-8 shadow-2xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xs font-black text-gray-900 uppercase tracking-widest">ChatGPT用プロンプト</h3>
+                    <button onclick="copyText(event)" id="copy-btn" class="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl text-xs font-black hover:bg-indigo-100 transition-all">
+                        <i class="ti ti-copy"></i> コピー
+                    </button>
+                </div>
+                <div id="output-box" class="bg-gray-50 rounded-2xl p-6 text-sm text-gray-900 leading-relaxed font-mono border border-gray-100 max-h-[400px] overflow-y-auto whitespace-pre-wrap"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tastes = [
+            {
+                label: "ナチュラル",
+                val: "Natural, organic, warm, and breathable.",
+                fonts: "1. Soft rounded Sans-serif, 2. Organic Hand-lettered style, 3. Light-weight Serif (Mincho), 4. Modern Calligraphy.",
+                designEn: "- Layout: Dynamic organic flow. Words should feel like falling leaves but remain perfectly contained within the canvas. \n- Legibility: Use soft contrast. All keywords must be fully visible and readable without any clipping at the edges."
+            },
+            {
+                label: "ガーリー",
+                val: "Girly, chic, sweet, and decorative.",
+                fonts: "1. Elegant Script, 2. Modern Fashion Serif, 3. Cute Rounded Gothic, 4. Stylish Handwritten Display.",
+                designEn: "- Layout: Decorative clustering. Main name is anchored with keywords in a playful but organized manner. \n- Legibility: High clarity. Use generous letter spacing. Do not let any character bleed off the canvas."
+            },
+            {
+                label: "ポップ",
+                val: "Pop, bold, vibrant, and energetic.",
+                fonts: "1. Ultra-heavy Geometric Sans, 2. Fun Bubble Display, 3. Dynamic Block Gothic, 4. Outline (Stroke) Display font.",
+                designEn: "- Layout: Bold and explosive composition. Words fill the space with varying scales to create a 'visual noise' that is still orderly. \n- Legibility: Maximum impact but zero clipping. Every word must stay 100% inside the frame."
+            },
+            {
+                label: "エレガント",
+                val: "Elegant, luxury, editorial, and minimal.",
+                fonts: "1. High-contrast Modern Serif, 2. Extra-thin Sans-serif, 3. Sophisticated Mincho, 4. Classic Italic Serif.",
+                designEn: "- Layout: Sophisticated editorial grid. Use white space effectively to ensure the text is the sole hero of the canvas. \n- Legibility: Refined and sharp."
+            },
+            {
+                label: "レトロ",
+                val: "Retro, vintage, nostalgic, and textured.",
+                fonts: "1. Slab Serif, 2. Distressed Woodblock style, 3. Vintage Cursive, 4. Condensed Bold Gothic.",
+                designEn: "- Layout: Inspired by vintage advertisements. Bold, overlapping layers with an analog feel. \n- Legibility: Nostalgic but clear. Text should look like it was printed perfectly on a 3:4 card."
+            }
+        ];
+
+        let selectedTaste = tastes[0];
+
+        function init() {
+            const grid = document.getElementById('taste-grid');
+            if (!grid) return;
+            
+            grid.innerHTML = '';
+            
+            tastes.forEach((taste) => {
+                const chip = document.createElement('button');
+                chip.className = 'chip px-5 py-2.5 rounded-full border border-gray-200 text-sm font-bold text-gray-500 bg-white hover:border-black';
+                chip.textContent = taste.label;
+                chip.type = 'button';
+                chip.onclick = () => {
+                    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    selectedTaste = taste;
+                    document.getElementById('font-hint').innerHTML = taste.fonts.split(', ').join('<br>');
+                };
+                grid.appendChild(chip);
+            });
+            
+            if (grid.children.length > 0) {
+                grid.children[0].click();
+            }
+        }
+
+        function resetAll() {
+            document.getElementById('inp-name').value = '';
+            document.getElementById('inp-keywords').value = '';
+            document.getElementById('inp-color').value = '';
+            document.getElementById('output-area').classList.add('hidden');
+            const grid = document.getElementById('taste-grid');
+            if (grid && grid.children.length > 0) {
+                grid.children[0].click();
+            }
+        }
+
+        function generate() {
+            const nameValue = document.getElementById('inp-name').value.trim() || 'IDENTITY';
+            const kwValue = document.getElementById('inp-keywords').value.trim();
+            const colorValue = document.getElementById('inp-color').value.trim();
+            
+            const kwList = kwValue ? kwValue.split(/\s+/).filter(Boolean) : ['CREATIVE', 'JOURNEY', 'VISION', 'ART', 'DESIGN'];
+            const colorList = colorValue ? colorValue.split(/\s+/).filter(Boolean) : ['Modern and sophisticated balance'];
+
+            const shuffledKeywords = [...kwList].sort(() => 0.5 - Math.random());
+            const accentKeywords = shuffledKeywords.slice(0, Math.min(5, kwList.length));
+
+            const dynamicSeeds = [
+                "COMPOSITION: Create a strong central vertical column for some keywords, with others cutting through horizontally at 90 degrees.",
+                "COMPOSITION: Use a dynamic 'zigzag' flow where keywords are linked by their edges, creating a path for the eyes.",
+                "COMPOSITION: Organize keywords into geometric blocks of different sizes, creating a balanced mosaic of type.",
+                "COMPOSITION: Focus on a 'layered depth' where larger, light-colored keywords act as a background for smaller, dark, tilted keywords.",
+                "COMPOSITION: Use a radial distribution where text originates from an off-center focal point and expands outward in multiple directions.",
+                "COMPOSITION: Create a strict 3-column editorial grid but break it occasionally with 45-degree diagonal keywords for visual tension."
+            ];
+            const selectedSeed = dynamicSeeds[Math.floor(Math.random() * dynamicSeeds.length)];
+
+            const prompt = `COMMAND: Create a BOLD TYPOGRAPHY MASTERPIECE. No photos. No people.
+
+[CORE IDENTITY]
+- Primary Name: ${nameValue}
+- All Keywords: ${kwList.join(', ')}
+
+[DYNAMIC MULTI-DIRECTIONAL LAYOUT]
+Randomly assign orientation to each keyword to create a complex editorial look:
+- **Horizontal**: Standard flow for core stability.
+- **Vertical (Tategaki)**: Characters stacked or rotated 90 degrees.
+- **Diagonal**: Sharp 30-45 degree tilts for dynamic energy.
+- Instruction: Mix these directions throughout the canvas.
+
+[INTRAD-WORD VISUAL VARIATION (High Jump Rate)]
+!! ENHANCED TYPOGRAPHY RULE !!
+- For prominent keywords, do not keep all characters at the same scale. 
+- Experiment with **internal character scaling**: make the first letter significantly larger, or shrink specific characters to create a unique graphic silhouette for each word.
+- Treat every word as a custom-designed graphic shape.
+
+[NAME SCALE CONSTRAINT]
+- The Primary Name (${nameValue}) should NOT be overwhelmingly large. Maintain it at a medium-to-large size that integrates into the overall typographic texture.
+
+[ACCENT STRATEGY (Strictly Selective Editorial Depth)]
+!! IMPORTANT !! DO NOT generate catchphrases for all keywords. ONLY choose these specific keywords:
+- Targeted: ${accentKeywords.join(', ')}
+- Action: Generate a very short, poetic catchphrase (2-4 words) for EACH targeted keyword. 
+- Placement: Position near the keyword as small, subtle accent text.
+- Styling: Use contrasting styles—specifically Italic or Thin weight—to add editorial depth.
+
+[STYLE & THEME]
+- Theme: ${selectedTaste.val}
+- Goal: Professional, high-impact artistic poster.
+
+[COLOR SPECS]
+- Palette: ${colorList.join(', ')}
+- Usage: Use colors to define hierarchy and group keywords visually.
+
+[4-TYPEFACE HIERARCHY]
+You MUST mix and balance these 4 distinct font styles throughout the design:
+${selectedTaste.fonts}
+
+[LAYOUT & COMPOSITION]
+${selectedTaste.designEn}
+- **STRICT RESTRICTION**: Keep ALL text inside the 3:4 canvas. Absolutely no clipping or bleeding off the edges.
+- Scaling: Use dramatic size differences between different keywords to create a bold 'visual rhythm'.
+- [LAYOUT SEED]: ${selectedSeed}
+
+[TECHNICAL]
+- Ratio: 3:4 Vertical.
+- Background: Clean, minimal background that enhances the typography.
+- Final Output: High-definition graphic design. The typography IS the art.`;
+
+            const outputArea = document.getElementById('output-area');
+            const outputBox = document.getElementById('output-box');
+            
+            outputBox.textContent = prompt;
+            outputArea.classList.remove('hidden');
+            
+            setTimeout(() => {
+                outputArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        function copyText(e) {
+            const text = document.getElementById('output-box').textContent;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showCopySuccess();
+                }).catch(() => {
+                    fallbackCopyText(text);
+                });
+            } else {
+                fallbackCopyText(text);
+            }
+        }
+
+        function showCopySuccess() {
+            const btn = document.getElementById('copy-btn');
+            const origHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="ti ti-check"></i> コピー完了!';
+            setTimeout(() => {
+                btn.innerHTML = origHtml;
+            }, 2000);
+        }
+
+        function fallbackCopyText(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showCopySuccess();
+            } catch (err) {
+                console.error('Fallback copy failed', err);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
