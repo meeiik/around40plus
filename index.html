@@ -119,11 +119,6 @@ textarea { min-height: 72px; resize: vertical; }
 }
 
 /* ポップ: ハードシャドウ・アウトライン */
-.effect-pop-hardshadow {
-  -webkit-text-stroke: 0px;
-  paint-order: stroke fill;
-  filter: drop-shadow(4px 4px 0 var(--pop-shadow-color, #FFD600));
-}
 .effect-pop-outline {
   -webkit-text-stroke: 2px var(--pop-outline-color, #FFD600);
 }
@@ -688,38 +683,73 @@ Mood: 1960s newspaper typographic spread, mid-century travel poster, vintage ban
 ];
 
 const TASTE_ILLUST_STYLE = {
-  'ナチュラル': `hand-drawn ink sketch style — loose, slightly wobbly contour lines as if drawn with a dip pen or fine brush. Minimal fills; when fill is used, it is a very light watercolor wash (15–25% opacity). Line weight varies naturally along the stroke. Organic, imperfect, botanical-journal aesthetic.`,
-  'ガーリー':   `delicate fine-line illustration style — thin, precise, romantic contour lines. Tiny decorative details (dots, small hearts, tiny stars). Soft pastel fill at low opacity (20–30%). Whimsical and sweet, like a luxury stationery brand's spot illustration.`,
-  'ポップ':     `bold flat graphic icon style — thick uniform outlines (3–4px equivalent), solid 100% opaque fills in bright palette colors. Zero gradients. Hard edges, high contrast. Like a silk-screen printed sticker or comic panel icon.`,
-  'エレガント': `ultra-refined single-weight line drawing — hairline strokes only, no fill whatsoever. Minimal, architectural, like a luxury perfume advertisement engraving. Every line deliberate and precise. Maximum 5–7 lines total per illustration.`,
-  'レトロ':     `vintage woodcut or engraving style — hatching and cross-hatching for tone, slightly rough stroke edges as if cut from a woodblock. Aged, textured feel. Like an illustration from a 1950s travel poster or encyclopedia.`,
+  'ナチュラル': {
+    style: `hand-drawn botanical ink sketch — loose, wobbly contour lines as if drawn with a dip pen or fine brush. Stroke weight varies naturally along each stroke. Fill: none or a very light watercolor wash (10–20% opacity). Line weight: 1.5–2pt. Organic, imperfect, field-notebook aesthetic.`,
+    motifGuide: `Draw motifs from the natural world: plants, leaves, seeds, insects, stones, feathers, fruit, soil, weather, water, animals. Interpret each keyword's meaning through a nature/botanical lens. Example: "音楽" → a small sprouting seed with musical-note-shaped leaves; "旅" → a tiny paper boat on a wave.`,
+  },
+  'ガーリー': {
+    style: `delicate fine-line illustration — thin, precise, romantic contour lines. Tiny decorative details such as dots, small hearts, miniature stars along edges. Fill: soft pastel at 15–25% opacity. Stroke weight: 0.8–1.2pt. Whimsical, sweet, like a luxury stationery spot illustration.`,
+    motifGuide: `Draw motifs with a romantic, dreamy quality: flowers in bloom, ribbons, small crowns, teacups, macarons, perfume bottles, crescent moons, tiny stars, butterflies, bows. Interpret each keyword's emotion as a cute, feminine symbol. Example: "自由" → a small bird in mid-flight with a ribbon trailing; "夢" → a tiny crescent moon cradling a star.`,
+  },
+  'ポップ': {
+    style: `bold flat graphic icon — thick uniform outlines (3–4pt), solid 100% opaque fills in bright palette colors. Zero gradients, zero shadows, hard edges. Like a silk-screen sticker or comic panel icon. Maximum 4–5 shapes total per illustration.`,
+    motifGuide: `Draw motifs as punchy, graphic icons: lightning bolts, stars, speech bubbles, fists, rockets, crowns, eyes, cassette tapes, boom boxes, sneakers, spray cans, arrows. Interpret each keyword as a bold visual symbol with maximum graphic energy. Example: "音楽" → a bold star with a musical note inside; "情熱" → a solid flame icon with thick outline.`,
+  },
+  'エレガント': {
+    style: `ultra-refined single-weight hairline drawing — one precise stroke only (0.6–0.8pt), absolutely no fill. Maximum 6–8 lines total per illustration. Minimal, architectural, like a luxury perfume advertisement engraving or haute couture sketch.`,
+    motifGuide: `Draw motifs with extreme restraint and elegance: a single botanical sprig, a geometric crystal, a wine glass silhouette, a crescent, a single feather, a delicate key, an hourglass, a cameo oval. Interpret each keyword through the lens of luxury and refinement. Example: "静寂" → a single vertical feather drawn in three hairlines; "美" → a minimal rose bud, just the outline in 5 strokes.`,
+  },
+  'レトロ': {
+    style: `vintage woodcut or engraving vignette — hatching and cross-hatching for tone, slightly rough uneven stroke edges as if cut from a woodblock or etched in copper. Stroke weight: 1.5–2.5pt with natural variation. Like an illustration from a 1950s travel poster or encyclopedia.`,
+    motifGuide: `Draw motifs evoking mid-century nostalgia: old cameras, globes, compasses, trains, lighthouses, typewriters, vinyl records, binoculars, maps, retro radios, postage stamps, hourglasses. Interpret each keyword as a vintage artifact or retro symbol. Example: "旅" → a small globe with latitude lines in woodcut style; "音楽" → a vinyl record with etched grooves.`,
+  },
 };
 
 function ILLUST_BLOCK(kwList, tasteLabel) {
-  const illustStyle = TASTE_ILLUST_STYLE[tasteLabel] || 'simple clean line art matching the overall style';
+  const cfg = TASTE_ILLUST_STYLE[tasteLabel];
+  const illustStyle   = cfg ? cfg.style      : 'simple clean line art matching the overall style';
+  const motifGuide    = cfg ? cfg.motifGuide : 'Choose a simple, recognizable symbol that clearly represents the concept of the keyword.';
+
   const count = Math.max(1, Math.round(kwList.length * 0.2));
-  const step = Math.floor(kwList.length / count);
+  const rest  = kwList.length - count;
+
+  // 均等間隔でキーワードを選出（中央寄り）
+  const step = kwList.length / count;
   const illustKws = [];
   for (let k = 0; k < count; k++) {
-    const idx = (k * step + Math.floor(step / 2)) % kwList.length;
+    const idx = Math.round(k * step + step * 0.4) % kwList.length;
     illustKws.push(kwList[idx]);
   }
+  const illustList = illustKws.map((kw, n) => `  ${n + 1}. "${kw}" — draw a small illustration that captures the essence of this word`).join('\n');
+
   return `[Keyword illustrations — STRICT 20% RULE]
-For EXACTLY ${count} of the ${kwList.length} keywords, place a small thematic illustration directly beside or beneath the keyword text. The other ${kwList.length - count} keywords must have NO illustration — text only.
+CRITICAL QUANTITY RULE: EXACTLY ${count} of the ${kwList.length} keywords receive a small paired illustration. The remaining ${rest} keyword${rest !== 1 ? 's' : ''} are pure typography — NO illustration of any kind near them. This ratio is non-negotiable.
 
-Keywords that receive an illustration: ${illustKws.map(k => `"${k}"`).join(', ')}
+Keywords that receive an illustration (${count} total):
+${illustList}
 
-Illustration style (must match the overall taste):
+━━ What to draw ━━
+${motifGuide}
+
+The illustration must CLEARLY and RECOGNIZABLY depict the concept of its specific keyword. Do not use a generic shape; make it specific to the word's meaning or feeling.
+
+━━ Illustration style ━━
 ${illustStyle}
 
-Illustration sizing and placement:
-- Each illustration must be SMALL — roughly 60–80% the cap-height of its paired keyword.
-- Place it flush beside (left or right) or just below the keyword, with a gap of 4–8px.
-- The illustration and its keyword form a single visual unit; treat them as one compositional element.
-- Do NOT place illustrations at the canvas center; distribute them across different quadrants.
-- The illustration must clearly and recognizably depict the concept of its paired keyword.
+━━ Size & placement ━━
+- Size: 55–75% of the cap-height of its paired keyword (small accent, never dominant).
+- Position: flush beside (left or right) or just below the keyword, gap 6–12px from the word edge.
+- The illustration and its keyword form ONE visual unit — they should feel inseparable.
+- Distribute the illustrated keywords across different quadrants; do not cluster them.
+- Z-order: the illustration sits just behind (lower layer than) its keyword text.
 
-CRITICAL: Illustrations are accent elements only. Typography dominates. Illustrations must never overpower or obscure nearby text.`;
+━━ Color & integration ━━
+- Use the same palette color as its paired keyword's text — no unrelated colors.
+- No background panel, no bounding box, no drop shadow on the illustration itself.
+- If its keyword is rotated, the illustration may share a similar angle (within ±8° of the keyword).
+- The illustration must feel like it was drawn by the same hand that laid out the typography.
+
+REMINDER: The ${rest} unillustrated keyword${rest !== 1 ? 's' : ''} must have zero imagery near them — text only.`;
 }
 
 // ─── UI初期化 ────────────────────────────────────────────────
@@ -896,18 +926,16 @@ const TASTE_PREVIEW = {
       const sc = cfg.shadowColors[i % cfg.shadowColors.length];
       const oc = cfg.outlineColors[i % cfg.outlineColors.length];
       if (i % 4 === 0 && finalSize > 20) {
-        // ハードシャドウ
-        span.style.setProperty('--pop-shadow-color', sc);
-        span.classList.add('effect-pop-hardshadow');
-        span.style.filter = `drop-shadow(4px 4px 0 ${sc})`;
+        // ソフトシャドウ
+        span.style.filter = `drop-shadow(3px 3px 5px ${sc})`;
       } else if (i % 4 === 1) {
         // アウトライン
         span.style.webkitTextStroke = `2px ${oc}`;
         span.style.paintOrder = 'stroke fill';
       } else if (i % 4 === 2) {
-        // 両方
+        // アウトライン＋ソフトシャドウ
         span.style.webkitTextStroke = `1.5px ${oc}`;
-        span.style.filter = `drop-shadow(3px 3px 0 ${sc})`;
+        span.style.filter = `drop-shadow(2px 3px 4px ${sc})`;
       } else {
         // ハーフトーン風: opacity変動でドット感
         span.style.opacity = '0.85';
@@ -987,53 +1015,6 @@ function assignSizes(count) {
   return sizes;
 }
 
-// ─── SVGイラスト生成 ─────────────────────────────────────────
-
-// テイスト別のSVGスタイル指示
-const TASTE_SVG_STYLE = {
-  'ナチュラル': 'organic, hand-drawn line art style with slightly wobbly strokes, botanical/nature feel, minimal fills, ink sketch aesthetic',
-  'ガーリー':   'delicate, cute illustration style with soft pastel outlines, whimsical and romantic, thin elegant lines',
-  'ポップ':     'bold graphic style with thick outlines, flat solid fills, high contrast, comic/streetwear energy',
-  'エレガント': 'refined minimal line drawing, thin precise strokes, luxury editorial feel, no fills just elegant outlines',
-  'レトロ':     'vintage engraving or woodcut style, hatching textures, aged print aesthetic, classic retro illustration',
-};
-
-async function generateSvgIllustration(keyword, color, taste) {
-  const styleGuide = TASTE_SVG_STYLE[taste] || 'simple clean line art';
-
-  const prompt = `Create a tiny SVG illustration for the word/concept: "${keyword}"
-
-STRICT REQUIREMENTS:
-- Output ONLY raw SVG code, nothing else. No markdown, no explanation, no backticks.
-- SVG must start with <svg and end with </svg>
-- viewBox="0 0 40 40" width="40" height="40"
-- Style: ${styleGuide}
-- Use this color for strokes/fills: ${color}
-- Keep it extremely simple: 3-8 path/shape elements maximum
-- No text elements
-- stroke-width between 1.5 and 2.5
-- The illustration must clearly represent the concept of "${keyword}"
-- Fill should be "none" or very light (opacity 0.15-0.25) to keep it airy
-- All strokes use color ${color}`;
-
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
-      messages: [{ role: 'user', content: prompt }]
-    })
-  });
-
-  const data = await response.json();
-  const text = data.content?.map(b => b.text || '').join('') || '';
-
-  // SVGタグだけ抽出
-  const match = text.match(/<svg[\s\S]*?<\/svg>/i);
-  return match ? match[0] : null;
-}
-
 function updatePreview() {
   const raw = document.getElementById('inp-keywords').value.trim();
   const preview = document.getElementById('kw-preview');
@@ -1055,14 +1036,6 @@ function updatePreview() {
 
   inner.innerHTML = '';
 
-  // 2割のキーワードにイラストを付与（均等間隔で選出）
-  const illustCount = Math.max(1, Math.round(words.length * 0.2));
-  const step = Math.floor(words.length / illustCount);
-  const illustIndices = new Set();
-  for (let k = 0; k < illustCount; k++) {
-    illustIndices.add((k * step + Math.floor(step / 2)) % words.length);
-  }
-
   words.forEach((word, i) => {
     const font = cfg.fonts[i % cfg.fonts.length];
     const color = cfg.colors[i % cfg.colors.length];
@@ -1070,10 +1043,6 @@ function updatePreview() {
     const finalSize = Math.round(baseSize * sizes[i]);
     const rot = cfg.rotations[i % cfg.rotations.length];
     const extra = cfg.extraStyle(i);
-
-    // キーワードとイラストをまとめるラッパー
-    const wrapper = document.createElement('span');
-    wrapper.style.cssText = 'display:inline-flex;align-items:center;gap:3px;';
 
     const span = document.createElement('span');
     span.className = 'kw-token';
@@ -1091,36 +1060,7 @@ function updatePreview() {
       cfg.effectFn(span, i, finalSize, cfg);
     }
 
-    wrapper.appendChild(span);
-
-    // イラスト対象ならプレースホルダーを追加してAPIリクエスト
-    if (illustIndices.has(i)) {
-      const illusEl = document.createElement('span');
-      illusEl.className = 'kw-illus';
-      illusEl.style.cssText = `
-        display:inline-flex; align-items:center; justify-content:center;
-        width:32px; height:32px; opacity:0.7; flex-shrink:0;
-        transform: rotate(${-rot * 0.4}deg);
-      `;
-      illusEl.innerHTML = `<svg viewBox="0 0 40 40" width="32" height="32" style="opacity:0.3"><circle cx="20" cy="20" r="8" fill="none" stroke="${color}" stroke-width="1.5" stroke-dasharray="3 2"/></svg>`;
-      wrapper.appendChild(illusEl);
-
-      // 非同期でSVG取得・差し替え
-      generateSvgIllustration(word, color, taste).then(svg => {
-        if (svg) {
-          // viewBox・width・height を正規化
-          let normalized = svg
-            .replace(/width="[^"]*"/, 'width="32"')
-            .replace(/height="[^"]*"/, 'height="32"');
-          if (!/viewBox/i.test(normalized)) {
-            normalized = normalized.replace('<svg', '<svg viewBox="0 0 40 40"');
-          }
-          illusEl.innerHTML = normalized;
-        }
-      }).catch(() => { illusEl.style.display = 'none'; });
-    }
-
-    inner.appendChild(wrapper);
+    inner.appendChild(span);
   });
 }
 
