@@ -64,7 +64,6 @@
                     <span class="bg-indigo-600 text-white w-7 h-7 rounded-lg flex items-center justify-center mr-3 text-xs shadow-md font-mono">04</span>
                     名前・ニックネーム
                 </h2>
-                <!-- プレースホルダーを空に設定 -->
                 <input type="text" id="userName" placeholder="" class="w-full rounded-xl border-gray-200 shadow-sm p-4 bg-gray-50 focus:ring-2 focus:ring-indigo-500 border outline-none font-bold text-slate-700">
             </section>
 
@@ -192,43 +191,56 @@
             let keywords = inputRaw.split(/[\s,、]+/).map(k => k.trim().toUpperCase()).filter(k => k !== "");
             if (keywords.length === 0) keywords = ["ART", "SOUL", "LIFE", "FUTURE", "DREAM"];
             
-            // キーワードのシャッフルと処理
+            // 全キーワードをシャッフル
             keywords.sort(() => Math.random() - 0.5);
-            const halfCount = Math.ceil(keywords.length / 2);
+            
+            // キャッチコピーをつけるキーワードは「最大6個まで」
+            const captionLimit = 6;
             
             const processedKeywords = keywords.map((k, index) => {
-                let finalK = k;
-                // キーワードの半分に日本語キャッチコピーを付与
-                if (index < halfCount) {
-                    const adj = theme.adjectives[Math.floor(Math.random() * theme.adjectives.length)];
-                    finalK = `${adj} ${finalK}`;
+                let caption = "";
+                
+                // リストの先頭から指定数（最大6個）までにのみキャッチコピーを付与
+                if (index < captionLimit) {
+                    caption = theme.adjectives[Math.floor(Math.random() * theme.adjectives.length)];
                 }
-                // キーワードの半分に連想イラスト(絵文字)を付与
-                if ((index + 1) % 2 === 0) {
-                    const icon = theme.icons[Math.floor(Math.random() * theme.icons.length)];
-                    finalK = `${finalK} ${icon}`;
+                
+                // アイコンの生成（こちらは全キーワード対象のランダムとする）
+                let iconStr = "";
+                if (Math.random() > 0.5) {
+                    iconStr = theme.icons[Math.floor(Math.random() * theme.icons.length)];
                 }
-                return finalK;
+
+                if (caption) {
+                    return `"${k}" {SUB-COPY: "${caption}"} ${iconStr}`;
+                }
+                return `"${k}" ${iconStr}`;
             });
 
             const prompt = `[SNSタイポグラフィ制作指令] プロフェッショナルなデジタルグラフィック。人物・写真禁止。
 
 ■ 構図比率の厳守事項 (MANDATORY DIRECTION RATIO):
-以下の文字配置比率を「必ず」守り、キャンバス全体で計算された密度を構築せよ。
-1. **横書き (Horizontal Layout): 40%** - 基本となるメッセージ、安定感のある配置。
-2. **縦書き (Vertical Layout): 20%** - 画面を垂直に断ち切る鋭いアクセント。
-3. **斜め書き (Diagonal Layout): 20%** - 45度または自由な角度での躍動的な配置。
-4. **自由形状 (Free/Abstract Flow): 20%** - 曲線、波状、または円形配置。**注意: 文字の「逆さま（Upside-down）」配置は視認性維持のため禁止。**
+1. **横書き (Horizontal Layout): 40%**
+2. **縦書き (Vertical Layout): 20%**
+3. **斜め書き (Diagonal Layout): 20%**
+4. **自由形状 (Free/Abstract Flow): 20%**
+**注意: 文字の「逆さま（Upside-down）」配置は視認性維持のため禁止。**
 
 ■ 基本条件 (Essential Constraints):
 - アスペクト比: 3:4 ポスター形式
 - 余白の厳格制御: キャンバス全体の「15%」のみを余白とし、残りの85%を要素で密に埋めよ。
-- 圧倒的ジャンプ率: フォントサイズを 1%〜500% の範囲で劇的に変化させ、一文字ごとにサイズ、位置、角度をバラバラにすること。
+- 圧倒的ジャンプ率: フォントサイズを 1%〜500% の範囲で劇的に変化させ、要素ごとにサイズ、位置、角度をバラバラにすること。
 
-■ カラー戦略 (Color Logic - MANDATORY):
+■ キーワードとサブコピーの特殊配置 (TEXT HIERARCHY):
+- リスト内の {SUB-COPY: "..."} は、直前のキーワードに対応する「短いキャッチコピー」である。
+- **配置**: サブコピーは、メインキーワードの「すぐ傍ら」または「直下」に配置せよ。
+- **サイズ**: サブコピーはメインキーワードの「1/5以下」の極小サイズとし、注釈のように控えめに配置せよ。
+- **フォント**: サブコピーにはメインキーワードとは「異なる種類のフォント」を割り当て、視覚的な強弱をつけよ。
+
+■ カラー戦略 (Color Logic):
 - **ベース文字色**: ${colorInput}
-- **AI自動選定アクセントカラー**: 上記ベース色を主軸とし、テーマ「${theme.label}」に合致するアクセントカラーをAI側で1色自動決定し、要素の「5%〜10%」に適用せよ。
-- **オーバーラップ効果**: 文字が重なる部分での色彩反転や透明度変化を加えよ。
+- **AI自動選定アクセントカラー**: テーマ「${theme.label}」に合う色を1色自動決定し、要素の「5%〜10%」に適用。
+- **オーバーラップ効果**: 重なる部分での色彩反転や透明度変化を活用せよ。
 
 ■ グラフィック表現:
 - **クロッピング**: 巨大文字は意図的にキャンバス外へはみ出させよ。
@@ -237,14 +249,14 @@
 ■ フォント & 構成:
 - **使用フォントミックス**: [${theme.fonts.join(', ')}]
 - 名前 "${name.toUpperCase()}": 視認性を保つ「中サイズ」で配置。
-- キーワードリスト: [${processedKeywords.join(', ')}]
+- 要素構成リスト: [${processedKeywords.join(', ')}]
 - 装飾: "${theme.ornament}" を文字間の隙間に散りばめよ。
 
 ■ 背景・質感:
 - 背景: ${bgInput} (質感: ${theme.bgDesign}, フィルムグレイン・微細なノイズを追加)
 
 ■ 最終指示:
-- 指定されたベース色、AIが選ぶ差し色、そして指定のフォント群を「指定比率（4:2:2:2）」でフル活用し、高密度かつ洗練されたタイポグラフィ作品を生成せよ。文字は常に判読可能な向きを維持すること。
+- 指定されたベース色、差し色、フォント群を活用し、巨大なメインキーワードの傍らに極小のキャッチコピーが注釈的に添えられた、高密度なタイポグラフィ作品を生成せよ。文字は常に判読可能な向きを維持すること。
 - Final Output Format: --ar 3:4`;
 
             document.getElementById('generatedPrompt').innerText = prompt;
