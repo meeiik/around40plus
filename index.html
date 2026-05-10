@@ -1,636 +1,292 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>タイポグラフィポスタープロンプトジェネレーター</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #ffffff;
-      --bg2: #f5f5f4;
-      --bg3: #f0efed;
-      --text: #1c1c1a;
-      --text2: #6b6b68;
-      --text3: #a1a19e;
-      --border: rgba(0,0,0,0.12);
-      --border2: rgba(0,0,0,0.22);
-      --radius: 8px;
-      --radius-lg: 12px;
-      --font: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #1c1c1a;
-        --bg2: #272724;
-        --bg3: #2e2e2b;
-        --text: #f0ede8;
-        --text2: #a1a19e;
-        --text3: #6b6b68;
-        --border: rgba(255,255,255,0.12);
-        --border2: rgba(255,255,255,0.22);
-      }
-    }
-
-    body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      padding: 2rem 1rem 4rem;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 640px;
-    }
-
-    h1 {
-      font-size: 18px;
-      font-weight: 500;
-      margin-bottom: 4px;
-      color: var(--text);
-    }
-
-    .subtitle {
-      font-size: 13px;
-      color: var(--text2);
-      margin-bottom: 2rem;
-    }
-
-    .fields {
-      display: grid;
-      gap: 1.25rem;
-    }
-
-    label {
-      display: block;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text2);
-      margin-bottom: 6px;
-    }
-
-    label span {
-      font-weight: 400;
-      color: var(--text3);
-    }
-
-    input[type="text"],
-    textarea {
-      width: 100%;
-      padding: 8px 12px;
-      font-size: 14px;
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
-      border: 0.5px solid var(--border2);
-      border-radius: var(--radius);
-      outline: none;
-      transition: border-color 0.15s;
-    }
-
-    input[type="text"]:focus,
-    textarea:focus {
-      border-color: var(--text);
-    }
-
-    textarea {
-      min-height: 72px;
-      resize: vertical;
-    }
-
-    .chip-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      padding: 5px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      cursor: pointer;
-      border: 0.5px solid var(--border2);
-      background: var(--bg);
-      color: var(--text2);
-      transition: all 0.15s;
-      user-select: none;
-    }
-
-    .chip:hover {
-      border-color: var(--text);
-      color: var(--text);
-    }
-
-    .chip.active {
-      background: var(--text);
-      color: var(--bg);
-      border-color: var(--text);
-    }
-
-    .font-hint {
-      margin: 8px 0 0;
-      font-size: 12px;
-      color: var(--text3);
-      min-height: 1.4em;
-    }
-
-    .actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 1.5rem;
-      flex-wrap: wrap;
-    }
-
-    button {
-      padding: 10px 20px;
-      font-size: 14px;
-      font-family: var(--font);
-      cursor: pointer;
-      border-radius: var(--radius);
-      border: 0.5px solid var(--border2);
-      background: var(--bg);
-      color: var(--text);
-      transition: background 0.15s;
-    }
-
-    button:hover {
-      background: var(--bg2);
-    }
-
-    button.primary {
-      font-weight: 500;
-      background: var(--text);
-      color: var(--bg);
-      border-color: var(--text);
-    }
-
-    button.primary:hover {
-      opacity: 0.85;
-    }
-
-    button.ghost {
-      font-weight: 400;
-      background: transparent;
-      color: var(--text2);
-    }
-
-    .output-area {
-      display: none;
-      margin-top: 1.5rem;
-    }
-
-    .output-label {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text2);
-      margin-bottom: 8px;
-    }
-
-    .output-label span {
-      font-weight: 400;
-    }
-
-    .output-box {
-      background: var(--bg2);
-      border: 0.5px solid var(--border2);
-      border-radius: var(--radius);
-      padding: 1rem 1.25rem;
-      font-size: 13px;
-      line-height: 1.9;
-      color: var(--text);
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .output-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
-      flex-wrap: wrap;
-    }
-
-    .output-actions button {
-      font-size: 13px;
-      padding: 7px 16px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TYPOGRAPHY PROMPT GENERATOR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', 'Noto Sans JP', sans-serif; background-color: #f0f4f8; }
+        .random-gradient { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); }
+    </style>
 </head>
-<body>
-  <div class="container">
-    <h1>タイポグラフィポスタープロンプトジェネレーター</h1>
-    <p class="subtitle">情報を入力してChatGPT用プロンプトを生成します</p>
-
-    <div class="fields">
-      <div>
-        <label for="inp-name">あなたの名前 / ニックネーム</label>
-        <input id="inp-name" type="text" />
-      </div>
-      <div>
-        <label for="inp-keywords">キーワード <span>スペース区切り</span></label>
-        <textarea id="inp-keywords"></textarea>
-      </div>
-      <div>
-        <label>テイスト <span>1つ選択</span></label>
-        <div id="taste-grid" class="chip-grid"></div>
-        <p id="font-hint" class="font-hint"></p>
-      </div>
-      <div>
-        <label for="inp-color">文字の色 <span>スペース区切り</span></label>
-        <input id="inp-color" type="text" />
-      </div>
-      <div>
-        <label for="inp-bgcolor">背景の色 <span>未入力の場合は白</span></label>
-        <input id="inp-bgcolor" type="text" />
-      </div>
-    </div>
-
-    <div class="actions">
-      <button class="primary" onclick="generate()">プロンプトを生成する ↗</button>
-      <button class="ghost" onclick="resetAll()">リセット</button>
-    </div>
-
-    <div id="output-area" class="output-area">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-        <p class="output-label" style="margin-bottom:0;">生成されたプロンプト <span>— ChatGPTにそのまま貼り付けてください</span></p>
-        <div class="output-actions" style="margin-top:0;">
-          <button onclick="copyText(event)"><i class="ti ti-copy" style="font-size:15px;vertical-align:-2px;margin-right:4px;"></i>コピー</button>
-          <button onclick="window.open('https://chatgpt.com/','_blank')"><i class="ti ti-external-link" style="font-size:15px;vertical-align:-2px;margin-right:4px;"></i>ChatGPTを開く</button>
+<body class="p-4 md:p-8">
+    <div class="max-w-2xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
+        <!-- Header -->
+        <div class="random-gradient p-8 text-white text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none flex flex-wrap gap-4 p-4 text-[10px] font-mono text-white">
+                ULTRA RANDOMIZATION SEED GENERATOR COMPOSITION SHUFFLE CAMERA ANGLE SHIFT LIGHTING DIVERSITY TEXTURE VARIATION NO REPETITION ARTISTIC INTEGRITY ASPECT RATIO 3:4 ANY COLOR FORMAT UNLIMITED KEYWORDS SPACE SEPARATED
+            </div>
+            <div class="relative z-10 flex flex-col items-center">
+                <h1 class="text-3xl font-black tracking-tighter uppercase">TYPOGRAPHY PROMPT GENERATOR</h1>
+                <p class="text-[10px] opacity-80 mt-1">LAYOUT & DIRECTION RATIO OPTIMIZED EDITION</p>
+            </div>
         </div>
-      </div>
-      <div id="output-box" class="output-box"></div>
+
+        <div class="p-6 md:p-10 space-y-10">
+            <!-- 01 Theme Selection -->
+            <section class="space-y-4">
+                <h2 class="text-lg font-bold flex items-center text-slate-800">
+                    <span class="bg-indigo-600 text-white w-7 h-7 rounded-lg flex items-center justify-center mr-3 text-xs shadow-md font-mono">01</span>
+                    デザインテーマ
+                </h2>
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                    <button onclick="setTheme('natural')" id="btn-natural" class="theme-btn border-2 p-3 rounded-xl text-xs font-bold transition-all hover:bg-slate-50">🌿 ナチュラル</button>
+                    <button onclick="setTheme('girly')" id="btn-girly" class="theme-btn border-2 p-3 rounded-xl text-xs font-bold transition-all hover:bg-slate-50">🎀 ガーリー</button>
+                    <button onclick="setTheme('pop')" id="btn-pop" class="theme-btn border-2 p-3 rounded-xl text-xs font-bold transition-all hover:bg-slate-50">⚡ ポップ</button>
+                    <button onclick="setTheme('elegant')" id="btn-elegant" class="theme-btn border-2 p-3 rounded-xl text-xs font-bold transition-all hover:bg-slate-50">💎 エレガント</button>
+                    <button onclick="setTheme('retro')" id="btn-retro" class="theme-btn border-2 p-3 rounded-xl text-xs font-bold transition-all hover:bg-slate-50">📻 レトロ</button>
+                </div>
+            </section>
+
+            <!-- 02 Text Color -->
+            <section class="space-y-4">
+                <h2 class="text-lg font-bold flex items-center text-slate-800">
+                    <span class="bg-indigo-600 text-white w-7 h-7 rounded-lg flex items-center justify-center mr-3 text-xs shadow-md font-mono">02</span>
+                    ベースの文字色
+                </h2>
+                <input type="text" id="customColor" placeholder="例: #FF69B4 Pink ピンク" class="w-full rounded-xl border-gray-200 shadow-sm p-4 bg-gray-50 focus:ring-2 focus:ring-indigo-500 border outline-none font-medium text-slate-700">
+            </section>
+
+            <!-- 03 Background Color -->
+            <section class="space-y-4">
+                <h2 class="text-lg font-bold flex items-center text-slate-800">
+                    <span class="bg-indigo-600 text-white w-7 h-7 rounded-lg flex items-center justify-center mr-3 text-xs shadow-md font-mono">03</span>
+                    背景色
+                </h2>
+                <input type="text" id="bgColor" placeholder="例: #FFFFFF White ホワイト" class="w-full rounded-xl border-gray-200 shadow-sm p-4 bg-gray-50 focus:ring-2 focus:ring-indigo-500 border outline-none font-medium text-slate-700">
+            </section>
+
+            <!-- 04 User Name -->
+            <section class="space-y-4">
+                <h2 class="text-lg font-bold flex items-center text-slate-800">
+                    <span class="bg-indigo-600 text-white w-7 h-7 rounded-lg flex items-center justify-center mr-3 text-xs shadow-md font-mono">04</span>
+                    名前・ニックネーム
+                </h2>
+                <input type="text" id="userName" placeholder="例: Sakura" class="w-full rounded-xl border-gray-200 shadow-sm p-4 bg-gray-50 focus:ring-2 focus:ring-indigo-500 border outline-none font-bold text-slate-700">
+            </section>
+
+            <!-- 05 Keywords -->
+            <section class="space-y-4">
+                <h2 class="text-lg font-bold flex items-center text-slate-800">
+                    <span class="bg-indigo-600 text-white w-7 h-7 rounded-lg flex items-center justify-center mr-3 text-xs shadow-md font-mono">05</span>
+                    キーワード（スペース区切り）
+                </h2>
+                <textarea id="keywords" rows="6" placeholder="例: つながり 共感 貢献..." class="w-full rounded-2xl border-gray-200 shadow-inner p-5 bg-gray-50 focus:ring-2 focus:ring-indigo-500 border outline-none font-mono text-sm resize-y min-h-[120px]"></textarea>
+            </section>
+
+            <!-- Action Area -->
+            <div class="space-y-3 pt-6 border-t border-gray-100">
+                <div class="grid grid-cols-4 gap-3">
+                    <button onclick="resetForm()" class="col-span-1 bg-gray-100 hover:bg-gray-200 text-gray-500 font-bold py-4 rounded-xl transition-all flex flex-col items-center justify-center">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="mb-1"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        <span class="text-[10px]">リセット</span>
+                    </button>
+                    <button onclick="generatePrompt()" class="col-span-2 bg-slate-900 hover:bg-black text-white font-black py-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-3 text-lg">
+                        プロンプトを生成
+                    </button>
+                    <button id="quickCopyBtn" onclick="copyPrompt()" disabled class="col-span-1 bg-gray-100 text-gray-300 font-bold py-4 rounded-xl transition-all flex flex-col items-center justify-center disabled:cursor-not-allowed">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="mb-1"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                        <span id="copyText" class="text-[10px]">コピー</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Result Display -->
+            <section id="resultArea" class="hidden space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div class="bg-slate-50 p-6 rounded-2xl border-2 border-indigo-100 relative shadow-inner">
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span id="currentThemeBadge" class="text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter bg-indigo-600 text-white">THEME</span>
+                        <span id="bgBadge" class="text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter bg-slate-800 text-white">BG</span>
+                        <span id="variationBadge" class="text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter bg-orange-500 text-white">V</span>
+                        <span id="layoutBadge" class="text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter bg-emerald-600 text-white">RATIO OK</span>
+                        <span class="text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter bg-rose-600 text-white">SIZE: 3:4</span>
+                    </div>
+                    <p id="generatedPrompt" class="text-xs text-slate-700 leading-relaxed font-mono whitespace-pre-wrap select-all"></p>
+                </div>
+            </section>
+        </div>
     </div>
-  </div>
 
-  <script>
-const GLOBAL_SIZE_DENSITY = `[Global Size Jump Rate — applies to ALL keywords]
-- BETWEEN keywords: use at least 5 dramatically different size levels across the composition:
-  · XL: 320–400px (1–2 keywords that dominate entire sections)
-  · L:  160–220px (3–4 keywords, clearly large and bold)
-  · M:  70–100px  (several keywords, readable at a glance)
-  · S:  30–45px   (supporting words, small but legible)
-  · XS: 14–20px   (tiny accent words, almost whispered)
-  The jump between XL and XS must feel shocking — like shouting next to a whisper
-- WITHIN each keyword: vary the size of individual characters dramatically:
-  · At least one character should be 2–4x larger than its neighbors within the same word
-  · Characters can jump from large to tiny and back within a single word
-  · This internal size variation must be clearly visible and intentional, not subtle
-- DENSITY: the canvas must feel FULL and TYPE-FORWARD — text is the hero
-  · No more than 15% of the canvas should be empty background
-  · Words overlap, interlock, and layer throughout the entire composition
-  · Background color/texture is almost entirely hidden behind typography`;
+    <script>
+        let selectedTheme = 'natural';
+        const themes = {
+            natural: {
+                label: 'NATURAL (ナチュラル)',
+                defaultColor: 'Sage-green earthy-tones',
+                bgDesign: 'Clean, minimal flax paper texture. Solid color only.',
+                fonts: ['Organic Japanese Serif', 'Rustic Serif with rough edges', 'Minimalist Geometric Sans-serif', 'Delicate Thin Handwriting'],
+                ornament: 'Small hand-drawn leaf line-icons and botanical silhouettes',
+                decoration: 'Double-line strikes, thin outlines, and soft paper-grain effects',
+                aesthetic: 'Breathable, tactile, and keyword-focused',
+                adjectives: ['Gentle', 'Flowing', 'Deep', 'Calm', 'Pure', 'Quiet', '穏やかな', '心地よい', '澄んだ', '素朴な', '柔らかな', 'ありのままの'],
+                icons: ['🍃', '🌱', '☀️', '💧', '☁️', '🪵']
+            },
+            girly: {
+                label: 'GIRLY (ガーリー)',
+                defaultColor: 'Soft-lavender creamy-peach',
+                bgDesign: 'Pure flat surface with a subtle pearly sheen. Solid color only.',
+                fonts: ['Rounded Japanese Gothic', 'Bouncy Modern Script', 'Fashionable Chic Serif', 'Cute Hand-drawn Dot Font'],
+                ornament: 'Miniature star, ribbon, and bubble icons',
+                decoration: 'Holographic strokes, inner glows, and small sparkle dots',
+                aesthetic: 'Luminous, cute, and detailed',
+                adjectives: ['Sweet', 'Shiny', 'Lovely', 'Magic', 'Fancy', 'Sparkling', 'ときめく', 'きらめく', '甘い', '夢見る', '愛らしい', '可憐な'],
+                icons: ['🎀', '✨', '💖', '🍭', '🦋', '💄']
+            },
+            pop: {
+                label: 'POP (ポップ)',
+                defaultColor: 'Electric-blue neon-accents',
+                bgDesign: 'Solid vibrant background with subtle uniform noise. Solid color only.',
+                fonts: ['Ultra-heavy Japanese Sans-serif', 'Thick Comic Bubble Font', 'Stencil Display Font', 'Distorted Wide Sans-serif'],
+                ornament: 'Comic-style icon stamps, bolt icons, and flat-design symbols',
+                decoration: '3D block shadows, chromatic aberration, and sticker-like thick white borders',
+                aesthetic: 'Impactful, energetic, and graphic',
+                adjectives: ['Crazy', 'Dynamic', 'Boom', 'Wild', 'Happy', 'Super', '弾ける', '無敵の', '最高な', '刺激的な', '遊び心のある', '自由な'],
+                icons: ['⚡', '💥', '🔥', '🚀', '🌈', '👾']
+            },
+            elegant: {
+                label: 'ELEGANT (エレガント)',
+                defaultColor: 'Champagne-gold deep-emerald',
+                bgDesign: 'High-quality satin texture. Solid color only.',
+                fonts: ['Sophisticated Japanese Mincho', 'High-contrast Modern Serif', 'Classic Royal Calligraphy', 'Luxury Thin Spaced Sans-serif'],
+                ornament: 'Minimalist geometric line-icons and tiny jewelry motifs',
+                decoration: 'Hairline serifs, golden foil gradients, and elegant drop shadows',
+                aesthetic: 'Refined, sharp, and luxurious',
+                adjectives: ['Graceful', 'Noble', 'Eternal', 'Royal', 'Sharp', 'Splendid', '気品ある', '優雅な', '洗練された', '永遠の', '極上の', '凛とした'],
+                icons: ['💎', '🥂', '🌹', '🕊️', '🌙', '🗝️']
+            },
+            retro: {
+                label: 'RETRO (レトロ)',
+                defaultColor: 'Aged-mustard vintage-teal',
+                bgDesign: 'Uniform yellowed vintage paper grain. Solid color only.',
+                fonts: ['Vintage Showa Japanese Gothic', 'Heavy Antique Slab Serif', 'Distressed Retro Display', 'Classic Monospaced Typewriter'],
+                ornament: 'Iconic retro stamps, old-style logo symbols, and pixel-art icons',
+                decoration: 'Ink bleed effects, halftone dots on characters, and distress textures',
+                aesthetic: 'Authentic, nostalgic, and character-driven',
+                adjectives: ['Classic', 'Old-school', 'Memory', 'Warm', 'Soul', 'Analog', '懐かしい', '色褪せない', '味わい深い', 'ぬくもりの', '古き良き', '情緒的な'],
+                icons: ['📻', '📸', '📼', '☕', '🕯️', '🎞️']
+            }
+        };
 
-const tastes = [
-  {
-    label: "ナチュラル",
-    val: "natural, organic, handmade and earthy",
-    fontJa: "手書き風・丸ゴシック・やわらかいゴシック",
-    fontEn: "use these 4 fonts only — (1) 'Caveat' (Google Fonts, handwritten) for XL keywords; (2) 'Zen Maru Gothic' (Google Fonts, rounded gothic) for L and M keywords; (3) 'Patrick Hand' (Google Fonts, casual handwritten) for S keywords; (4) 'Kosugi Maru' (Google Fonts, soft rounded gothic) for XS keywords — minimum weight Regular (400) for all fonts; NO geometric or sharp sans-serif; every letterform must feel hand-touched and organic — apply these text treatments per size: XL keywords get a soft warm-toned drop shadow (offset 3–5px, blur 6–8px, color #8B6F4E at 35% opacity) as if the ink bled into paper; L keywords get a very subtle second-layer duplicate offset by 2px in terracotta (#C16A4F at 25% opacity); M keywords are clean with no shadow; S and XS keywords get a faint warm glow (blur only, no offset, #D4A878 at 20% opacity) — shadows must look hand-pressed, slightly uneven, never crisp or digital",
-    referenceEn: "Hand-illustrated botanical ZINE packed with text, nature journaling spread with dense handwritten notes, Scandinavian craft market poster — type fills every corner like pressed flowers covering a page.",
-    layoutEn: `- Words are scattered and packed densely across the full canvas — hand-scattered, as if poured onto the page
-- Each word tilts at a slightly different angle: horizontal words tilt ±5–15°, diagonal words go up to ±35°, vertical-leaning words lean top-to-bottom with a slight wobble (±5–10°)
-- NO rigid vertical tategumi columns — instead vertical words feel like long brushstrokes running downward at a gentle lean
-- Words overlap and crowd each other throughout — no large empty zones anywhere
-- Within each keyword: character sizes vary like uneven brushwork — first or last character often 2–3x larger than the others`,
-    colorEn: `- Primary text: deep warm brown (#3B2F2F) — never pure black
-- Accent 1: dusty sage green (#8A9E7A) for 2–3 large keywords
-- Accent 2: terracotta or clay red (#C16A4F) for 1–2 keywords
-- Small XS words: warm off-white or parchment (they recede but still visible against the background)
-- Colors look hand-applied and slightly uneven — not flat digital fills`,
-    illustStyle: "loose hand-drawn ink sketch style — wobbly lines, imperfect fills, botanical/organic feel"
-  },
-  {
-    label: "ガーリー",
-    val: "girly, feminine, romantic and fashion-forward",
-    fontJa: "スクリプト体・極細ゴシックの激しいコントラスト",
-    fontEn: "use these 4 fonts only — (1) 'Playfair Display' italic (Google Fonts, elegant serif) for XL keywords; (2) 'Great Vibes' (Google Fonts, flowing script) for L keywords; (3) 'Zen Kaku Gothic New' Regular (Google Fonts, clean gothic) for M keywords; (4) 'Raleway' Light (Google Fonts, refined sans-serif) for S and XS keywords — contrast between expressive script and clean slim gothic IS the design's identity; minimum weight 300 (Light) for all fonts — apply these text treatments per size: XL script keywords get a delicate outline stroke (0.5–1px, blush #E8A0A8) plus a soft pastel drop shadow (offset 4px diagonal, blur 8px, rose #C47A8A at 30% opacity); L script keywords get outline only (0.5px rose #C47A8A, no fill — hollow lettering effect); M gothic keywords get a very faint lavender drop shadow (offset 2px, blur 4px, #B8A9D4 at 25% opacity); S and XS keywords are clean flat — no treatment; treatments must feel romantic and delicate, never heavy",
-    referenceEn: "Densely typeset Korean fashion magazine spread, packed Parisian editorial layout, personal brand zine with text covering every inch — type is wallpaper.",
-    layoutEn: `- Canvas is packed densely — words fill every zone, overlapping and layering like magazine clippings glued together
-- Mix horizontal (40%), vertical tategumi (30%), diagonal (30%) — all directions crowd the same areas
-- The extreme contrast between huge flowing script words and tiny hairline gothic words must be unmissable
-- Typographic ornaments (· ◇) may be used sparingly — maximum 3 total, only to fill critical gaps
-- Within each script keyword: characters flow at wildly varying heights; within gothic keywords: vary size per character dramatically
-- No empty zones — every corner and edge of the canvas is occupied`,
-    colorEn: `- XL script words: blush pink (#E8A0A8) or deep rose (#8C4A5A)
-- L script words: muted mauve (#8C4A5A)
-- M thin gothic words: soft lavender (#B8A9D4)
-- S and XS words + ornaments: pale gold (#D4AF7A)
-- Layer colors so the composition feels richly colored throughout`,
-    illustStyle: "delicate fine-line illustration style — thin pen strokes, soft watercolor wash, romantic and feminine"
-  },
-  {
-    label: "ポップ",
-    val: "pop, colorful, bold and energetic",
-    fontJa: "極太ゴシック・ポップ体・デザイン書体",
-    fontEn: "use these 4 fonts only — (1) 'Boogaloo' (Google Fonts, bold rounded display) for XL keywords; (2) 'Lilita One' (Google Fonts, ultra-bold display) for L keywords; (3) 'Zen Kaku Gothic New' Bold (Google Fonts, heavy gothic) for M keywords; (4) 'Fredoka One' (Google Fonts, chunky rounded) for S and XS keywords — minimum weight Bold (700) for all fonts; every font must feel loud, punchy, and high-energy — apply these text treatments per size: XL keywords get a thick outline stroke (4–6px solid black or white) creating bold knockout lettering, plus a hard offset drop shadow (6–8px, no blur, in a clashing color from the palette) — like a screen-printed sticker; L keywords get a thick outline (3–4px) with a 2-color layered shadow (first layer 5px offset in one color, second layer 8px in another); M keywords get outline only (2–3px black); S keywords get a single hard shadow (3px offset, no blur); XS keywords are clean flat — no treatment; all effects must be crisp, bold, and graphic — NO soft or blurry shadows",
-    referenceEn: "90s street flyer with zero empty space, Harajuku fashion zine packed wall-to-wall with text, Tokyo concert poster where type is the image.",
-    layoutEn: `- Absolute maximum chaos and density — words crash, collide, and overlap aggressively everywhere
-- Equal mix of horizontal (35%), vertical tategumi (35%), diagonal up to ±60° (30%)
-- Within each keyword: one character enormous, the next tiny, next large — ransom-note internal variation
-- Some words outlined only, others solid fill, others with drop shadow — vary per word
-- The canvas must be so full that the background is barely visible in any zone`,
-    colorEn: `- 4–5 saturated clashing colors: vivid red (#FF2D2D), electric blue (#0057FF), bright yellow (#FFE600), hot pink (#FF4DA6), lime green (#39FF14)
-- Apply per word or per character — adjacent words clash in color
-- Black or white outlines separate the clashing colors`,
-    illustStyle: "bold flat-color cartoon style — thick outlines, solid fills, sticker-like, high contrast and playful"
-  },
-  {
-    label: "エレガント",
-    val: "elegant, ultra-refined, austere and luxurious",
-    fontJa: "明朝体・細〜レギュラーウェイト（ヘアラインは使わない、太字禁止）",
-    fontEn: "use these 4 fonts only — (1) 'Cormorant Garamond' SemiBold (Google Fonts, refined Latin serif) for XL keywords; (2) 'Shippori Mincho' Medium (Google Fonts, elegant Japanese mincho) for L and M keywords; (3) 'EB Garamond' Regular (Google Fonts, classic roman serif) for S keywords; (4) 'Shippori Mincho' Regular (Google Fonts) for XS keywords — use Regular (400) for XS–S, Medium (500) for M–L, SemiBold (600) for XL; minimum weight Regular (400) for all fonts; NO heavy or display-bold weight — apply these text treatments per size: XL keywords get a luxurious double-layer treatment: a very fine outline stroke (0.5px antique gold #C9A84C) plus an ultra-soft drop shadow (offset 2–3px, blur 10–12px, gold #C9A84C at 20% opacity) — like embossed foil on heavy paper; L keywords get the gold outline only (0.5px, no shadow); M keywords get a subtle emboss effect — a 1px highlight above (#FFFFFF at 40%) and 1px shadow below (#00000020) to simulate letterpress impression; S keywords get a barely-visible shadow (offset 1px, blur 3px, charcoal at 15% opacity); XS keywords are clean flat — no treatment; all treatments must be whisper-subtle and refined — never decorative or showy",
-    referenceEn: "Densely layered Celine campaign typography, stacked art museum poster with many text elements, high-fashion editorial where thin type fills the frame completely.",
-    layoutEn: `- Despite being elegant, the canvas is DENSE — thin words stack, layer, and overlap throughout
-- Vertical tategumi words dominate (55%): tall thin columns of characters crowd the canvas like a forest of reeds
-- Horizontal words (35%): set with extreme letter-spacing, often all-caps Latin, but many of them layered together
-- Diagonal (10%): very subtle tilt ±5–8°, used sparingly but present
-- Words overlap at edges and layer in depth — foreground words are darker/stronger, background words are lighter/ghosted
-- Within each keyword: characters are the same size (elegance = consistency) BUT the jump between different keywords is extreme — an XL word next to an XS word, with no medium transition
-- The overall impression: a dense forest of hairline type, dramatic in scale contrast but unified in extreme thinness`,
-    colorEn: `- If dark background: XL and L words in warm ivory (#F5F0E8); 2–3 keywords in antique gold (#C9A84C); ghosted background words in very dark grey (#333333)
-- If light background: XL and L in deep charcoal (#1A1A1A); 2 keywords in dark navy (#1B2A4A); ghosted words in light grey (#CCCCCC)
-- Maximum 3 colors — but use opacity/ghosting to create depth and layers`,
-    illustStyle: "ultra-minimal hairline engraving style — single continuous thin lines, no fills, resembling antique copperplate etching"
-  },
-  {
-    label: "レトロ",
-    val: "retro, vintage, nostalgic",
-    fontJa: "レトロフォント・タイプライター風・ヴィンテージ系",
-    fontEn: "use these 4 fonts only — (1) 'Alfa Slab One' (Google Fonts, bold slab serif) for XL keywords; (2) 'Special Elite' (Google Fonts, typewriter-style) for L and M keywords; (3) 'Rye' (Google Fonts, vintage western display) for S keywords; (4) 'Courier Prime' (Google Fonts, classic monospace) for XS keywords — minimum weight Regular (400) for all fonts; all fonts must feel aged, mechanical, or letterpress-printed; NO clean modern sans-serif — apply these text treatments per size: XL keywords get a letterpress impression effect: a dark sepia shadow (offset 3–4px, blur 2px — intentionally low blur for a hard-edged stamp look, #3D2B1F at 50% opacity) plus a slight roughened or eroded edge on the letterforms as if ink ran dry mid-print; L keywords get a rubber-stamp style treatment — outline only (1–2px vermillion #B33A2A) with slight edge irregularity; M keywords get a faded duplicate layer shifted 2px in sepia (#3D2B1F at 30%) as if printed twice slightly misaligned; S keywords get a single hard shadow (2px offset, no blur, sepia); XS keywords are clean — no treatment; all effects must look aged, imperfect, and tactile — never smooth or digital",
-    referenceEn: "Packed Showa-era weekly magazine page, vintage poster covered wall-to-wall with type, hand-typed zine with no wasted space.",
-    layoutEn: `- Dense, packed layout — every inch filled like a vintage print page with no wasted space
-- Mix horizontal typewriter lines (40%), vertical tategumi newspaper columns (35%), diagonal cut-paste clippings (25%)
-- Within each keyword: mismatched character sizes like different letterpress type blocks — irregular and dramatic
-- Text-based ornaments (——, *) used sparingly — maximum 3 total, never as background filler
-- Words overlap and crowd — the page should feel overset, like too much content forced into too little space`,
-    colorEn: `- Primary: dark sepia brown (#3D2B1F) or aged black (#2C2416)
-- Accent 1: vermillion/brick red (#B33A2A) — rubber stamp effect on 2–3 headline words
-- Accent 2: mustard yellow (#C9A84C) for 1–2 keywords
-- Accent 3: faded teal/olive (#5C7A6A) subtle third tone
-- All colors faded/desaturated — aged by sunlight`,
-    illustStyle: "vintage woodblock print or letterpress style — rough edges, ink texture, aged and faded tones"
-  },
-];
+        function setTheme(themeKey) {
+            selectedTheme = themeKey;
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('border-indigo-600', 'bg-indigo-50', 'text-indigo-700', 'shadow-inner');
+                btn.classList.add('border-gray-200');
+            });
+            document.getElementById(`btn-${themeKey}`).classList.add('border-indigo-600', 'bg-indigo-50', 'text-indigo-700', 'shadow-inner');
+        }
 
-const namePlacements = [
-  "Place the name in the upper-left area, set horizontally, woven into the dense composition.",
-  "Place the name near the center-right, set vertically (tategumi), running within the dense vertical text.",
-  "Place the name in the lower-third, set horizontally, anchoring the dense composition like a signature.",
-  "Place the name diagonally across the upper-right, slightly tilted, overlapping surrounding keywords.",
-  "Place the name near the center, broken across two lines, interlocking with surrounding keywords.",
-  "Place the name along the left edge, set vertically, acting as a spine within the dense composition.",
-  "Place the name in the lower-right corner, horizontal, like an artist's signature almost buried in type.",
-  "Place the name in the upper-center, horizontal, as the first anchor point in the dense composition.",
-];
+        setTheme('natural');
 
-const visualWeights = [
-  "Concentrate the XL and L text in the upper-left; S and XS text fills the lower-right — but all zones are dense.",
-  "Concentrate the XL and L text in the lower-right; upper-left has dense S and XS text.",
-  "Anchor XL text along a diagonal axis upper-left to lower-right; other sizes fill remaining zones densely.",
-  "Center the XL elements in the middle; surround them densely with M, S, and XS words radiating outward.",
-  "Push XL and L elements to the bottom half; top half densely packed with M and S words.",
-  "Scatter all size levels evenly but with a slight concentration of XL toward the left side.",
-  "Two clusters of XL text — upper-right and lower-left — with dense M and S words filling between them.",
-  "XL elements accumulate along the right edge; left side densely filled with M and S words.",
-];
+        function generatePrompt() {
+            const theme = themes[selectedTheme];
+            const name = document.getElementById('userName').value || "MUSE";
+            const colorInput = document.getElementById('customColor').value || theme.defaultColor;
+            const bgInput = document.getElementById('bgColor').value || "Pure White";
+            const vId = Math.floor(Math.random() * 10000);
+            
+            let inputRaw = document.getElementById('keywords').value;
+            let keywords = inputRaw.split(/[\s,、]+/).map(k => k.trim().toUpperCase()).filter(k => k !== "");
+            if (keywords.length === 0) keywords = ["ART", "SOUL", "LIFE", "FUTURE", "DREAM"];
+            
+            // キーワードの処理
+            keywords.sort(() => Math.random() - 0.5);
+            const halfCount = Math.ceil(keywords.length / 2);
+            
+            const processedKeywords = keywords.map((k, index) => {
+                let finalK = k;
+                // 半分にキャッチコピーを付ける
+                if (index < halfCount) {
+                    const adj = theme.adjectives[Math.floor(Math.random() * theme.adjectives.length)];
+                    finalK = `${adj} ${finalK}`;
+                }
+                // 半分（別基準での半分）に連想イラスト(アイコン)を付ける
+                if ((index + 1) % 2 === 0) {
+                    const icon = theme.icons[Math.floor(Math.random() * theme.icons.length)];
+                    finalK = `${finalK} ${icon}`;
+                }
+                return finalK;
+            });
 
-const layoutVariants = [
-  "Let the largest XL keyword burst out of the canvas edges, cropped deliberately — too big to contain.",
-  "Stack several keywords in tight overlapping vertical columns on one side, crowding into scattered words on the other.",
-  "One enormous XL word spans nearly the full canvas width as a background layer behind other words.",
-  "Some keywords arranged in a loose spiral, with other words filling all gaps densely.",
-  "A dense horizontal band of large text cuts across the middle, with packed words above and below.",
-  "Cluster 4–5 keywords in a tight overlapping group in one corner, rest packed freely across the canvas.",
-  "One keyword used as a long diagonal stripe cutting corner to corner, with dense words filling around it.",
-  "One keyword repeated as a background texture layer, with primary keywords layered densely on top.",
-];
+            const prompt = `[SNSタイポグラフィ制作指令] プロフェッショナルなデジタルグラフィック。人物・写真禁止。
 
-function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+■ 構図比率の厳守事項 (MANDATORY DIRECTION RATIO):
+以下の文字配置比率を「必ず」守り、キャンバス全体で計算された密度を構築せよ。
+1. **横書き (Horizontal Layout): 40%** - 基本となるメッセージ、安定感のある配置。
+2. **縦書き (Vertical Layout): 20%** - 画面を垂直に断ち切る鋭いアクセント。
+3. **斜め書き (Diagonal Layout): 20%** - 45度または自由な角度での躍動的な配置。
+4. **自由形状 (Free/Abstract Flow): 20%** - 曲線、波状、または円形配置。**注意: 文字の「逆さま（Upside-down）」配置は視認性維持のため禁止。**
 
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+■ 基本条件 (Essential Constraints):
+- アスペクト比: 3:4 ポスター形式
+- 余白の厳格制御: キャンバス全体の「15%」のみを余白とし、残りの85%を要素で密に埋めよ。
+- 圧倒的ジャンプ率: フォントサイズを 1%〜500% の範囲で劇的に変化させ、一文字ごとにサイズ、位置、角度をバラバラにすること。
 
-const JA_COLOR_MAP = {
-  '白':'#FFFFFF','しろ':'#FFFFFF','ホワイト':'#FFFFFF',
-  '黒':'#000000','くろ':'#000000','ブラック':'#000000',
-  '赤':'#FF0000','あか':'#FF0000','レッド':'#FF0000',
-  '青':'#0000FF','あお':'#0000FF','ブルー':'#0000FF',
-  '緑':'#008000','みどり':'#008000','グリーン':'#008000',
-  '黄':'#FFFF00','きいろ':'#FFFF00','黄色':'#FFFF00','イエロー':'#FFFF00',
-  'オレンジ':'#FF8C00','橙':'#FF8C00','だいだい':'#FF8C00',
-  'ピンク':'#FF69B4','桃色':'#FF69B4','もも':'#FF69B4',
-  '紫':'#800080','むらさき':'#800080','パープル':'#800080','バイオレット':'#EE82EE',
-  '水色':'#87CEEB','みずいろ':'#87CEEB','スカイブルー':'#87CEEB','空色':'#87CEEB',
-  '紺':'#000080','こん':'#000080','ネイビー':'#000080','紺色':'#000080',
-  'ベージュ':'#F5F5DC','クリーム':'#FFFDD0','アイボリー':'#FFFFF0',
-  'グレー':'#808080','灰色':'#808080','はいいろ':'#808080','グレイ':'#808080',
-  '茶色':'#8B4513','ちゃいろ':'#8B4513','ブラウン':'#8B4513','茶':'#8B4513',
-  'ゴールド':'#FFD700','金色':'#FFD700','きんいろ':'#FFD700','金':'#FFD700',
-  'シルバー':'#C0C0C0','銀色':'#C0C0C0','ぎんいろ':'#C0C0C0','銀':'#C0C0C0',
-  'ラベンダー':'#E6E6FA','ライラック':'#C8A2C8',
-  'ミント':'#98FF98','民ト':'#98FF98',
-  'サーモン':'#FA8072','コーラル':'#FF7F50','珊瑚':'#FF7F50',
-  'ターコイズ':'#40E0D0','エメラルド':'#50C878',
-  'インディゴ':'#4B0082','マゼンタ':'#FF00FF',
-  'シアン':'#00FFFF','水':'#00FFFF',
-  'カーキ':'#C3B091','オリーブ':'#808000','オリーブグリーン':'#6B8E23',
-  'マロン':'#800000','えんじ':'#800000','臙脂':'#800000',
-};
+■ カラー戦略 (Color Logic - MANDATORY):
+- **ベース文字色**: ${colorInput}
+- **AI自動選定アクセントカラー**: 上記ベース色を主軸とし、テーマ「${theme.label}」に合致するアクセントカラーをAI側で1色自動決定し、要素の「5%〜10%」に適用せよ。
+- **オーバーラップ効果**: 文字が重なる部分での色彩反転や透明度変化を加えよ。
 
-function parseColorToHex(colorStr) {
-  const s = colorStr.trim();
-  if (/^#([0-9a-fA-F]{3}){1,2}$/.test(s)) {
-    let hex = s.slice(1);
-    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
-    return hex;
-  }
-  if (JA_COLOR_MAP[s]) return JA_COLOR_MAP[s].slice(1);
-  const ctx = document.createElement('canvas').getContext('2d');
-  ctx.fillStyle = '#000000';
-  ctx.fillStyle = s;
-  const resolved = ctx.fillStyle;
-  if (resolved !== '#000000' && /^#[0-9a-fA-F]{6}$/.test(resolved)) return resolved.slice(1);
-  if (/^#[0-9a-fA-F]{6}$/.test(resolved)) return resolved.slice(1);
-  return null;
-}
+■ グラフィック表現:
+- **クロッピング**: 巨大文字は意図的にキャンバス外へはみ出させよ。
+- **ディスラプション**: 文字の一部を細いラインや図形へと変換し、グラフィック要素として再構築せよ。
 
-function buildBgInstruction(bgColor) {
-  if (!bgColor) return { label: '#FFFFFF', resolved: true };
-  const hex = parseColorToHex(bgColor);
-  if (hex) return { label: `#${hex}`, resolved: true };
-  return { label: bgColor, resolved: false };
-}
+■ フォント & 構成:
+- **使用フォントミックス**: [${theme.fonts.join(', ')}]
+- 名前 "${name.toUpperCase()}": 視認性を保つ「中サイズ」で配置。
+- キーワードリスト: [${processedKeywords.join(', ')}]
+- 装飾: "${theme.ornament}" を文字間の隙間に散りばめよ。
 
-function makeChips() {
-  const el = document.getElementById('taste-grid');
-  tastes.forEach((item, i) => {
-    const chip = document.createElement('span');
-    chip.className = 'chip';
-    chip.textContent = item.label;
-    chip.dataset.index = i;
-    chip.onclick = () => {
-      el.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      document.getElementById('font-hint').textContent = '使用フォントの方向性：' + item.fontJa;
-    };
-    el.appendChild(chip);
-  });
-}
+■ 背景・質感:
+- 背景: ${bgInput} (質感: ${theme.bgDesign}, フィルムグレイン・微細なノイズを追加)
 
-makeChips();
+■ 最終指示:
+- 指定されたベース色、AIが選ぶ差し色、そして指定のフォント群を「指定比率（4:2:2:2）」でフル活用し、高密度かつ洗練されたタイポグラフィ作品を生成せよ。文字は常に判読可能な向きを維持すること。
+- Final Output Format: --ar 3:4`;
 
-let lastPrompt = '';
+            document.getElementById('generatedPrompt').innerText = prompt;
+            document.getElementById('currentThemeBadge').innerText = theme.label.split(' ')[0];
+            document.getElementById('bgBadge').innerText = `BG: ${bgInput.substring(0, 10)}`;
+            document.getElementById('variationBadge').innerText = `V: ${vId}`;
+            
+            document.getElementById('resultArea').classList.remove('hidden');
+            const copyBtn = document.getElementById('quickCopyBtn');
+            copyBtn.disabled = false;
+            copyBtn.classList.replace('bg-gray-100', 'bg-slate-900');
+            copyBtn.classList.replace('text-gray-300', 'text-white');
+            
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
 
-function resetAll() {
-  document.getElementById('inp-name').value = '';
-  document.getElementById('inp-keywords').value = '';
-  document.getElementById('inp-color').value = '';
-  document.getElementById('inp-bgcolor').value = '';
-  document.querySelectorAll('#taste-grid .chip').forEach(c => c.classList.remove('active'));
-  document.getElementById('font-hint').textContent = '';
-  document.getElementById('output-area').style.display = 'none';
-  document.getElementById('output-box').textContent = '';
-  lastPrompt = '';
-}
+        function copyPrompt() {
+            const text = document.getElementById('generatedPrompt').innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            
+            const btn = document.getElementById('quickCopyBtn');
+            const span = document.getElementById('copyText');
+            span.innerText = "完了！";
+            setTimeout(() => span.innerText = "コピー", 2000);
+        }
 
-function generate() {
-  const name = document.getElementById('inp-name').value.trim() || 'me';
-  const rawKw = document.getElementById('inp-keywords').value.trim();
-  const rawColor = document.getElementById('inp-color').value.trim();
-  const kwList = rawKw ? rawKw.split(/\s+/).filter(Boolean) : ['design', 'my interests'];
-  const colorList = rawColor ? rawColor.split(/\s+/).filter(Boolean) : [];
-  const rawBgColor = document.getElementById('inp-bgcolor').value.trim();
-  const activeChip = document.querySelector('#taste-grid .chip.active');
-  if (!activeChip) { alert('テイストを選択してください'); return; }
-  const tc = tastes[activeChip.dataset.index];
-
-  const userColorNote = colorList.length
-    ? `The user has requested these colors be incorporated: ${colorList.join(', ')}. Blend them into the color scheme while keeping the overall mood intact.`
-    : '';
-
-  const bg = buildBgInstruction(rawBgColor);
-  const bgInstruction = bg.label;
-
-  const illustCount = Math.max(1, Math.min(2, Math.round(kwList.length * 0.1)));
-  const illustTargets = shuffle(kwList).slice(0, illustCount);
-
-  const illustSection = `[Keyword Illustrations & Decorative Accents]
-For exactly ${illustTargets.length} keyword(s) only — "${illustTargets.join('", "')}" — add one small illustrative accent placed directly beside the keyword:
-- Size: tiny, roughly 30–50px maximum — it must never compete with the typography
-- Style: ${tc.illustStyle}
-- Placement: tucked tightly beside the keyword — minimal and unobtrusive
-- All other keywords have absolutely NO illustration, NO ornament, NO decorative motif — text only
-- Do NOT scatter decorative elements across the background or use illustrations as filler`;
-
-  // キャッチコピーを付けるキーワード数：全体の約4割（最低1つ）
-  const catchphraseCount = Math.max(1, Math.round(kwList.length * 0.25));
-
-  const seed = Math.floor(Math.random() * 99999);
-  const namePlacement = pick(namePlacements);
-  const visualWeight = pick(visualWeights);
-  const layoutVariant = pick(layoutVariants);
-
-  lastPrompt = `Generate an image of a personal introduction typography poster with the following specifications.
-
-[Random Seed]
-${seed} — use this as a creative seed to ensure this design is unique and different from any previous generation.
-
-[Name]
-${name}
-
-[Size]
-960px × 1280px (vertical / portrait)
-
-[Style & Mood]
-${tc.val}
-
-[Visual Reference]
-Design this poster in the spirit of: ${tc.referenceEn}
-
-[Background — CRITICAL REQUIREMENT]
-Background color: ${bgInstruction}
-- REQUIREMENT: Fill 100% of the canvas with this exact background color before placing any typography
-- Do NOT change, lighten, darken, tint, or substitute this color under any circumstances
-- Do NOT use gradients, textures, patterns, or any other visual treatment on the background
-- Do NOT place any text, typography, or decorative elements behind the main composition as a background layer
-- The background must be a single, flat, solid fill of ${bgInstruction} and nothing else
-
-[Font Direction (Japanese + Latin mix)]
-Use ${tc.fontEn}. Mix Japanese and Latin typefaces for rich typographic contrast suited to this mood.
-
-[Keywords to include]
-${kwList.join(', ')}
-
-${GLOBAL_SIZE_DENSITY}
-
-[Layout & Text Direction]
-${tc.layoutEn}
-
-[Name Placement]
-The name "${name}" must be set on a single line — never break it across multiple lines under any circumstances. Set at a medium size (roughly 1/5 of canvas width), clearly readable within the dense composition.
-${namePlacement}
-
-[Visual Weight Distribution]
-${visualWeight}
-
-[Layout Variation]
-${layoutVariant}
-
-[Color Rules]
-${tc.colorEn}
-${userColorNote}
-
-${illustSection}
-
-[Catchphrases]
-From the keyword list, select exactly ${catchphraseCount} keyword(s) — roughly 25% of the total — that best represent the person's character or interests. For those ${catchphraseCount} keywords only, pair each with exactly one very short catchphrase (maximum 10 characters — as short as possible, single line only, never wrap to multiple lines).
-- Catchphrases must be legible, readable body text — NOT treated as decorative elements, background texture, or graphic ornamentation
-- Set each catchphrase at a small but clearly readable size (14–18px equivalent), with sufficient contrast against the background
-- Do not distort, rotate excessively, overlap with other text, or use as a visual flourish — it must be readable as a sentence
-- Place each catchphrase directly beside or beneath its paired keyword, as a grounded caption-like element
-- Style it differently from keywords (italic, lighter weight, or contrasting font) to distinguish it, but keep it fully legible
-- All other keywords appear WITHOUT any catchphrase
-
-[Final Note]
-- No photos or human figures — typography only (illustrations are allowed only for the ${illustTargets.length} keyword(s) listed above)
-- Every keyword in the list must appear somewhere in the composition
-- This design must look distinctly different from any other version generated with the same inputs`;
-
-  document.getElementById('output-box').textContent = lastPrompt;
-  document.getElementById('output-area').style.display = 'block';
-  document.getElementById('output-area').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-function copyText(e) {
-  if (!lastPrompt) return;
-  navigator.clipboard.writeText(lastPrompt).then(() => {
-    const btn = e.target.closest('button');
-    const orig = btn.innerHTML;
-    btn.innerHTML = '<i class="ti ti-check" style="font-size:15px;vertical-align:-2px;margin-right:4px;"></i>コピーしました';
-    setTimeout(() => btn.innerHTML = orig, 2000);
-  }).catch(() => {
-    const ta = document.createElement('textarea');
-    ta.value = lastPrompt;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-  });
-}
-  </script>
+        function resetForm() {
+            document.getElementById('userName').value = "";
+            document.getElementById('customColor').value = "";
+            document.getElementById('bgColor').value = "";
+            document.getElementById('keywords').value = "";
+            document.getElementById('resultArea').classList.add('hidden');
+            document.getElementById('quickCopyBtn').disabled = true;
+            document.getElementById('quickCopyBtn').classList.replace('bg-slate-900', 'bg-gray-100');
+            document.getElementById('quickCopyBtn').classList.replace('text-white', 'text-gray-300');
+            setTheme('natural');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
 </body>
 </html>
