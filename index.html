@@ -6,17 +6,27 @@
 <title>タイポグラフィポスタープロンプトジェネレーター</title>
 <style>
   * { box-sizing: border-box; }
-  body { font-family: sans-serif; max-width: 640px; margin: 0 auto; padding: 2rem 1rem; background: #fff; color: #111; }
-  h1 { font-size: 16px; margin: 0 0 0.5rem; }
-  p.sub { font-size: 13px; color: #666; margin: 0 0 1.5rem; }
-  .section { margin-bottom: 1.25rem; }
-  label { display: block; font-size: 12px; color: #666; font-weight: 500; margin-bottom: 6px; }
-  label span { font-weight: 400; color: #999; }
-  input[type="text"], textarea {
-    width: 100%; padding: 8px 12px; font-size: 14px;
-    border: 1px solid #ddd; border-radius: 8px;
-    background: #fff; color: #111; font-family: sans-serif;
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif;
+    max-width: 640px; margin: 0 auto; padding: 2rem 1.25rem;
+    background: #fff; color: #111;
   }
+  h1 { font-size: 16px; font-weight: 600; margin: 0 0 0.4rem; }
+  p.sub { font-size: 13px; color: #888; margin: 0 0 1.75rem; }
+  .section { margin-bottom: 1.25rem; }
+  .label {
+    display: block; font-size: 12px; color: #555;
+    font-weight: 500; margin-bottom: 6px;
+  }
+  .label span { font-weight: 400; color: #aaa; }
+  input[type="text"], textarea {
+    width: 100%; padding: 9px 12px; font-size: 14px;
+    border: 1px solid #e0e0e0; border-radius: 8px;
+    background: #fff; color: #111;
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif;
+    outline: none; transition: border-color 0.15s;
+  }
+  input[type="text"]:focus, textarea:focus { border-color: #888; }
   textarea { min-height: 72px; resize: vertical; }
   .chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
   .chip {
@@ -27,31 +37,31 @@
   }
   .chip:hover { border-color: #999; color: #111; }
   .chip.active { background: #111; color: #fff; border-color: #111; }
-  .font-hint { margin: 8px 0 0; font-size: 12px; color: #999; min-height: 1.4em; }
-  .btn-row { display: flex; gap: 8px; margin-top: 1.5rem; flex-wrap: wrap; }
-  button.gen {
-    padding: 10px 20px; font-size: 14px; font-weight: 500; cursor: pointer;
-    border: 1px solid #111; border-radius: 8px; background: #111; color: #fff;
+  .font-hint { margin: 8px 0 0; font-size: 12px; color: #aaa; min-height: 1.4em; }
+  .gen-btn {
+    margin-top: 1.5rem; padding: 11px 22px; font-size: 14px;
+    font-weight: 500; cursor: pointer; border: none;
+    border-radius: 8px; background: #111; color: #fff;
+    font-family: inherit; transition: background 0.15s;
   }
-  button.gen:hover { background: #333; }
-  button.reset {
-    padding: 10px 20px; font-size: 14px; font-weight: 400; cursor: pointer;
-    border: 1px solid #ddd; border-radius: 8px; background: #fff; color: #666;
-  }
-  button.reset:hover { background: #f5f5f5; }
-  #output-area { display: none; margin-top: 1.5rem; }
-  #output-area > p { font-size: 12px; color: #666; font-weight: 500; margin: 0 0 8px; }
+  .gen-btn:hover { background: #333; }
+  #output-area { display: none; margin-top: 1.75rem; }
+  .output-label { font-size: 12px; color: #555; font-weight: 500; margin: 0 0 8px; }
+  .output-label span { font-weight: 400; color: #aaa; }
   #output-box {
-    background: #f7f7f7; border: 1px solid #ddd; border-radius: 8px;
-    padding: 1rem 1.25rem; font-size: 13px; line-height: 1.9;
+    background: #f7f7f7; border: 1px solid #e8e8e8; border-radius: 8px;
+    padding: 1rem 1.25rem; font-size: 13px; line-height: 1.9; color: #222;
     white-space: pre-wrap; word-break: break-word;
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif;
   }
-  .action-row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
-  button.action {
+  .btn-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .action-btn {
     font-size: 13px; padding: 7px 16px; cursor: pointer;
-    border: 1px solid #ddd; border-radius: 8px; background: #fff; color: #111;
+    border: 1px solid #ddd; border-radius: 8px;
+    background: #fff; color: #111; font-family: inherit;
+    transition: background 0.15s;
   }
-  button.action:hover { background: #f0f0f0; }
+  .action-btn:hover { background: #f4f4f4; }
 </style>
 </head>
 <body>
@@ -60,129 +70,111 @@
 <p class="sub">情報を入力してChatGPT用プロンプトを生成します</p>
 
 <div class="section">
-  <label>あなたの名前 / ニックネーム</label>
+  <label class="label">あなたの名前 / ニックネーム</label>
   <input id="inp-name" type="text" />
 </div>
 
 <div class="section">
-  <label>キーワード <span>スペース区切り</span></label>
+  <label class="label">キーワード <span>スペース区切り</span></label>
   <textarea id="inp-keywords"></textarea>
 </div>
 
 <div class="section">
-  <label>テイスト <span>1つ選択</span></label>
+  <label class="label">テイスト <span>1つ選択</span></label>
   <div class="chip-group" id="taste-grid"></div>
   <p class="font-hint" id="font-hint"></p>
 </div>
 
 <div class="section">
-  <label>使いたい色 <span>スペース区切り</span></label>
+  <label class="label">使いたい色 <span>スペース区切り</span></label>
   <input id="inp-color" type="text" />
 </div>
 
-<div class="btn-row">
-  <button class="gen" onclick="generate()">プロンプトを生成する ↗</button>
-  <button class="reset" onclick="resetAll()">リセット</button>
-</div>
+<button class="gen-btn" onclick="generate()">プロンプトを生成する ↗</button>
 
 <div id="output-area">
-  <p>生成されたプロンプト — <span style="font-weight:400;">ChatGPTにそのまま貼り付けてください</span></p>
+  <p class="output-label">生成されたプロンプト <span>— ChatGPTにそのまま貼り付けてください</span></p>
   <div id="output-box"></div>
-  <div class="action-row">
-    <button class="action" onclick="copyText(event)">コピー</button>
-    <button class="action" onclick="window.open('https://chatgpt.com/', '_blank')">ChatGPTを開く</button>
+  <div class="btn-row">
+    <button class="action-btn" onclick="copyText(event)">コピー</button>
+    <button class="action-btn" onclick="window.open('https://chatgpt.com/', '_blank')">ChatGPTを開く</button>
   </div>
 </div>
 
 <script>
+const NAME_SIZE = `The name "NAME" should be set at a medium size — large enough to be clearly readable and noticeable as a personal identifier, but not the largest element on the canvas (roughly 1/5 of the canvas width). It should feel like a confident title card within the composition, balanced among the surrounding keywords.`;
+
+const KW_LAYOUT = `- Arrange all keywords randomly across the full canvas with no alignment or grid
+- For each keyword, independently and randomly assign one of three text directions:
+  (1) Horizontal (yokogumi) — standard left-to-right
+  (2) Vertical (tategumi) — strict top-to-bottom, NO rotation or diagonal tilt whatsoever; vertical text must remain perfectly upright
+  (3) Diagonal — rotated at a free angle between -45° and +45° for horizontal-origin words only; never apply diagonal rotation to vertical tategumi text
+  Distribute all three directions roughly equally and unpredictably so that horizontal, vertical, and diagonal words appear mixed together throughout every area of the canvas
+- Within a single keyword, vary the size of individual characters: for example, make the first character very large, the second tiny, the third medium — creating an internal rhythm of size contrast inside each word itself, not just between different words
+- Apply a very strong jump rate across all keywords: use at least 4 clearly distinct size levels — enormous, large, medium, and tiny — so the overall size difference is dramatic
+- Distribute size levels randomly across the entire canvas; mix enormous and tiny words in the same area`;
+
 const tastes = [
   {
     label: "ナチュラル",
     val: "natural, organic, calm and earthy",
     fontJa: "手書き風・丸ゴシック・やわらかいゴシック",
-    fontEn: "handwritten-style fonts, rounded gothic (e.g. Zen Maru Gothic), and soft sans-serif — warm, approachable, organic",
-    bgEn: "Warm ivory or unbleached paper tone (#FAF7F2). Optionally a barely-visible paper-grain texture. Never stark white.",
-    referenceEn: "Botanical art book, handmade ZINE, Scandinavian lifestyle magazine — where type feels grown rather than placed.",
-    layoutEn: `- Let words drift and meander organically — as if hand-placed on a nature journal page, not snapped to any grid
-- Horizontal words dominate (roughly 50%), with vertical tategumi words (30%) woven in as quiet vertical stems, and a few gently diagonal words (20%) adding soft movement — no sharp angles
-- Within each keyword, vary individual character sizes gently: a subtle swell and shrink, like brush strokes of uneven pressure
-- Overall density: airy — leave generous breathing room between words; do not pack the canvas tightly`,
-    colorEn: `- Primary text: deep warm brown or charcoal (#3B2F2F or similar) — never pure black
-- Accent color 1: dusty sage green (#8A9E7A) for 2–3 keywords
-- Accent color 2: terracotta or rust (#C16A4F) for 1–2 keywords
-- Remaining keywords: warm cream or off-white tones
-- No bright or saturated colors; everything should feel sun-faded and handmade`
+    fontEn: "handwritten-style fonts, rounded gothic (e.g. Zen Maru Gothic), and soft sans-serif fonts — warm, approachable, and organic in feel",
+    bgEn: "Use a very subtle off-white or warm ivory background (#FAF7F2 or similar), optionally with an extremely faint paper-grain texture. The background should feel like natural unbleached paper — quiet and warm, never stark white.",
+    designEn: `- NAME_PLACEHOLDER Write it in a soft handwritten or rounded font, placed naturally among the other words.
+- KW_PLACEHOLDER
+- Use a warm, muted color palette with soft contrast; avoid harsh blacks — prefer deep browns or dusty tones
+- Overall feel: airy and organic despite the dynamic mixed-direction layout, like a hand-crafted nature journal`
   },
   {
     label: "ガーリー",
     val: "girly, feminine, romantic and stylish",
-    fontJa: "丸ゴシック・スクリプト体・かわいい系フォント",
-    fontEn: "rounded gothic, script and handwritten display fonts, elegant-cute mixed typefaces — feminine, charming, fashion-forward",
-    bgEn: "Very pale blush (#FDF0F3) or soft lavender (#F5F0FA). Optionally a barely-visible fine dot grid for a stationery feel.",
-    referenceEn: "Korean women's fashion magazine, Parisian SNS aesthetic, personal lookbook — type as decoration, not just information.",
-    layoutEn: `- Layout feels curated-random: words scattered freely but with an unconscious sense of visual balance, like a mood board pinned by instinct
-- Mix horizontal (40%), vertical tategumi (30%), and diagonal (30%) — diagonal words should feel like they are leaning playfully, not falling
-- Within each keyword, create gentle internal size contrast: first character slightly larger, others smaller, like a stylish drop cap effect
-- Scatter typographic ornaments (✳ ✿ † ◇) freely between words as breathing elements
-- Overall density: medium — words overlap softly at edges, like overlapping polaroids`,
-    colorEn: `- Primary text: deep rose or muted mauve (#8C4A5A) — warm and feminine, not aggressive
-- Accent color 1: blush pink (#E8A0A8) for large display words
-- Accent color 2: soft lavender (#B8A9D4) for 2–3 keywords
-- Accent color 3: pale gold (#D4AF7A) for ornaments and catchphrases
-- Background should show through generously — color is used as a highlight, not a fill`
+    fontJa: "丸ゴシック・ポップ体・かわいい系フォント",
+    fontEn: "rounded gothic fonts, script and handwritten display fonts, and elegant-cute mixed typefaces — feminine, charming, and fashion-forward",
+    bgEn: "Use a very pale blush or soft lavender background (e.g. #FDF0F3 or #F5F0FA), delicate enough to feel like high-quality stationery. Optionally add a barely-visible fine dot grid pattern for a notebook aesthetic. The background should enhance femininity without competing with the text.",
+    designEn: `- NAME_PLACEHOLDER Set it in a stylish script or rounded font with a romantic, fashion-magazine feel.
+- KW_PLACEHOLDER
+- Mix delicate thin fonts with slightly bolder accent words for chic contrast
+- Use pastel tones, blush pinks, lavender, or rose gold accents
+- Scatter small decorative symbols (✳ † ✿) randomly among the keywords as typographic ornaments
+- Overall feel: a playful fashion lookbook where vertical, horizontal, and diagonal words collide unexpectedly — sweet but stylish`
   },
   {
     label: "ポップ",
     val: "pop, colorful, bold and energetic",
     fontJa: "極太ゴシック・ポップ体・デザイン書体",
-    fontEn: "extra-bold gothic, pop display fonts, expressive design typefaces — loud, punchy, high-impact",
-    bgEn: "Pure white (#FFFFFF) for maximum contrast, or one vivid solid color from the palette as a full-bleed flat background. No gradients or textures.",
-    referenceEn: "90s street flyer, Harajuku fashion zine, Tokyo concert poster — type as visual noise that somehow works.",
-    layoutEn: `- Maximum chaos: words collide, overlap, and crash into each other aggressively — no personal space between words
-- Roughly equal mix of horizontal (35%), vertical tategumi (35%), and diagonal (30%) — diagonals can be steep (up to ±60°)
-- Within each keyword, apply dramatic internal size contrast: one character enormous, the next tiny, the next large — like a ransom note cut from different magazines
-- Some words can be outlined only (no fill), others solid fill, others with a drop shadow — vary the treatment per word
-- Overall density: maximum — the canvas should feel like it is bursting`,
-    colorEn: `- Use 4–5 saturated, clashing colors simultaneously — do not harmonize them
-- Primary colors: vivid red (#FF2D2D), electric blue (#0057FF), bright yellow (#FFE600)
-- Secondary colors: hot pink (#FF4DA6), lime green (#39FF14) — use at least 2 of these
-- Apply colors per word or even per character — adjacent words should often clash in color
-- Black outlines or white outlines on some words to separate clashing colors`
+    fontEn: "extra-bold gothic fonts, pop display fonts, and expressive design typefaces — loud, punchy, and high-impact",
+    bgEn: "Use a clean, pure white (#FFFFFF) background to maximize contrast with the bold, saturated typography. Alternatively, a single vivid solid color block (matching one of the palette colors) can be used as a full-bleed background for extra pop energy. Keep it flat and graphic — no gradients or textures.",
+    designEn: `- NAME_PLACEHOLDER Set it in an ultra-bold font as a confident anchor amid the energetic surrounding text.
+- KW_PLACEHOLDER
+- Apply strong, saturated color fills to individual letters or words; use color blocking freely
+- The collision of vertical Japanese words, diagonal Latin text, and varied internal character sizes should feel intentional and high-energy
+- Overall feel: a chaotic-yet-designed concert poster where direction, scale, and internal size contrast create maximum visual tension`
   },
   {
     label: "エレガント",
     val: "elegant, refined, luxurious",
     fontJa: "明朝体・細字フォント・クラシック体",
-    fontEn: "mincho (Japanese serif), thin-weight typefaces, classic serif fonts — graceful, refined, timeless",
-    bgEn: "Near-black charcoal (#1A1A1A) or very pale warm ivory (#FDFAF5). If dark: typography glows in gold/ivory. If light: restrained and airy. Must feel premium.",
-    referenceEn: "High-fashion lookbook (Celine, The Row), architectural magazine, contemporary art exhibition poster — silence is part of the design.",
-    layoutEn: `- Restrained and deliberate: words are placed with intention, not scattered randomly — imagine a typesetter who considered each placement
-- Vertical tategumi words dominate (50%) as classical structural columns; horizontal words (35%) provide editorial contrast; minimal diagonal (15%) used only for Latin accents
-- Within each keyword, apply subtle internal size variation: a single character set slightly larger as a refined typographic accent — think calligraphy, not randomness
-- Generous negative space everywhere — words should never feel crowded; the canvas breathes
-- Overall density: sparse to medium — what is NOT there is as important as what is`,
-    colorEn: `- If dark background: primary text in warm ivory (#F5F0E8); accent in gold (#C9A84C) for 2–3 key words; one word in soft white (#FFFFFF)
-- If light background: primary text in deep charcoal (#1A1A1A); accent in dark navy (#1B2A4A) or antique gold (#9A7B3A)
-- Maximum 3 colors total — restraint is elegance
-- Catchphrases in italics, set in the accent color, significantly smaller than surrounding words`
+    fontEn: "mincho (Japanese serif) fonts, thin-weight typefaces, and classic serif fonts — graceful, refined, and timeless",
+    bgEn: "Use a deep, rich background such as a near-black charcoal (#1A1A1A), a dark navy, or a very pale ivory (#FDFAF5) — choose based on the palette. If dark, let the typography glow against it in gold, ivory, or soft white. If light, keep the background almost imperceptibly warm. Either way, the background must feel premium and editorial.",
+    designEn: `- NAME_PLACEHOLDER Set it in a delicate thin-weight mincho or serif font with generous letter-spacing, placed with quiet confidence.
+- KW_PLACEHOLDER
+- Despite the random mixed-direction layout, maintain elegance through generous negative space and restrained color
+- The internal size variation within a single word should feel like a deliberate calligraphic choice, not chaos
+- Limit the color palette to two or three tones; gold, ivory, or deep navy as accents`
   },
   {
     label: "レトロ",
     val: "retro, vintage, nostalgic",
     fontJa: "レトロフォント・タイプライター風・ヴィンテージ系",
-    fontEn: "retro display fonts, typewriter-inspired typefaces, vintage condensed fonts — aged, characterful, nostalgic",
-    bgEn: "Aged warm paper tone (#F2E8D5 sepia, worn cream, or faded manila). Apply subtle noise/grain texture to simulate aging. Never crisp or digital-looking.",
-    referenceEn: "Showa-era Japanese weekly magazine, vintage Americana poster, hand-typed zine — type with a history, like it was found not made.",
-    layoutEn: `- Evoke a cut-and-paste collage: some words feel like clippings pasted at angles, others like rubber stamps pressed unevenly
-- Mix horizontal (40%) mimicking typewriter lines, vertical tategumi (35%) echoing old newspaper columns, and diagonal (25%) suggesting torn and re-pasted clippings
-- Within each keyword, apply mismatched internal sizing: as if each character was set with a different type block from a vintage letterpress drawer — irregular and characterful
-- Include text-based ornamental elements: horizontal rules (———), asterisks, brackets [  ], ALL CAPS section labels, and condensed filler text scattered as layout elements
-- Overall density: packed — like a page with no wasted space, in the style of old print layouts`,
-    colorEn: `- Primary text: dark sepia brown (#3D2B1F) or aged black (#2C2416)
-- Accent color 1: vermillion or brick red (#B33A2A) for headline-level words — like a rubber stamp
-- Accent color 2: mustard yellow (#C9A84C) for 1–2 keywords
-- Accent color 3: faded teal or olive (#5C7A6A) as a subtle third tone
-- All colors should look slightly faded or desaturated — as if aged by sunlight`
+    fontEn: "retro-style fonts, typewriter-inspired typefaces, and vintage display fonts — aged, characterful, and nostalgic",
+    bgEn: "Use an aged, warm background that evokes old paper — a muted sepia tone (#F2E8D5), a worn cream, or a faded manila color. Apply a subtle noise or grain texture to simulate aging. The background should look like a page torn from a vintage magazine or old notebook, never crisp or digital.",
+    designEn: `- NAME_PLACEHOLDER Set it in a typewriter or vintage display font, styled like a confident byline.
+- KW_PLACEHOLDER
+- The mix of vertical Japanese tategumi, diagonal Latin, and horizontal typewriter text should evoke a vintage collage or cut-and-paste zine
+- Internal character size variation within a word should feel like mismatched vintage type blocks — characterful and nostalgic
+- Incorporate ornamental dividers, all-caps headlines, and condensed type scattered randomly among the keywords
+- Use sepia, faded cream, or aged tones; avoid pure white or pure black`
   },
 ];
 
@@ -192,7 +184,11 @@ function makeChips(containerId, items) {
     const chip = document.createElement('span');
     chip.className = 'chip';
     chip.textContent = item.label;
-    Object.keys(item).forEach(k => { chip.dataset[k] = item[k]; });
+    chip.dataset.val = item.val;
+    chip.dataset.fontJa = item.fontJa;
+    chip.dataset.fontEn = item.fontEn;
+    chip.dataset.bgEn = item.bgEn;
+    chip.dataset.designEn = item.designEn;
     chip.onclick = () => {
       el.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
       chip.classList.add('active');
@@ -206,15 +202,11 @@ makeChips('taste-grid', tastes);
 
 let lastPrompt = '';
 
-function resetAll() {
-  document.getElementById('inp-name').value = '';
-  document.getElementById('inp-keywords').value = '';
-  document.getElementById('inp-color').value = '';
-  document.querySelectorAll('#taste-grid .chip').forEach(c => c.classList.remove('active'));
-  document.getElementById('font-hint').textContent = '';
-  document.getElementById('output-area').style.display = 'none';
-  document.getElementById('output-box').textContent = '';
-  lastPrompt = '';
+function buildDesignEn(rawDesignEn, name) {
+  const nameStr = NAME_SIZE.replace('NAME', name);
+  return rawDesignEn
+    .replace('NAME_PLACEHOLDER', nameStr)
+    .replace('KW_PLACEHOLDER', KW_LAYOUT);
 }
 
 function generate() {
@@ -225,12 +217,14 @@ function generate() {
   const kwList = rawKw ? rawKw.split(/\s+/).filter(Boolean) : ['design', 'my interests'];
   const colorList = rawColor ? rawColor.split(/\s+/).filter(Boolean) : [];
 
-  const tc = document.querySelector('#taste-grid .chip.active');
-  if (!tc) { alert('テイストを選択してください'); return; }
-
-  const userColorNote = colorList.length
-    ? `The user has requested these colors be incorporated: ${colorList.join(', ')}. Blend them into the color scheme below while keeping the overall mood intact.`
-    : '';
+  const tasteChip = document.querySelector('#taste-grid .chip.active');
+  const tasteVal = tasteChip ? tasteChip.dataset.val : 'stylish and modern';
+  const fontEn = tasteChip ? tasteChip.dataset.fontEn : 'a tasteful mix of Japanese and Latin fonts';
+  const bgEn = tasteChip ? tasteChip.dataset.bgEn : 'Use a clean, simple background that does not distract from the typography.';
+  const designEn = tasteChip
+    ? buildDesignEn(tasteChip.dataset.designEn, name)
+    : `- Feature the name "${name}" at a medium size — confident but not dominant.\n- Scatter keywords with vertical (strictly upright), horizontal, and diagonal directions mixed randomly.\n- Vary individual character sizes within each word for internal rhythm.`;
+  const colorStr = colorList.length ? colorList.join(', ') : 'colors that match the overall style';
 
   lastPrompt = `Generate an image of a personal introduction typography poster with the following specifications.
 
@@ -241,36 +235,26 @@ ${name}
 960px × 1280px (vertical / portrait)
 
 [Style & Mood]
-${tc.dataset.val}
+${tasteVal}
 
-[Visual Reference]
-Design this poster in the spirit of: ${tc.dataset.referenceEn}
+[Color Palette]
+${colorStr}
 
 [Background]
-${tc.dataset.bgEn}
+${bgEn}
 
 [Font Direction (Japanese + Latin mix)]
-Use ${tc.dataset.fontEn}. Mix Japanese and Latin typefaces for rich typographic contrast suited to this mood.
+Use ${fontEn}. Mix Japanese and Latin typefaces to create a rich typographic contrast that suits the overall mood.
 
 [Keywords to include]
 ${kwList.join(', ')}
 
-[Layout & Text Direction]
-${tc.dataset.layoutEn}
-
-[Color Rules]
-${tc.dataset.colorEn}
-${userColorNote}
-
-[Name Placement]
-The name "${name}" should be set at a medium size (roughly 1/5 of canvas width) — clearly readable and personally identifiable, but not the single largest element. It should feel like a confident signature woven into the composition.
-
-[Catchphrases]
-Select 2 to 3 keywords that best represent the person's character or interests. Pair each with a short punchy catchphrase (3–6 words) that captures the essence of that keyword. Place each catchphrase as small accent text beside its keyword, styled differently (italic, lighter weight, or contrasting font) for editorial depth without cluttering the layout.
-
-[Final Note]
-- No photos or human figures — typography only
-- Every keyword in the list must appear somewhere in the composition`;
+[Design Direction]
+- No photos or human figures — text only
+- Fill the entire canvas with all the keywords above
+${designEn}
+- Subtly vary the color of keyword groups where it improves readability
+- Select 2 to 3 keywords that best represent the person's personality or interests, and pair each with a short, punchy catchphrase (3 to 6 words) that evokes the essence of that keyword — place these catchphrases as small accent text near the keyword, styled differently (e.g. italic, lighter weight, or a contrasting font) to add depth and an editorial feel without cluttering the layout`;
 
   document.getElementById('output-box').textContent = lastPrompt;
   document.getElementById('output-area').style.display = 'block';
