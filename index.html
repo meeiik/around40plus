@@ -440,11 +440,10 @@ function parseColorToHex(colorStr) {
 
 function buildBgInstruction(bgColor) {
   if (!bgColor) {
-    return "BACKGROUND COLOR: pure white (#FFFFFF). This is mandatory — do not change it. Flat solid only, no gradients, no textures, no text used as background element.";
+    return "#FFFFFF";
   }
   const hex = parseColorToHex(bgColor);
-  const colorLabel = hex ? `#${hex}` : bgColor;
-  return `BACKGROUND COLOR: ${colorLabel} — this is a strict requirement. You MUST fill the entire canvas with this exact color. Do not substitute, adjust, lighten, or ignore it. Flat solid only, no gradients, no textures, no text used as background element.`;
+  return hex ? `#${hex}` : bgColor;
 }
 
 function makeChips() {
@@ -532,8 +531,9 @@ ${tc.val}
 [Visual Reference]
 Design this poster in the spirit of: ${tc.referenceEn}
 
-[Background — MANDATORY, DO NOT IGNORE]
-${bgInstruction}
+[Background]
+The background color is ${bgInstruction}.
+You MUST use this exact color for the entire canvas background without any modification — do not lighten, darken, substitute, or blend it. Use a flat solid fill only. No gradients, no textures, no patterns, and absolutely no text or typographic elements used as background decoration.
 
 [Font Direction (Japanese + Latin mix)]
 Use ${tc.fontEn}. Mix Japanese and Latin typefaces for rich typographic contrast suited to this mood.
