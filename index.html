@@ -244,8 +244,12 @@
         <p id="font-hint" class="font-hint"></p>
       </div>
       <div>
-        <label for="inp-color">使いたい色 <span>スペース区切り</span></label>
+        <label for="inp-color">文字の色 <span>スペース区切り</span></label>
         <input id="inp-color" type="text" />
+      </div>
+      <div>
+        <label for="inp-bgcolor">背景の色 <span>未入力の場合は白</span></label>
+        <input id="inp-bgcolor" type="text" />
       </div>
     </div>
 
@@ -289,7 +293,7 @@ const tastes = [
     label: "ナチュラル",
     val: "natural, organic, handmade and earthy",
     fontJa: "手書き風・丸ゴシック・やわらかいゴシック",
-    fontEn: "use these 4 fonts only — (1) 'Caveat' (Google Fonts, handwritten) for XL keywords; (2) 'Zen Maru Gothic' (Google Fonts, rounded gothic) for L and M keywords; (3) 'Patrick Hand' (Google Fonts, casual handwritten) for S keywords; (4) 'Kosugi Maru' (Google Fonts, soft rounded gothic) for XS keywords — minimum weight Regular (400) for all fonts; NO geometric or sharp sans-serif; every letterform must feel hand-touched and organic",
+    fontEn: "use these 4 fonts only — (1) 'Caveat' (Google Fonts, handwritten) for XL keywords; (2) 'Zen Maru Gothic' (Google Fonts, rounded gothic) for L and M keywords; (3) 'Patrick Hand' (Google Fonts, casual handwritten) for S keywords; (4) 'Kosugi Maru' (Google Fonts, soft rounded gothic) for XS keywords — minimum weight Regular (400) for all fonts; NO geometric or sharp sans-serif; every letterform must feel hand-touched and organic — apply these text treatments per size: XL keywords get a soft warm-toned drop shadow (offset 3–5px, blur 6–8px, color #8B6F4E at 35% opacity) as if the ink bled into paper; L keywords get a very subtle second-layer duplicate offset by 2px in terracotta (#C16A4F at 25% opacity); M keywords are clean with no shadow; S and XS keywords get a faint warm glow (blur only, no offset, #D4A878 at 20% opacity) — shadows must look hand-pressed, slightly uneven, never crisp or digital",
     referenceEn: "Hand-illustrated botanical ZINE packed with text, nature journaling spread with dense handwritten notes, Scandinavian craft market poster — type fills every corner like pressed flowers covering a page.",
     layoutEn: `- Words are scattered and packed densely across the full canvas — hand-scattered, as if poured onto the page
 - Each word tilts at a slightly different angle: horizontal words tilt ±5–15°, diagonal words go up to ±35°, vertical-leaning words lean top-to-bottom with a slight wobble (±5–10°)
@@ -307,12 +311,12 @@ const tastes = [
     label: "ガーリー",
     val: "girly, feminine, romantic and fashion-forward",
     fontJa: "スクリプト体・極細ゴシックの激しいコントラスト",
-    fontEn: "use these 4 fonts only — (1) 'Playfair Display' italic (Google Fonts, elegant serif) for XL keywords; (2) 'Great Vibes' (Google Fonts, flowing script) for L keywords; (3) 'Zen Kaku Gothic New' Regular (Google Fonts, clean gothic) for M keywords; (4) 'Raleway' Light (Google Fonts, refined sans-serif) for S and XS keywords — contrast between expressive script and clean slim gothic IS the design's identity; minimum weight 300 (Light) for all fonts",
+    fontEn: "use these 4 fonts only — (1) 'Playfair Display' italic (Google Fonts, elegant serif) for XL keywords; (2) 'Great Vibes' (Google Fonts, flowing script) for L keywords; (3) 'Zen Kaku Gothic New' Regular (Google Fonts, clean gothic) for M keywords; (4) 'Raleway' Light (Google Fonts, refined sans-serif) for S and XS keywords — contrast between expressive script and clean slim gothic IS the design's identity; minimum weight 300 (Light) for all fonts — apply these text treatments per size: XL script keywords get a delicate outline stroke (0.5–1px, blush #E8A0A8) plus a soft pastel drop shadow (offset 4px diagonal, blur 8px, rose #C47A8A at 30% opacity); L script keywords get outline only (0.5px rose #C47A8A, no fill — hollow lettering effect); M gothic keywords get a very faint lavender drop shadow (offset 2px, blur 4px, #B8A9D4 at 25% opacity); S and XS keywords are clean flat — no treatment; treatments must feel romantic and delicate, never heavy",
     referenceEn: "Densely typeset Korean fashion magazine spread, packed Parisian editorial layout, personal brand zine with text covering every inch — type is wallpaper.",
     layoutEn: `- Canvas is packed densely — words fill every zone, overlapping and layering like magazine clippings glued together
 - Mix horizontal (40%), vertical tategumi (30%), diagonal (30%) — all directions crowd the same areas
 - The extreme contrast between huge flowing script words and tiny hairline gothic words must be unmissable
-- Typographic ornaments (✳ ✿ † ◇ ·) are scattered throughout to fill gaps between words — used as mortar between bricks
+- Typographic ornaments (· ◇) may be used sparingly — maximum 3 total, only to fill critical gaps
 - Within each script keyword: characters flow at wildly varying heights; within gothic keywords: vary size per character dramatically
 - No empty zones — every corner and edge of the canvas is occupied`,
     colorEn: `- XL script words: blush pink (#E8A0A8) or deep rose (#8C4A5A)
@@ -326,7 +330,7 @@ const tastes = [
     label: "ポップ",
     val: "pop, colorful, bold and energetic",
     fontJa: "極太ゴシック・ポップ体・デザイン書体",
-    fontEn: "use these 4 fonts only — (1) 'Boogaloo' (Google Fonts, bold rounded display) for XL keywords; (2) 'Lilita One' (Google Fonts, ultra-bold display) for L keywords; (3) 'Zen Kaku Gothic New' Bold (Google Fonts, heavy gothic) for M keywords; (4) 'Fredoka One' (Google Fonts, chunky rounded) for S and XS keywords — minimum weight Bold (700) for all fonts; every font must feel loud, punchy, and high-energy",
+    fontEn: "use these 4 fonts only — (1) 'Boogaloo' (Google Fonts, bold rounded display) for XL keywords; (2) 'Lilita One' (Google Fonts, ultra-bold display) for L keywords; (3) 'Zen Kaku Gothic New' Bold (Google Fonts, heavy gothic) for M keywords; (4) 'Fredoka One' (Google Fonts, chunky rounded) for S and XS keywords — minimum weight Bold (700) for all fonts; every font must feel loud, punchy, and high-energy — apply these text treatments per size: XL keywords get a thick outline stroke (4–6px solid black or white) creating bold knockout lettering, plus a hard offset drop shadow (6–8px, no blur, in a clashing color from the palette) — like a screen-printed sticker; L keywords get a thick outline (3–4px) with a 2-color layered shadow (first layer 5px offset in one color, second layer 8px in another); M keywords get outline only (2–3px black); S keywords get a single hard shadow (3px offset, no blur); XS keywords are clean flat — no treatment; all effects must be crisp, bold, and graphic — NO soft or blurry shadows",
     referenceEn: "90s street flyer with zero empty space, Harajuku fashion zine packed wall-to-wall with text, Tokyo concert poster where type is the image.",
     layoutEn: `- Absolute maximum chaos and density — words crash, collide, and overlap aggressively everywhere
 - Equal mix of horizontal (35%), vertical tategumi (35%), diagonal up to ±60° (30%)
@@ -342,7 +346,7 @@ const tastes = [
     label: "エレガント",
     val: "elegant, ultra-refined, austere and luxurious",
     fontJa: "明朝体・細〜レギュラーウェイト（ヘアラインは使わない、太字禁止）",
-    fontEn: "use these 4 fonts only — (1) 'Cormorant Garamond' SemiBold (Google Fonts, refined Latin serif) for XL keywords; (2) 'Shippori Mincho' Medium (Google Fonts, elegant Japanese mincho) for L and M keywords; (3) 'EB Garamond' Regular (Google Fonts, classic roman serif) for S keywords; (4) 'Shippori Mincho' Regular (Google Fonts) for XS keywords — use Regular (400) for XS–S, Medium (500) for M–L, SemiBold (600) for XL; minimum weight Regular (400) for all fonts; NO heavy or display-bold weight",
+    fontEn: "use these 4 fonts only — (1) 'Cormorant Garamond' SemiBold (Google Fonts, refined Latin serif) for XL keywords; (2) 'Shippori Mincho' Medium (Google Fonts, elegant Japanese mincho) for L and M keywords; (3) 'EB Garamond' Regular (Google Fonts, classic roman serif) for S keywords; (4) 'Shippori Mincho' Regular (Google Fonts) for XS keywords — use Regular (400) for XS–S, Medium (500) for M–L, SemiBold (600) for XL; minimum weight Regular (400) for all fonts; NO heavy or display-bold weight — apply these text treatments per size: XL keywords get a luxurious double-layer treatment: a very fine outline stroke (0.5px antique gold #C9A84C) plus an ultra-soft drop shadow (offset 2–3px, blur 10–12px, gold #C9A84C at 20% opacity) — like embossed foil on heavy paper; L keywords get the gold outline only (0.5px, no shadow); M keywords get a subtle emboss effect — a 1px highlight above (#FFFFFF at 40%) and 1px shadow below (#00000020) to simulate letterpress impression; S keywords get a barely-visible shadow (offset 1px, blur 3px, charcoal at 15% opacity); XS keywords are clean flat — no treatment; all treatments must be whisper-subtle and refined — never decorative or showy",
     referenceEn: "Densely layered Celine campaign typography, stacked art museum poster with many text elements, high-fashion editorial where thin type fills the frame completely.",
     layoutEn: `- Despite being elegant, the canvas is DENSE — thin words stack, layer, and overlap throughout
 - Vertical tategumi words dominate (55%): tall thin columns of characters crowd the canvas like a forest of reeds
@@ -360,12 +364,12 @@ const tastes = [
     label: "レトロ",
     val: "retro, vintage, nostalgic",
     fontJa: "レトロフォント・タイプライター風・ヴィンテージ系",
-    fontEn: "use these 4 fonts only — (1) 'Alfa Slab One' (Google Fonts, bold slab serif) for XL keywords; (2) 'Special Elite' (Google Fonts, typewriter-style) for L and M keywords; (3) 'Rye' (Google Fonts, vintage western display) for S keywords; (4) 'Courier Prime' (Google Fonts, classic monospace) for XS keywords — minimum weight Regular (400) for all fonts; all fonts must feel aged, mechanical, or letterpress-printed; NO clean modern sans-serif",
+    fontEn: "use these 4 fonts only — (1) 'Alfa Slab One' (Google Fonts, bold slab serif) for XL keywords; (2) 'Special Elite' (Google Fonts, typewriter-style) for L and M keywords; (3) 'Rye' (Google Fonts, vintage western display) for S keywords; (4) 'Courier Prime' (Google Fonts, classic monospace) for XS keywords — minimum weight Regular (400) for all fonts; all fonts must feel aged, mechanical, or letterpress-printed; NO clean modern sans-serif — apply these text treatments per size: XL keywords get a letterpress impression effect: a dark sepia shadow (offset 3–4px, blur 2px — intentionally low blur for a hard-edged stamp look, #3D2B1F at 50% opacity) plus a slight roughened or eroded edge on the letterforms as if ink ran dry mid-print; L keywords get a rubber-stamp style treatment — outline only (1–2px vermillion #B33A2A) with slight edge irregularity; M keywords get a faded duplicate layer shifted 2px in sepia (#3D2B1F at 30%) as if printed twice slightly misaligned; S keywords get a single hard shadow (2px offset, no blur, sepia); XS keywords are clean — no treatment; all effects must look aged, imperfect, and tactile — never smooth or digital",
     referenceEn: "Packed Showa-era weekly magazine page, vintage poster covered wall-to-wall with type, hand-typed zine with no wasted space.",
     layoutEn: `- Dense, packed layout — every inch filled like a vintage print page with no wasted space
 - Mix horizontal typewriter lines (40%), vertical tategumi newspaper columns (35%), diagonal cut-paste clippings (25%)
 - Within each keyword: mismatched character sizes like different letterpress type blocks — irregular and dramatic
-- Text-based ornaments: ———, *, [ ], ALL CAPS labels fill every gap
+- Text-based ornaments (——, *) used sparingly — maximum 3 total, never as background filler
 - Words overlap and crowd — the page should feel overset, like too much content forced into too little space`,
     colorEn: `- Primary: dark sepia brown (#3D2B1F) or aged black (#2C2416)
 - Accent 1: vermillion/brick red (#B33A2A) — rubber stamp effect on 2–3 headline words
@@ -434,32 +438,13 @@ function parseColorToHex(colorStr) {
   return null;
 }
 
-function lightenHex(hex, amount) {
-  const r = parseInt(hex.slice(0, 2), 16);
-  const g = parseInt(hex.slice(2, 4), 16);
-  const b = parseInt(hex.slice(4, 6), 16);
-  const lr = Math.round(r + (255 - r) * amount);
-  const lg = Math.round(g + (255 - g) * amount);
-  const lb = Math.round(b + (255 - b) * amount);
-  return '#' + [lr, lg, lb].map(v => v.toString(16).padStart(2, '0')).join('');
-}
-
-function buildBgInstruction(colorList, tasteLabel) {
-  if (!colorList.length) {
-    const defaults = {
-      "ナチュラル": "Near-white with the faintest warm ivory hint (#FDFCF9) — almost pure white, not cream or paper-toned. No grain or texture. The background will be mostly hidden behind dense typography.",
-      "ガーリー": "Near-white with the faintest blush hint (#FEF8F9) — almost pure white, not pink or lavender. Clean and bright. Almost entirely covered by dense typography.",
-      "ポップ": "Pure white (#FFFFFF). Flat, no gradients or textures — almost entirely covered by typography.",
-      "エレガント": "Near-black charcoal (#1A1A1A) or pure white (#FFFFFF) — one extreme only, no grey or ivory. Mostly covered by layered thin typography.",
-      "レトロ": "Near-white with the faintest warm hint (#FEFCF8) — almost pure white, not aged or yellowed. Almost entirely covered by dense vintage-style typography.",
-    };
-    return defaults[tasteLabel] || "Near-white (#FEFEFE) — almost pure white, clean and bright. Almost entirely covered by dense typography.";
+function buildBgInstruction(bgColor) {
+  if (!bgColor) {
+    return "BACKGROUND COLOR: pure white (#FFFFFF). This is mandatory — do not change it. Flat solid only, no gradients, no textures, no text used as background element.";
   }
-  const chosen = pick(colorList);
-  const hex = parseColorToHex(chosen);
-  if (!hex) return `A very pale tint of "${chosen}" — almost entirely covered by dense typography.`;
-  const lightHex = lightenHex(hex, 0.95);
-  return `A very pale, near-white tint of the user's chosen color "${chosen}" — use ${lightHex} as the background color (this is the original color mixed 95% toward white). The color must look almost white with just a faint hint of hue — NOT pastel, NOT muted or dusty, NOT grey-toned. Think: the lightest possible tint you can still perceive. The background will be almost entirely covered by dense typography.`;
+  const hex = parseColorToHex(bgColor);
+  const colorLabel = hex ? `#${hex}` : bgColor;
+  return `BACKGROUND COLOR: ${colorLabel} — this is a strict requirement. You MUST fill the entire canvas with this exact color. Do not substitute, adjust, lighten, or ignore it. Flat solid only, no gradients, no textures, no text used as background element.`;
 }
 
 function makeChips() {
@@ -486,6 +471,7 @@ function resetAll() {
   document.getElementById('inp-name').value = '';
   document.getElementById('inp-keywords').value = '';
   document.getElementById('inp-color').value = '';
+  document.getElementById('inp-bgcolor').value = '';
   document.querySelectorAll('#taste-grid .chip').forEach(c => c.classList.remove('active'));
   document.getElementById('font-hint').textContent = '';
   document.getElementById('output-area').style.display = 'none';
@@ -499,6 +485,7 @@ function generate() {
   const rawColor = document.getElementById('inp-color').value.trim();
   const kwList = rawKw ? rawKw.split(/\s+/).filter(Boolean) : ['design', 'my interests'];
   const colorList = rawColor ? rawColor.split(/\s+/).filter(Boolean) : [];
+  const rawBgColor = document.getElementById('inp-bgcolor').value.trim();
   const activeChip = document.querySelector('#taste-grid .chip.active');
   if (!activeChip) { alert('テイストを選択してください'); return; }
   const tc = tastes[activeChip.dataset.index];
@@ -507,18 +494,18 @@ function generate() {
     ? `The user has requested these colors be incorporated: ${colorList.join(', ')}. Blend them into the color scheme while keeping the overall mood intact.`
     : '';
 
-  const bgInstruction = buildBgInstruction(colorList, tc.label);
+  const bgInstruction = buildBgInstruction(rawBgColor);
 
-  const illustCount = Math.max(1, Math.min(5, Math.round(kwList.length * 0.2)));
+  const illustCount = Math.max(1, Math.min(2, Math.round(kwList.length * 0.1)));
   const illustTargets = shuffle(kwList).slice(0, illustCount);
 
   const illustSection = `[Keyword Illustrations & Decorative Accents]
-For exactly ${illustTargets.length} keyword(s) — "${illustTargets.join('", "')}" — add a small illustrative accent or decorative motif placed directly beside or beneath the keyword:
-- Each illustration should visually represent or evoke the meaning of its specific keyword
-- Size: small, roughly 40–80px, never larger than the keyword itself — it is a subtle accent, not a focal point
+For exactly ${illustTargets.length} keyword(s) only — "${illustTargets.join('", "')}" — add one small illustrative accent placed directly beside the keyword:
+- Size: tiny, roughly 30–50px maximum — it must never compete with the typography
 - Style: ${tc.illustStyle}
-- Placement: tucked close to the keyword, either beside it or nestled just below — it should feel like a natural part of that keyword's typographic element
-- All other keywords have NO illustration — text only`;
+- Placement: tucked tightly beside the keyword — minimal and unobtrusive
+- All other keywords have absolutely NO illustration, NO ornament, NO decorative motif — text only
+- Do NOT scatter decorative elements across the background or use illustrations as filler`;
 
   // キャッチコピーを付けるキーワード数：全体の約4割（最低1つ）
   const catchphraseCount = Math.max(1, Math.round(kwList.length * 0.25));
@@ -545,7 +532,7 @@ ${tc.val}
 [Visual Reference]
 Design this poster in the spirit of: ${tc.referenceEn}
 
-[Background]
+[Background — MANDATORY, DO NOT IGNORE]
 ${bgInstruction}
 
 [Font Direction (Japanese + Latin mix)]
@@ -576,7 +563,7 @@ ${userColorNote}
 ${illustSection}
 
 [Catchphrases]
-From the keyword list, select exactly ${catchphraseCount} keyword(s) — roughly 25% of the total — that best represent the person's character or interests. For those ${catchphraseCount} keywords only, pair each with a short punchy catchphrase (maximum 20 characters — keep it tight and impactful).
+From the keyword list, select exactly ${catchphraseCount} keyword(s) — roughly 25% of the total — that best represent the person's character or interests. For those ${catchphraseCount} keywords only, pair each with exactly one short punchy catchphrase (maximum 20 characters, single sentence only — never use multiple lines or multiple phrases per keyword).
 - Catchphrases must be legible, readable body text — NOT treated as decorative elements, background texture, or graphic ornamentation
 - Set each catchphrase at a small but clearly readable size (14–18px equivalent), with sufficient contrast against the background
 - Do not distort, rotate excessively, overlap with other text, or use as a visual flourish — it must be readable as a sentence
