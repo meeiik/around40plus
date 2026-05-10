@@ -462,17 +462,16 @@ function buildBgInstruction(colorList, tasteLabel) {
 
 function makeChips() {
   const el = document.getElementById('taste-grid');
-  tastes.forEach(item => {
+  tastes.forEach((item, i) => {
     const chip = document.createElement('span');
     chip.className = 'chip';
     chip.textContent = item.label;
+    chip.dataset.index = i;
     chip.onclick = () => {
       el.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
       chip.classList.add('active');
-      chip._taste = item;
       document.getElementById('font-hint').textContent = '使用フォントの方向性：' + item.fontJa;
     };
-    chip._taste = item;
     el.appendChild(chip);
   });
 }
@@ -500,7 +499,7 @@ function generate() {
   const colorList = rawColor ? rawColor.split(/\s+/).filter(Boolean) : [];
   const activeChip = document.querySelector('#taste-grid .chip.active');
   if (!activeChip) { alert('テイストを選択してください'); return; }
-  const tc = activeChip._taste;
+  const tc = tastes[activeChip.dataset.index];
 
   const userColorNote = colorList.length
     ? `The user has requested these colors be incorporated: ${colorList.join(', ')}. Blend them into the color scheme while keeping the overall mood intact.`
@@ -518,6 +517,9 @@ For exactly ${illustTargets.length} keyword(s) — "${illustTargets.join('", "')
 - Style: ${tc.illustStyle}
 - Placement: tucked close to the keyword, either beside it or nestled just below — it should feel like a natural part of that keyword's typographic element
 - All other keywords have NO illustration — text only`;
+
+  // キャッチコピーを付けるキーワード数：全体の約4割（最低1つ）
+  const catchphraseCount = Math.max(1, Math.round(kwList.length * 0.4));
 
   const seed = Math.floor(Math.random() * 99999);
   const namePlacement = pick(namePlacements);
@@ -572,7 +574,7 @@ ${userColorNote}
 ${illustSection}
 
 [Catchphrases]
-From the keyword list, select exactly 5 keywords that best represent the person's character or interests. For those 5 keywords only, pair each with a short punchy catchphrase (3–6 words). Place each catchphrase as small accent text directly beside or beneath its keyword, styled differently (italic, lighter weight, or contrasting font). All other keywords appear WITHOUT any catchphrase.
+From the keyword list, select exactly ${catchphraseCount} keyword(s) — roughly 40% of the total — that best represent the person's character or interests. For those ${catchphraseCount} keywords only, pair each with a short punchy catchphrase (3–6 words). Place each catchphrase as small accent text directly beside or beneath its keyword, styled differently (italic, lighter weight, or contrasting font). All other keywords appear WITHOUT any catchphrase.
 
 [Final Note]
 - No photos or human figures — typography only (illustrations are allowed only for the ${illustTargets.length} keyword(s) listed above)
@@ -585,11 +587,19 @@ From the keyword list, select exactly 5 keywords that best represent the person'
 }
 
 function copyText(e) {
+  if (!lastPrompt) return;
   navigator.clipboard.writeText(lastPrompt).then(() => {
     const btn = e.target.closest('button');
     const orig = btn.innerHTML;
     btn.innerHTML = '<i class="ti ti-check" style="font-size:15px;vertical-align:-2px;margin-right:4px;"></i>コピーしました';
     setTimeout(() => btn.innerHTML = orig, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = lastPrompt;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
   });
 }
   </script>
