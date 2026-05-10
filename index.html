@@ -1,1078 +1,597 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>タイポグラフィポスタープロンプトジェネレーター</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@300;400&family=Hachi+Maru+Pop&family=Caveat:wght@400;700&family=Lato:wght@300&family=Klee+One&family=Kosugi+Maru&family=Dancing+Script:wght@400;700&family=Playfair+Display:ital@1&family=Dela+Gothic+One&family=RocknRoll+One&family=Bebas+Neue&family=Shippori+Mincho:wght@400;500&family=Noto+Serif+JP:wght@200;300&family=Cormorant+Garamond:wght@300;400&family=EB+Garamond:ital@1&family=Zen+Old+Mincho&family=DotGothic16&family=Special+Elite&family=Arvo:ital@0;1&display=swap" rel="stylesheet">
-<style>
-* { box-sizing: border-box; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif;
-  max-width: 660px; margin: 0 auto; padding: 2rem 1.25rem;
-  background: #fff; color: #111;
-}
-h1 { font-size: 16px; font-weight: 500; margin: 0 0 0.4rem; }
-p.sub { font-size: 13px; color: #888; margin: 0 0 1.75rem; }
-.section { margin-bottom: 1.25rem; }
-.label {
-  display: block; font-size: 12px; color: #555;
-  font-weight: 500; margin-bottom: 6px;
-}
-.label span { font-weight: 400; color: #aaa; }
-input[type="text"], textarea {
-  width: 100%; padding: 9px 12px; font-size: 14px;
-  border: 1px solid #e0e0e0; border-radius: 8px;
-  background: #fff; color: #111;
-  font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif;
-  outline: none; transition: border-color 0.15s;
-}
-input[type="text"]:focus, textarea:focus { border-color: #888; }
-textarea { min-height: 72px; resize: vertical; }
-.chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
-.chip {
-  display: inline-flex; align-items: center; padding: 5px 14px;
-  border-radius: 999px; font-size: 13px; cursor: pointer;
-  border: 1px solid #ddd; background: #fff; color: #666;
-  transition: all 0.15s; user-select: none;
-}
-.chip:hover { border-color: #999; color: #111; }
-.chip.active { background: #111; color: #fff; border-color: #111; }
-.gen-btn-row { display: flex; gap: 8px; margin-top: 1.5rem; flex-wrap: wrap; }
-.gen-btn {
-  padding: 11px 22px; font-size: 14px;
-  font-weight: 500; cursor: pointer; border: none;
-  border-radius: 8px; background: #111; color: #fff;
-  font-family: inherit; transition: background 0.15s;
-}
-.gen-btn:hover { background: #333; }
-.reset-btn {
-  padding: 11px 18px; font-size: 14px;
-  font-weight: 500; cursor: pointer;
-  border: 1px solid #ddd; border-radius: 8px;
-  background: #fff; color: #555;
-  font-family: inherit; transition: all 0.15s;
-}
-.reset-btn:hover { border-color: #999; color: #111; background: #f9f9f9; }
-#output-area { display: none; margin-top: 1.75rem; }
-.output-header {
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 8px; margin-bottom: 8px;
-}
-.output-label { font-size: 12px; color: #555; font-weight: 500; margin: 0; }
-.output-label span { font-weight: 400; color: #aaa; }
-.btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
-#output-box {
-  background: #f7f7f7; border: 1px solid #e8e8e8; border-radius: 8px;
-  padding: 1rem 1.25rem; font-size: 13px; line-height: 1.9; color: #222;
-  white-space: pre-wrap; word-break: break-word;
-  font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif;
-}
-.action-btn {
-  font-size: 13px; padding: 7px 16px; cursor: pointer;
-  border: 1px solid #ddd; border-radius: 8px;
-  background: #fff; color: #111; font-family: inherit;
-  transition: background 0.15s;
-}
-.action-btn:hover { background: #f4f4f4; }
-.section-divider { border: none; border-top: 1px solid #f0f0f0; margin: 1.5rem 0; }
-.section-title {
-  font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
-  color: #bbb; text-transform: uppercase; margin: 0 0 1rem;
-}
-#kw-preview {
-  display: none; margin-top: 1rem;
-  border-radius: 10px; overflow: hidden;
-  min-height: 80px; padding: 18px 20px;
-  position: relative;
-  transition: background 0.4s, border-color 0.4s;
-  border: 1px solid #e8e8e8;
-}
-#kw-preview-inner {
-  display: flex; flex-wrap: wrap; gap: 8px 12px;
-  align-items: baseline; position: relative; z-index: 1;
-}
-.kw-token {
-  display: inline-block; line-height: 1.2;
-  transition: all 0.3s; cursor: default;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>タイポグラフィポスタープロンプトジェネレーター</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── テイスト別エフェクト ── */
+    :root {
+      --bg: #ffffff;
+      --bg2: #f5f5f4;
+      --bg3: #f0efed;
+      --text: #1c1c1a;
+      --text2: #6b6b68;
+      --text3: #a1a19e;
+      --border: rgba(0,0,0,0.12);
+      --border2: rgba(0,0,0,0.22);
+      --radius: 8px;
+      --radius-lg: 12px;
+      --font: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    }
 
-/* ナチュラル: インク滲み・かすれ */
-.effect-natural {
-  filter: url(#ink-bleed);
-}
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1c1c1a;
+        --bg2: #272724;
+        --bg3: #2e2e2b;
+        --text: #f0ede8;
+        --text2: #a1a19e;
+        --text3: #6b6b68;
+        --border: rgba(255,255,255,0.12);
+        --border2: rgba(255,255,255,0.22);
+      }
+    }
 
-/* ガーリー: グロー・グリッター */
-.effect-girly-glow {
-  filter: drop-shadow(0 0 6px currentColor);
-}
-.effect-girly-shadow {
-  filter: drop-shadow(2px 3px 4px rgba(180,120,160,0.35));
-}
-.effect-girly-glitter {
-  position: relative;
-  filter: drop-shadow(0 0 4px currentColor) drop-shadow(0 0 10px currentColor);
-}
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 2rem 1rem 4rem;
+    }
 
-/* ポップ: ハードシャドウ・アウトライン */
-.effect-pop-outline {
-  -webkit-text-stroke: 2px var(--pop-outline-color, #FFD600);
-}
-.effect-pop-halftone {
-  filter: url(#halftone);
-}
+    .container {
+      width: 100%;
+      max-width: 640px;
+    }
 
-/* エレガント: ゴールドフォイル・エンボス・微細グロー */
-.effect-elegant-foil {
-  background: linear-gradient(135deg, #8B6914 0%, #E8C97A 35%, #F5EDCA 50%, #E8C97A 65%, #8B6914 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(1px 1px 0 rgba(0,0,0,0.4)) drop-shadow(-1px -1px 0 rgba(255,240,180,0.2));
-}
-.effect-elegant-emboss {
-  filter: drop-shadow(1px 1px 0 rgba(0,0,0,0.5)) drop-shadow(-1px -1px 0 rgba(255,255,255,0.12));
-}
-.effect-elegant-glow {
-  filter: drop-shadow(0 0 5px rgba(230,200,120,0.4)) drop-shadow(0 0 12px rgba(200,163,90,0.2));
-}
+    h1 {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
 
-/* レトロ: 活版プレス・インクかすれ・ミスレジストレーション */
-.effect-retro-press {
-  filter: url(#letterpress);
-}
-.effect-retro-misreg {
-  position: relative;
-}
-.effect-retro-misreg::before {
-  content: attr(data-word);
-  position: absolute;
-  left: 2px; top: -1px;
-  color: rgba(139,58,42,0.18);
-  pointer-events: none;
-  z-index: -1;
-  font-family: inherit; font-size: inherit; font-weight: inherit;
-}
+    .subtitle {
+      font-size: 13px;
+      color: var(--text2);
+      margin-bottom: 2rem;
+    }
 
-/* グリッタースパークル（静的） */
-.effect-girly-glitter {
-  position: relative;
-  display: inline-block;
-}
-.effect-girly-glitter::before,
-.effect-girly-glitter::after {
-  content: '✦';
-  position: absolute;
-  font-size: 7px;
-  color: #F5C842;
-  pointer-events: none;
-  opacity: 0.85;
-}
-.effect-girly-glitter::before {
-  top: -4px; right: -3px;
-}
-.effect-girly-glitter::after {
-  bottom: -3px; left: -2px;
-  font-size: 5px;
-  color: #fff;
-  opacity: 0.7;
-}
+    .fields {
+      display: grid;
+      gap: 1.25rem;
+    }
 
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text2);
+      margin-bottom: 6px;
+    }
 
-</style>
+    label span {
+      font-weight: 400;
+      color: var(--text3);
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      border: 0.5px solid var(--border2);
+      border-radius: var(--radius);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus {
+      border-color: var(--text);
+    }
+
+    textarea {
+      min-height: 72px;
+      resize: vertical;
+    }
+
+    .chip-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      cursor: pointer;
+      border: 0.5px solid var(--border2);
+      background: var(--bg);
+      color: var(--text2);
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .chip:hover {
+      border-color: var(--text);
+      color: var(--text);
+    }
+
+    .chip.active {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
+
+    .font-hint {
+      margin: 8px 0 0;
+      font-size: 12px;
+      color: var(--text3);
+      min-height: 1.4em;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 14px;
+      font-family: var(--font);
+      cursor: pointer;
+      border-radius: var(--radius);
+      border: 0.5px solid var(--border2);
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.15s;
+    }
+
+    button:hover {
+      background: var(--bg2);
+    }
+
+    button.primary {
+      font-weight: 500;
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
+
+    button.primary:hover {
+      opacity: 0.85;
+    }
+
+    button.ghost {
+      font-weight: 400;
+      background: transparent;
+      color: var(--text2);
+    }
+
+    .output-area {
+      display: none;
+      margin-top: 1.5rem;
+    }
+
+    .output-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text2);
+      margin-bottom: 8px;
+    }
+
+    .output-label span {
+      font-weight: 400;
+    }
+
+    .output-box {
+      background: var(--bg2);
+      border: 0.5px solid var(--border2);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      font-size: 13px;
+      line-height: 1.9;
+      color: var(--text);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .output-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .output-actions button {
+      font-size: 13px;
+      padding: 7px 16px;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h1>タイポグラフィポスタープロンプトジェネレーター</h1>
+    <p class="subtitle">情報を入力してChatGPT用プロンプトを生成します</p>
 
-<div id="svg-filters">
-<svg xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <!-- ナチュラル: インク滲みフィルター -->
-    <filter id="ink-bleed" x="-5%" y="-5%" width="110%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.9 0.4" numOctaves="4" seed="2" result="noise"/>
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.8" xChannelSelector="R" yChannelSelector="G" result="displaced"/>
-      <feGaussianBlur in="displaced" stdDeviation="0.35" result="blurred"/>
-      <feComposite in="blurred" in2="SourceGraphic" operator="in"/>
-    </filter>
-    <!-- レトロ: 活版プレス跡フィルター -->
-    <filter id="letterpress" x="-5%" y="-10%" width="110%" height="120%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.65 0.3" numOctaves="3" seed="7" result="noise"/>
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.2" xChannelSelector="R" yChannelSelector="G" result="warped"/>
-      <feGaussianBlur in="warped" stdDeviation="0.25" result="soft"/>
-      <feComposite in="soft" in2="SourceGraphic" operator="in" result="out"/>
-      <feDropShadow dx="1.5" dy="1.5" stdDeviation="0" flood-color="rgba(40,20,10,0.22)" in="out"/>
-    </filter>
-    <!-- ポップ: ハーフトーンドット -->
-    <filter id="halftone" x="0%" y="0%" width="100%" height="100%">
-      <feTurbulence type="turbulence" baseFrequency="0.18" numOctaves="1" result="noise"/>
-      <feColorMatrix type="saturate" values="0" in="noise" result="grey"/>
-      <feComponentTransfer in="grey" result="dots">
-        <feFuncA type="discrete" tableValues="0 0 0 0 0 1 1 1 1 1"/>
-      </feComponentTransfer>
-      <feComposite in="SourceGraphic" in2="dots" operator="in"/>
-    </filter>
-    <!-- グリッタースパークルアニメーション用 -->
-    <filter id="glitter" x="-10%" y="-10%" width="120%" height="120%">
-      <feGaussianBlur stdDeviation="0.5" result="blur"/>
-      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-    </filter>
-  </defs>
-</svg>
-</div>
+    <div class="fields">
+      <div>
+        <label for="inp-name">あなたの名前 / ニックネーム</label>
+        <input id="inp-name" type="text" />
+      </div>
+      <div>
+        <label for="inp-keywords">キーワード <span>スペース区切り</span></label>
+        <textarea id="inp-keywords"></textarea>
+      </div>
+      <div>
+        <label>テイスト <span>1つ選択</span></label>
+        <div id="taste-grid" class="chip-grid"></div>
+        <p id="font-hint" class="font-hint"></p>
+      </div>
+      <div>
+        <label for="inp-color">使いたい色 <span>スペース区切り</span></label>
+        <input id="inp-color" type="text" />
+      </div>
+    </div>
 
-<h1>タイポグラフィポスタープロンプトジェネレーター</h1>
-<p class="sub">入力情報をもとにDALL-E向けの詳細プロンプトを生成します</p>
+    <div class="actions">
+      <button class="primary" onclick="generate()">プロンプトを生成する ↗</button>
+      <button class="ghost" onclick="resetAll()">リセット</button>
+    </div>
 
-<p class="section-title">基本情報</p>
-
-<div class="section">
-  <label class="label">あなたの名前 / ニックネーム</label>
-  <input id="inp-name" type="text" />
-</div>
-
-<div class="section">
-  <label class="label">キーワード <span>スペース区切り・5〜15個推奨</span></label>
-  <textarea id="inp-keywords" oninput="updatePreview()"></textarea>
-  <div id="kw-preview"><div id="kw-preview-inner"></div></div>
-</div>
-
-<hr class="section-divider">
-<p class="section-title">スタイル</p>
-
-<div class="section">
-  <label class="label">テイスト <span>1つ選択</span></label>
-  <div class="chip-group" id="taste-grid"></div>
-</div>
-
-<div class="section">
-  <label class="label">使いたい色 <span>スペース区切り・色名やカラーコードも可</span></label>
-  <input id="inp-color" type="text" />
-</div>
-
-<div class="gen-btn-row">
-  <button class="gen-btn" onclick="generate()">プロンプトを生成する ↗</button>
-  <button class="reset-btn" onclick="resetAll()">リセット</button>
-</div>
-
-<div id="output-area">
-  <div class="output-header">
-    <p class="output-label">生成されたプロンプト <span>— ChatGPT (DALL-E) にそのまま貼り付けてください</span></p>
-    <div class="btn-row">
-      <button class="action-btn" onclick="copyText(event)">コピー</button>
-      <button class="action-btn" onclick="window.open('https://chatgpt.com/','_blank')">ChatGPTを開く ↗</button>
+    <div id="output-area" class="output-area">
+      <p class="output-label">生成されたプロンプト <span>— ChatGPTにそのまま貼り付けてください</span></p>
+      <div id="output-box" class="output-box"></div>
+      <div class="output-actions">
+        <button onclick="copyText(event)"><i class="ti ti-copy" style="font-size:15px;vertical-align:-2px;margin-right:4px;"></i>コピー</button>
+        <button onclick="window.open('https://chatgpt.com/','_blank')"><i class="ti ti-external-link" style="font-size:15px;vertical-align:-2px;margin-right:4px;"></i>ChatGPTを開く</button>
+      </div>
     </div>
   </div>
-  <div id="output-box"></div>
-</div>
 
-<script>
-// ─── 定数ブロック ──────────────────────────────────────────────
-
-const SIZE_PRESETS = {
-  portrait: { px: '960 × 1280 px', ratio: '3:4 portrait' }
-};
-
-const DENSITY_INSTRUCTIONS = {
-  dense: 'Pack keywords tightly so almost no canvas area is empty. Overlapping or very close placement is acceptable and encouraged.'
-};
-
-const CONTRAST_INSTRUCTIONS = {
-  extreme: 'Use at least five drastically different size levels — enormous (headline-scale), large, medium, small, and micro (nearly illegible). The largest element should be at least 10× taller than the smallest. Push contrast to the limit.'
-};
-
-const NAME_BLOCK = (name) =>
-`[Name treatment]
-The name "${name}" is the personal identifier of the poster owner:
-- Set "${name}" at a medium-prominent size (roughly 1/5 of the canvas width).
-- Place it at a natural anchor point (e.g. upper-left, lower-right, or center-stage).
-- Let nearby keywords slightly overlap or orbit around it for integration.`;
-
-const LAYOUT_BLOCK = () =>
-`[Layout & composition rules]
-${DENSITY_INSTRUCTIONS.dense}
-
-Text direction — three modes, distributed unpredictably:
-  (A) Horizontal (yokogumi): standard left-to-right.
-  (B) Vertical (tategumi): strict top-to-bottom column — no rotation, no diagonal tilt. Each character stacks directly below the previous.
-  (C) Diagonal: rotated freely between −50° and +50° for horizontal-origin words only. NEVER apply diagonal rotation to a word set in tategumi.
-Mix all three directions. No single direction should dominate more than 40% of the keywords.
-
-Internal character size variation (MANDATORY for every keyword of 2+ characters):
-Within every multi-character keyword, independently vary the font size of EACH individual character:
-  - Assign each character one of four size tiers: enormous (150–200%), large (110–140%), small (60–80%), or micro (30–50%).
-  - No two adjacent characters should share the same tier.
-  - This per-character variation stacks on top of the global word-level size contrast.
-
-Global size contrast:
-${CONTRAST_INSTRUCTIONS.extreme}
-Distribute size levels randomly — do not cluster all large words at center.
-
-Collision and layering:
-Allow keywords to overlap slightly at edges. Use z-ordering so smaller words appear to slip behind larger ones. No word should be completely obscured.`;
-
-function CATCHPHRASE_BLOCK(kwList) {
-  const count = Math.max(1, Math.round(kwList.length * 0.4));
-  const noCount = kwList.length - count;
-  return `[Catchphrase accents — STRICT 40% RULE]
-CRITICAL QUANTITY RULE: Select EXACTLY ${count} keyword${count > 1 ? 's' : ''} (40% of the total ${kwList.length}) to receive a catchphrase. The remaining ${noCount} keyword${noCount !== 1 ? 's' : ''} must appear as standalone typographic elements with NO catchphrase attached — not even a short one. This ratio is non-negotiable.
-
-CRITICAL LANGUAGE RULE: Every catchphrase MUST be written entirely in Japanese (hiragana, katakana, and/or kanji ONLY). Any English letters or romaji in a catchphrase is strictly forbidden.
-
-For each of the ${count} selected keywords, compose a short Japanese catchphrase (8〜16文字):
-  - 詩的な一言: 短く詩的な表現（例：「静かに、でも確かに」）
-  - 座右の銘風: 信念を表すフレーズ（例：「丁寧に生きる」）
-  - 編集的キャプション: 雑誌の見出し風（例：「感性という名の羅針盤」）
-
-Placement: small accent text (55–65% the size of its paired keyword), positioned directly beside or below it, in a contrasting font weight (extra-light or a mincho caption next to a bold gothic headline).
-
-REMINDER: The other ${noCount} keyword${noCount !== 1 ? 's' : ''} must stand completely alone — no catchphrase, no sub-text of any kind.`;
-}
-
-// ─── テイストデータ ────────────────────────────────────────────
+  <script>
+const GLOBAL_SIZE_DENSITY = `[Global Size Jump Rate — applies to ALL keywords]
+- BETWEEN keywords: use at least 5 dramatically different size levels across the composition:
+  · XL: 320–400px (1–2 keywords that dominate entire sections)
+  · L:  160–220px (3–4 keywords, clearly large and bold)
+  · M:  70–100px  (several keywords, readable at a glance)
+  · S:  30–45px   (supporting words, small but legible)
+  · XS: 14–20px   (tiny accent words, almost whispered)
+  The jump between XL and XS must feel shocking — like shouting next to a whisper
+- WITHIN each keyword: vary the size of individual characters dramatically:
+  · At least one character should be 2–4x larger than its neighbors within the same word
+  · Characters can jump from large to tiny and back within a single word
+  · This internal size variation must be clearly visible and intentional, not subtle
+- DENSITY: the canvas must feel FULL and TYPE-FORWARD — text is the hero
+  · No more than 15% of the canvas should be empty background
+  · Words overlap, interlock, and layer throughout the entire composition
+  · Background color/texture is almost entirely hidden behind typography`;
 
 const tastes = [
   {
-    label: 'ナチュラル',
-    desc: '自然素材・オーガニック・温かみのある落ち着いたトーン',
-    fontBlock: `[Typography — Natural / Organic]
-Fonts (use ONLY these four):
-  • Japanese primary: "Zen Maru Gothic" Light/Regular — rounded gothic, workhorse of the composition.
-  • Japanese accent: "Hachi Maru Pop" — playful balloon-round, small-to-medium sizes only.
-  • Latin primary: "Caveat" Regular/Bold — informal handwritten script, diagonal words.
-  • Latin accent: "Lato" Light — humanist sans for catchphrases.
-Weight range: Light to Regular only. Letter-spacing: +0.02em to +0.05em on Lato Light.
-
-[Text effects — Natural / Organic]
-Apply these effects to the typographic elements to reinforce the handcrafted, organic feel:
-
-① Ink-bleed softening: All text edges are very slightly softened (0.3–0.5px blur), as if ink has soaked 1–2 fibers into the paper surface. This is NOT a glow — it is a matte, directional ink absorption. Apply more strongly to Caveat and Hachi Maru Pop; keep Zen Maru Gothic and Lato nearly crisp.
-
-② Stroke-pressure variation (Caveat and Hachi Maru Pop only): Simulate natural brush/pen pressure — strokes that feel thicker at entry and exit, thinner mid-stroke. Achieved by rendering glyphs with slightly uneven stroke weight, as if painted with a soft brush.
-
-③ Gentle organic warp: Large keywords (Zen Maru Gothic and Caveat at display sizes) have an extremely subtle baseline warp — individual characters shifted ±1–2px vertically at random, as if hand-set on an uneven surface. Not a wave — a slight organic irregularity.
-
-④ Matte ink texture on fill: All text fill colors have a very fine grain texture (noise at 8–12% opacity) overlaid on the color itself, making the ink feel pigment-dense and matte rather than digital-flat. Apply to every keyword regardless of color.
-
-⑤ Faded-edge characters: 2–3 keywords (the smallest or most lightly-weighted ones) have their outer edges very slightly faded, as if the ink was running low — opacity drops to 70–80% at the outermost strokes only. Creates the illusion of a worn stamp or near-dry brush.`,
-    bgBlock: `[Background — Natural / Organic]
-Base tone: warm ivory #FAF7F2 or unbleached linen #F2EBE0 — never stark white.
-
-Build the background in exactly these six layers:
-  Layer 1 — Base wash: solid fill with the ivory/linen tone.
-  Layer 2 — Paper grain: fine irregular noise at 7–10% opacity, dense enough to feel tactile.
-  Layer 3 — Cross-grain: a second noise pass rotated 45°, 4–6% opacity, creating subtle woven texture depth.
-  Layer 4 — Moisture bleed zones: 3–4 irregular cloud-edged patches in a slightly deeper tone (#E8DDD0), 180–350px across, placed at two corners and one edge at 14–20% opacity. Edges must be completely feathered — zero hard boundary.
-  Layer 5 — Botanical ghost: one very large abstract smudge (400–600px) resembling a dried pressed leaf, rendered as a tonal shift of the base at 6–10% opacity, placed off-center.
-  Layer 6 — Edge darkening: a very subtle tonal deepening at all four canvas edges, 3–5% opacity, 80px wide.
-No geometric gradients. No sharp-edged shapes. The surface must feel like handmade washi paper.`,
-    designBlock: `[Design direction — Natural]
-Color strategy: deep warm brown (#3D2B1F) replaces black. Accents: dusty sage (#8A9E7B), faded terracotta (#C47B5A), muted ochre (#C9A84C), soft olive (#7A8C5E). Maximum 3 accent colors.
-
-Typographic embellishments (text and symbol elements ONLY — no drawn illustrations):
-
-① Botanical glyph scatter (primary layer):
-Place 8–10 botanical glyphs — ✿ ❀ ✾ ⊹ ∘ ꙳ ✦ — across the canvas in FIVE distinct sizes:
-  - Hero: 1 glyph at ~70px, placed off-center as a focal accent.
-  - Large: 2–3 glyphs at ~40px, in different accent colors.
-  - Medium: 2–3 glyphs at ~24px.
-  - Small: 2 glyphs at ~14px.
-  - Micro: 2–3 glyphs at ~8px, nearly invisible.
-Rotate each independently at a random angle (−40° to +40°). Opacity: 55–80%.
-
-② Wavy dividers (secondary layer):
-Add 4–5 hand-ruled dividers between dense keyword clusters using repeated tildes or spaced dots:
-  〜〜〜〜〜〜〜〜 or · · · · · · · · ·
-Each divider slightly different in length (60–200px), weight, and opacity (30–50%). Some slightly tilted (−5° to +5°).
-
-③ Loose enclosures (annotation layer):
-Around 3 keywords, draw imperfect dot-or-dash enclosures that loosely trace the word's bounding box without touching it — like a penciled annotation. Each enclosure should be incomplete (a gap somewhere) and irregular.
-
-④ Whisper micro-labels (atmosphere layer):
-Place 5–6 hiragana micro-texts in Hachi Maru Pop at 9–11px:
-  「ていねいに」「そのままで」「土の香り」「やさしく」「ゆっくりと」「呼吸する」
-Scatter across corners, margins, and between keyword clusters. Each at a slight angle (−12° to +12°), opacity 40–55%.
-
-⑤ Size-echo trails (dissolution effect):
-Beside 4 keywords, place a trailing echo of repeated characters that dissolves in size:
-  ∘ ∘ · · · (large → medium → small → micro → vanishing)
-The trail should curve slightly, as if blown by wind.
-
-⑥ Ghost margin annotation:
-Along one canvas edge, place a vertical column of micro-text (8px) reading rotated 90°:
-  「自然に、自分らしく、のびのびと」
-In Lato Light, 25% opacity — like a margin note in a journal.
-
-Mood: handcrafted nature journal, botanical field sketchbook. The composition must feel assembled by human hands.`
+    label: "ナチュラル",
+    val: "natural, organic, handmade and earthy",
+    fontJa: "手書き風・丸ゴシック・やわらかいゴシック",
+    fontEn: "exclusively handwritten or brush-lettered fonts for XL and L size words; rounded gothic (e.g. Zen Maru Gothic) for M size words; loose casual sans-serif for S and XS words — NO clean geometric or serif fonts; everything must feel hand-touched and imperfect",
+    referenceEn: "Hand-illustrated botanical ZINE packed with text, nature journaling spread with dense handwritten notes, Scandinavian craft market poster — type fills every corner like pressed flowers covering a page.",
+    layoutEn: `- Words are scattered and packed densely across the full canvas — hand-scattered, as if poured onto the page
+- Each word tilts at a slightly different angle: horizontal words tilt ±5–15°, diagonal words go up to ±35°, vertical-leaning words lean top-to-bottom with a slight wobble (±5–10°)
+- NO rigid vertical tategumi columns — instead vertical words feel like long brushstrokes running downward at a gentle lean
+- Words overlap and crowd each other throughout — no large empty zones anywhere
+- Within each keyword: character sizes vary like uneven brushwork — first or last character often 2–3x larger than the others`,
+    colorEn: `- Primary text: deep warm brown (#3B2F2F) — never pure black
+- Accent 1: dusty sage green (#8A9E7A) for 2–3 large keywords
+- Accent 2: terracotta or clay red (#C16A4F) for 1–2 keywords
+- Small XS words: warm off-white or parchment (they recede but still visible against the background)
+- Colors look hand-applied and slightly uneven — not flat digital fills`,
+    illustStyle: "loose hand-drawn ink sketch style — wobbly lines, imperfect fills, botanical/organic feel"
   },
   {
-    label: 'ガーリー',
-    desc: 'フェミニン・ロマンティック・ファッション誌的なおしゃれさ',
-    fontBlock: `[Typography — Girly / Feminine]
-Fonts (use ONLY these four):
-  • Japanese primary: "Klee One" Regular — elegant semi-cursive, refined yet approachable.
-  • Japanese accent: "Kosugi Maru" — soft rounded gothic, small-to-medium sizes.
-  • Latin primary: "Dancing Script" Bold/Regular — flowing connected cursive.
-  • Latin accent: "Playfair Display" Italic — high-contrast editorial serif for catchphrases.
-Weight range: Regular to Bold. Letter-spacing: +0.04em on Playfair Display Italic.
-
-[Text effects — Girly / Feminine]
-Apply these effects to create a dreamy, luminous, fashion-editorial atmosphere:
-
-① Soft luminous glow (hero and large keywords only): The 3–4 largest keywords have a very soft, diffuse outer glow matching the keyword's own color at 25–35% opacity, spread 6–10px. This is NOT a hard drop shadow — it is a dreamy halo, as if the text is lit from within. Apply only to large keywords; do not apply to micro-text or catchphrases.
-
-② Delicate pastel drop shadow (medium keywords): Medium-sized keywords have a soft pastel shadow — offset 2–3px diagonally, blur 4–6px, in a deeper shade of the blush/lavender background at 20–30% opacity. Barely perceptible, adding depth without drama.
-
-③ Glitter sparkle on select characters (Dancing Script Bold only): For 2–3 keywords, individual characters have tiny bright highlights — 1–2px white or gold flecks — placed along their upstrokes, as if glitter adheres to the raised ink. These are point highlights, not a uniform shimmer.
-
-④ Hairline stroke outline (Playfair Display Italic only): Catchphrases have an ultra-thin outline (0.3px) in a slightly deeper tone of the text color — reinforcing the crisp editorial quality of the hairline serifs.
-
-⑤ Color transparency layering at overlaps: Where keywords overlap, the upper keyword is set at 88–95% opacity, so the collision zone shows a subtle color blend — like two translucent overlays creating a stained-glass luminosity.`,
-    bgBlock: `[Background — Girly / Feminine]
-Base tone: pale blush #FDF0F3 or soft lavender #F5F0FA — delicate as premium stationery.
-
-Build the background in exactly these six layers:
-  Layer 1 — Base wash: solid fill with the blush or lavender tone.
-  Layer 2 — Fine dot-grid: regular grid of 1px dots, 4% opacity in a slightly deeper base tone. Grid spacing ~18px.
-  Layer 3 — Subtle weave: a second dot-grid rotated 45°, 2% opacity, suggesting fine textile grain.
-  Layer 4 — Watercolor blooms: 4–5 diffuse circular blushes (pale peach #FAE0E8 or soft lilac #E8E0FA), 180–380px diameter, placed asymmetrically at 10–16% opacity. Edges completely feathered.
-  Layer 5 — Glitter dust: 20–28 tiny single-pixel or 2px bright dots in gold (#F5C842) or soft white (#FFFAF0), scattered across the entire canvas at 30–55% opacity.
-  Layer 6 — Dreamy edge haze: barely-there luminous glow at canvas edges, 4–6% opacity in pure white.
-No solid shapes. No geometric gradients. The surface must feel light-filled and dreamy.`,
-    designBlock: `[Design direction — Girly]
-Color strategy: blush pink (#F4B8C8), soft lavender (#C8B8E8), peach (#F7D4B8). One deeper accent: dusty rose (#C47A95) or antique gold (#C9A84C). Maximum 4 colors total.
-
-Typographic embellishments (text and symbol elements ONLY):
-
-① Layered glyph scatter (primary layer):
-Place 10–13 decorative glyphs — ✦ ✧ ✩ ✿ ◇ ❋ ✱ ❀ † ♡ ✶ — in FIVE distinct sizes:
-  - Hero: 1 glyph at ~80px.
-  - Large: 2–3 glyphs at ~40px, rotated freely.
-  - Medium: 3–4 glyphs at ~20px.
-  - Small: 2–3 glyphs at ~12px.
-  - Micro: 3 glyphs at ~7px, upright.
-Color each independently within the palette. Opacity: 50–85%.
-
-② Stationery corner flourishes (frame layer):
-At 4 featured keywords, render delicate open-corner frames using bracket pairs ﹁ ﹂ or 「 」stacked at each corner, 8–12px away from the word's edge. Some frames complete all four corners; others leave one corner open.
-
-③ Ribbon underlines (accent layer):
-Beneath 3 featured keywords, place decorative alternating-glyph ribbons:
-  ✦ · ✦ · ✦ · ✦ · ✦
-Set at ~70% of the keyword's size, centered under the word. One in dusty rose, one in antique gold, one in soft lavender.
-
-④ Vertical texture strips (texture layer):
-Add 3–4 thin columns of repeating micro-text — 「＊ ＊ ＊ ＊」or「· · · ·」or「✦ ✦ ✦」— each 7–9px tall, 100–160px in length. Some vertical, some slightly diagonal. Opacity: 20–35%.
-
-⑤ Whisper annotation labels (atmosphere layer):
-Place 5–6 hiragana micro-phrases in Kosugi Maru at 8–10px:
-  「ときめき」「さりげなく」「愛おしい日々」「花びらみたい」「きらめく瞬間」「そっと、心に」
-Each slightly angled (−15° to +15°), tinted in dusty rose or muted lavender at 40–50% opacity.
-
-⑥ Glitter trail effect (sparkle layer):
-Trailing from 2–3 diagonal keywords, add a diminishing scatter of tiny glyphs — ✦ ✧ · — decreasing in size and opacity as they trail away, as if the word is leaving a sparkling wake.
-
-Mood: fashion lookbook, Parisian stationery brand, dreamy editorial. Chic, not cluttered.`
+    label: "ガーリー",
+    val: "girly, feminine, romantic and fashion-forward",
+    fontJa: "スクリプト体・極細ゴシックの激しいコントラスト",
+    fontEn: "two font styles used in extreme contrast: (1) flowing cursive script fonts for XL and L size keywords — sweeping, looping, expressive; (2) ultra-thin hairline gothic or sans-serif for M, S, and XS keywords — the violent contrast between lush script and razor-thin gothic IS the design's identity; mix both styles throughout the dense composition",
+    referenceEn: "Densely typeset Korean fashion magazine spread, packed Parisian editorial layout, personal brand zine with text covering every inch — type is wallpaper.",
+    layoutEn: `- Canvas is packed densely — words fill every zone, overlapping and layering like magazine clippings glued together
+- Mix horizontal (40%), vertical tategumi (30%), diagonal (30%) — all directions crowd the same areas
+- The extreme contrast between huge flowing script words and tiny hairline gothic words must be unmissable
+- Typographic ornaments (✳ ✿ † ◇ ·) are scattered throughout to fill gaps between words — used as mortar between bricks
+- Within each script keyword: characters flow at wildly varying heights; within gothic keywords: vary size per character dramatically
+- No empty zones — every corner and edge of the canvas is occupied`,
+    colorEn: `- XL script words: blush pink (#E8A0A8) or deep rose (#8C4A5A)
+- L script words: muted mauve (#8C4A5A)
+- M thin gothic words: soft lavender (#B8A9D4)
+- S and XS words + ornaments: pale gold (#D4AF7A)
+- Layer colors so the composition feels richly colored throughout`,
+    illustStyle: "delicate fine-line illustration style — thin pen strokes, soft watercolor wash, romantic and feminine"
   },
   {
-    label: 'ポップ',
-    desc: '大胆・カラフル・エネルギッシュ・インパクト重視',
-    fontBlock: `[Typography — Pop / Bold]
-Fonts (use ONLY these four):
-  • Japanese primary: "Dela Gothic One" — ultra-bold display gothic, maximum visual mass.
-  • Japanese accent: "RocknRoll One" — bold, energetic, slightly irregular gothic.
-  • Latin primary: "Bebas Neue" — all-caps condensed sans-serif, uniform boldness.
-  • Latin accent: "Boogaloo" — bold informal display font, loose and slightly wonky.
-Weight range: Bold to Black throughout. Tracking: −0.02em to 0 on Bebas Neue and Dela Gothic One.
-
-[Text effects — Pop / Bold]
-Apply these effects to maximize graphic impact and streetwear/silk-screen energy:
-
-① Hard offset shadow (hero and large keywords): The 2–3 largest keywords have a hard drop shadow with ZERO blur — a solid-color duplicate offset exactly 4–6px right and 4–6px down (or in one consistent direction per keyword). The shadow color is a strongly contrasting palette hue, fully opaque. This is a graphic design move, not a realistic shadow — it must look intentional and bold, like a risograph offset.
-
-② Outline stroke (Bebas Neue and Dela Gothic One, selected keywords): 3–4 keywords have a thick stroke outline (2–4px) in a contrasting palette color, creating a bold comic-book or sticker effect. On some keywords, the outline color differs from the fill — e.g. yellow fill with red outline, or white fill with black outline.
-
-③ Halftone dot fill (1–2 keywords): One or two keywords have their fill rendered as a coarse halftone dot pattern — the letter shape is formed by clusters of large dots (10–18px diameter) in the palette color rather than a solid fill. This evokes classic pop-art Ben-Day dots.
-
-④ Color split / chromatic aberration (hero keyword only): The single largest keyword shows a deliberate chromatic aberration — the same word rendered twice, with the two copies offset by 3–5px in opposite directions (left/right or at a diagonal), each in a different palette color. Where they overlap, the colors mix. This creates the look of a misregistered silk-screen print.
-
-⑤ Flat inner highlight: On all solid-filled keywords, add a single thin highlight stripe — 1–2px wide, in near-white at 60–80% opacity — along the top edge of the letters. This gives the flat fills a slightly dimensional, sticker-like quality without adding gradients.`,
-    bgBlock: `[Background — Pop / Bold]
-Base: flat near-black #111111.
-
-Build in exactly these five layers:
-  Layer 1 — Base: flat #111111 fill.
-  Layer 2 — Color zone splits: 2–3 irregular geometric zones (NOT halves — proportions like 25/75 or a diagonal cut) each receiving a very slightly lighter near-black (#1A1A1A, #111118, #18110A). Hard edges, tonal geometry visible only on close inspection.
-  Layer 3 — Halftone ghost: very faint dot-grid pattern (5–8% opacity in white) in one corner, ~200px square — silk-screen printing artifact.
-  Layer 4 — Paint splatter accent: 2–3 tiny clusters of micro-dots near 2 canvas edges in one bright palette color at 15–25% opacity.
-  Layer 5 — Noise grain: fine noise at 3–5% opacity — analog printing texture.
-Absolutely no gradients. The background must be graphic and bold.`,
-    designBlock: `[Design direction — Pop]
-Color strategy: 3–4 strongly saturated flat hues. Apply at the character level — individual letters in different colors. No gradients on text.
-
-Typographic embellishments (graphic and typographic elements ONLY):
-
-① Giant ghost characters (backdrop layer):
-Place 3–4 single oversized characters — 「！」「★」「×」「◉」「▶」— at 450–700px height, behind the keyword layer. Fill each in a different bright palette color at 12–20% opacity.
-
-② Solid color accent marks (rhythm layer):
-Scatter 8–10 geometric symbols — ★ ● ▲ ■ ◆ ▶ ◀ ⬟ — in FOUR sizes:
-  - Giant: 2 symbols at ~100px.
-  - Large: 2–3 at ~60px.
-  - Medium: 2–3 at ~35px.
-  - Small: 3 at ~18px.
-Fill each at 100% opacity in rotating palette colors. Distribute across all four quadrants.
-
-③ Highlight blocks (sticker layer):
-Behind 3–4 keywords, apply a solid-color rectangular fill (100% opacity) in a contrasting palette color. Text on top in white. Extend 10–14px beyond word bounds. Some blocks slightly rotated (±3°).
-
-④ Speed lines (kinetic layer):
-Add 3 diagonal stripe clusters in three different corners:
-  ／／／／／／／ or ＼＼＼＼＼＼＼
-Each cluster 60–80% of the canvas height, tinted in a palette color at 55–70% opacity. Vary density across clusters.
-
-⑤ Kinetic text fragments (punctuation layer):
-Place 5–6 short ALL-CAPS Latin tags in Bebas Neue:
-  「MAX」「VOL.∞」「NOW」「×100」「GO!」「LIVE」
-Rotated at aggressive angles (±30° to ±65°). Each in a different palette color.
-
-⑥ Registration marks (print-artifact layer):
-Add 3–4 small printer's registration crosshairs — + inside ○ — at canvas corners and edges. Tint in a bright accent color at 40–60% opacity.
-
-Mood: festival poster, streetwear drop, pop-art silk-screen. Maximum tension. Zero subtlety.`
+    label: "ポップ",
+    val: "pop, colorful, bold and energetic",
+    fontJa: "極太ゴシック・ポップ体・デザイン書体",
+    fontEn: "extra-bold gothic, pop display fonts, expressive design typefaces — loud, punchy, high-impact",
+    referenceEn: "90s street flyer with zero empty space, Harajuku fashion zine packed wall-to-wall with text, Tokyo concert poster where type is the image.",
+    layoutEn: `- Absolute maximum chaos and density — words crash, collide, and overlap aggressively everywhere
+- Equal mix of horizontal (35%), vertical tategumi (35%), diagonal up to ±60° (30%)
+- Within each keyword: one character enormous, the next tiny, next large — ransom-note internal variation
+- Some words outlined only, others solid fill, others with drop shadow — vary per word
+- The canvas must be so full that the background is barely visible in any zone`,
+    colorEn: `- 4–5 saturated clashing colors: vivid red (#FF2D2D), electric blue (#0057FF), bright yellow (#FFE600), hot pink (#FF4DA6), lime green (#39FF14)
+- Apply per word or per character — adjacent words clash in color
+- Black or white outlines separate the clashing colors`,
+    illustStyle: "bold flat-color cartoon style — thick outlines, solid fills, sticker-like, high contrast and playful"
   },
   {
-    label: 'エレガント',
-    desc: '洗練・上質・ラグジュアリー・時代を超えたクラシック感',
-    fontBlock: `[Typography — Elegant / Refined]
-Fonts (use ONLY these four):
-  • Japanese primary: "Shippori Mincho" Regular/Medium — classical Meiji-era mincho, strong stroke contrast.
-  • Japanese accent: "Noto Serif JP" Light/ExtraLight — refined modern mincho, excellent small-size legibility.
-  • Latin primary: "Cormorant Garamond" Light/Regular — ultra-refined high-contrast display serif.
-  • Latin accent: "EB Garamond" Italic — classical Garamond revival, footnote-like editorial quality.
-Weight range: ExtraLight to Regular only. Bold strictly forbidden. Letter-spacing: +0.05em to +0.10em on all fonts.
-
-[Text effects — Elegant / Refined]
-Apply these effects to evoke gold foil printing, embossing, and luxury editorial production:
-
-① Gold foil simulation (name and 1–2 hero keywords): These elements are rendered in a metallic gold gradient — NOT a flat gold, but a vertical or diagonal gradient cycling through: deep gold (#8B6914) → bright gold (#E8C97A) → pale champagne (#F5EDCA) → bright gold → deep gold. This replicates the way gold foil catches and reflects light from different angles. Apply ONLY to the name and the largest keyword; all other text remains in ivory or cream.
-
-② Emboss / letterpress press effect (Shippori Mincho and Cormorant Garamond, large sizes): Large keywords have a dual-shadow emboss: a very subtle highlight (1px offset, near-white at 15–20% opacity) on the top-left edge, and a very subtle shadow (1px offset, near-black at 20–25% opacity) on the bottom-right edge. Together these simulate text pressed into a dark surface — like blind embossing on luxury packaging.
-
-③ Luminous glow on ivory text (medium keywords): Medium-sized ivory/cream keywords have a faint warm glow (5–8px spread, same color as the text at 15–20% opacity) that makes them appear to emit soft light against the dark background — like text on a backlit menu card.
-
-④ Ultra-fine stroke on Cormorant Garamond hairlines: The thinnest hairline strokes of Cormorant Garamond Light are given an imperceptible boost — rendered at 105% stroke weight — to prevent them from disappearing against the dark background. The thick/thin contrast is preserved but the hairlines remain legible.
-
-⑤ Vellum-overlay transparency: 3–4 small keywords are rendered at 60–75% opacity, as if printed on a translucent vellum sheet laid over the composition. These recede visually, creating a sense of layered depth — like pages of a luxury book overlapping.`,
-    bgBlock: `[Background — Elegant / Refined]
-Base: deep charcoal #1A1A1A or dark navy #0E1629.
-Typography glows in ivory, warm white, or gold against it.
-
-Build in exactly these six layers:
-  Layer 1 — Base: flat fill with the deep charcoal or navy tone.
-  Layer 2 — Micro-texture: extremely fine noise at 2–4% opacity — barely perceptible, like premium matte print surface weave.
-  Layer 3 — Tonal depth zones: 2–3 areas where the base color shifts 5–8% lighter or darker (completely feathered over 200px), like pressed velvet.
-  Layer 4 — Hairline grid ghost: very faint grid of 0.5px horizontal lines, 40–60px apart, at 3–5% opacity — evoking premium ruled paper.
-  Layer 5 — Gold foil shimmer: 6–9 tiny elongated highlight marks (1×8px to 2×15px) in warm gold (#C9A35A) at 20–35% opacity, scattered sparsely — as if catching light on an embossed surface.
-  Layer 6 — Vignette: gentle darkening toward all four canvas edges, 8–12% opacity, 120px wide.
-No bright textures. The surface must feel like premium editorial print or dark lacquer.`,
-    designBlock: `[Design direction — Elegant]
-Color strategy: ivory white (#F5F0E8), warm cream (#EDE8DC), and one gold accent (#C9A35A or #E8C97A). Text glows in these tones on the dark background.
-
-Typographic embellishments (all text-based, no illustrations):
-
-① Hairline rules (structural layer):
-Place 4–6 thin dividers between major keyword clusters:
-  ─────────────────── or · · · · · · · · · · ·
-Some horizontal, some vertical (full canvas height). Opacity: 20–40%. Some rules terminate with a small ornamental glyph — ✦ or ◆ — at one or both ends.
-
-② Typographic enclosures (editorial frame layer):
-Around 3 featured keywords, add refined typographic frames:
-  〔 〕or《 》or ｢ ｣
-Some frames: only top and bottom rules. Others: full frame with generous internal padding. One frame broken/incomplete — like a luxury brand logo.
-
-③ Precision ornamental glyphs (accent layer):
-Place 6–8 ornamental glyphs — ✦ ❖ ◆ ✶ ∴ ⊹ — at micro-to-small sizes, at intersection points between keyword clusters. Arranged with deliberate, mathematical precision. Opacity: 50–70% in ivory or gold.
-
-④ Ghost kanji (meaning layer):
-Use 3–4 single kanji — 「美」「静」「雅」「光」— in Noto Serif JP ExtraLight at very large display size, 18–28% opacity, distributed as a ghosted background layer.
-
-⑤ Margin rules (editorial structure layer):
-Along two opposite canvas edges, place very fine vertical text columns:
-  ║ ║ ║ ║ ║ or ┊ ┊ ┊ ┊ or · · · · ·
-Running the full canvas height, 6–8px from the edge. One in ivory at 15% opacity, the other in gold at 20% opacity.
-
-⑥ Numerical accents (publication detail layer):
-Place 3–4 very small typographic fragments — 「No. 01」「Vol. III」「§」「—」— in EB Garamond Italic at 10–12px, warm cream at 30–40% opacity.
-
-Mood: luxury fashion editorial, prestige cultural institution, high-end perfume campaign. Restraint is strength.`
+    label: "エレガント",
+    val: "elegant, ultra-refined, austere and luxurious",
+    fontJa: "極細明朝体・ヘアライン一択（太字禁止）",
+    fontEn: "exclusively ultra-thin or hairline weight mincho (Japanese serif) and classic Latin serif fonts — NO bold, NO medium weight anywhere; thinness IS elegance; but use dramatically varied sizes to create visual power despite the thin weight",
+    referenceEn: "Densely layered Celine campaign typography, stacked art museum poster with many text elements, high-fashion editorial where thin type fills the frame completely.",
+    layoutEn: `- Despite being elegant, the canvas is DENSE — thin words stack, layer, and overlap throughout
+- Vertical tategumi words dominate (55%): tall thin columns of characters crowd the canvas like a forest of reeds
+- Horizontal words (35%): set with extreme letter-spacing, often all-caps Latin, but many of them layered together
+- Diagonal (10%): very subtle tilt ±5–8°, used sparingly but present
+- Words overlap at edges and layer in depth — foreground words are darker/stronger, background words are lighter/ghosted
+- Within each keyword: characters are the same size (elegance = consistency) BUT the jump between different keywords is extreme — an XL word next to an XS word, with no medium transition
+- The overall impression: a dense forest of hairline type, dramatic in scale contrast but unified in extreme thinness`,
+    colorEn: `- If dark background: XL and L words in warm ivory (#F5F0E8); 2–3 keywords in antique gold (#C9A84C); ghosted background words in very dark grey (#333333)
+- If light background: XL and L in deep charcoal (#1A1A1A); 2 keywords in dark navy (#1B2A4A); ghosted words in light grey (#CCCCCC)
+- Maximum 3 colors — but use opacity/ghosting to create depth and layers`,
+    illustStyle: "ultra-minimal hairline engraving style — single continuous thin lines, no fills, resembling antique copperplate etching"
   },
   {
-    label: 'レトロ',
-    desc: 'ノスタルジア・古雑誌・ヴィンテージコラージュ・手刷り活版',
-    fontBlock: `[Typography — Retro / Vintage]
-Fonts (use ONLY these four):
-  • Japanese primary: "Zen Old Mincho" — classical pre-war mincho, hand-set metal type aesthetic.
-  • Japanese accent: "DotGothic16" — pixel/dot-matrix gothic, sparse use (max 2–3 words).
-  • Latin primary: "Special Elite" — typewriter-style, ALL-CAPS strongly encouraged.
-  • Latin accent: "Arvo" Regular/Italic — geometric slab-serif, 1950s–60s print advertising.
-Weight range: Regular to Bold. Tracking: +0.05em to +0.10em on Special Elite.
-
-[Text effects — Retro / Vintage]
-Apply these effects to simulate aged print, letterpress production, and worn typographic artifacts:
-
-① Letterpress impression (Zen Old Mincho, large sizes): Large Zen Old Mincho keywords are rendered with a subtle deboss/impression effect — a very faint inner shadow (1–2px, dark brown at 15–20% opacity) along the bottom and right edges of each stroke, as if the type was pressed hard into the paper surface and the fibers compressed slightly. The fill color itself shifts 5–8% darker on these pressed edges.
-
-② Ink-spread uneven fill (Special Elite, all sizes): Every Special Elite word has a slightly uneven fill — the ink density varies across individual characters, with some strokes at full opacity and others at 80–90%, as if the typewriter ribbon had inconsistent ink across its width. Additionally, 2–4 characters per word have a very faint ink-bleed halo (0.5–1px spread, same color at 25% opacity) suggesting ink absorbed into paper fibers.
-
-③ Ghosting / mis-registration echo (Zen Old Mincho and Arvo, large keywords only): 2–3 large keywords show a ghosting artifact — a duplicate of the word at 8–15% opacity, offset 2–3px in a slightly different direction (e.g. 2px right, 1px up). The ghost copy is in a slightly different hue (more sepia-tinted). This replicates the double-printing artifact of misaligned letterpress runs.
-
-④ Ink-oxidation color shift: All text colors are rendered with a slight warm oxidation shift — pure blacks become deep warm brown, pure reds become brick-rust, blues become dusty teal. No color should be a clean digital hue; every color must feel like aged ink that has oxidized over decades.
-
-⑤ Halftone dot erosion (DotGothic16 only): The pixel/dot characters of DotGothic16 have their individual dots rendered with slight size variation — some dots at 90%, some at 70%, a few at 50% of their normal diameter — creating the look of a worn dot-matrix printout where the ink has faded unevenly.`,
-    bgBlock: `[Background — Retro / Vintage]
-Base tone: aged warm paper — muted sepia (#F2E8D5), worn cream (#EDE0C8), or faded manila (#E8DEC0).
-
-Build in exactly these seven layers:
-  Layer 1 — Base wash: solid fill with the sepia/cream/manila tone.
-  Layer 2 — Paper grain: noise texture at 12–16% opacity — dense enough to suggest aged paper fibers.
-  Layer 3 — Cross-hatching ghost: a second noise pass at a different grain direction, 5–8% opacity.
-  Layer 4 — Foxing spots: 8–15 small irregular organic blotches (5–25px) in deeper sepia (#C8A878) at 10–20% opacity, concentrated toward edges.
-  Layer 5 — Edge yellowing: tonal deepening toward all four canvas edges in a warmer golden tone, 8–15% opacity, 120–160px wide.
-  Layer 6 — Faint halftone ghost: very subtle CMYK-style halftone dot pattern (5–8% opacity) in one corner or upper third.
-  Layer 7 — Single fold line: one very faint straight line (0.5px, 8–12% opacity) crossing the canvas at a slightly off-horizontal angle — like an old fold in a newspaper clipping.
-The surface must evoke a page torn from a 1960s magazine or vintage postal document.`,
-    designBlock: `[Design direction — Retro]
-Color strategy: deep brown or aged black (#2A1F14) for primary text — never pure #000000. Accents: brick red, faded olive, dusty teal, aged gold.
-
-Typographic embellishments (all text-based, no illustrations):
-
-① Letterpress ornamental glyphs (compositor's marks layer):
-Scatter 6–8 vintage ornaments — ⁂ ✦ ※ ◉ ★ ☆ ✠ ❧ — at varied sizes. Some slightly misaligned or rotated (±5°), as if hand-stamped imprecisely.
-
-② Misaligned ruled lines (typesetter's dividers):
-Add 5–6 thin ruled lines between keyword zones:
-  ─────── or ═══════ or ·········· or ▬▬▬▬▬▬
-Each with slight misalignment or irregularity. Some overprint slightly on nearby keywords. Opacity: 50–70%.
-
-③ Vintage stamp frames (label layer):
-Around 3–4 keywords, add letterpress border frames:
-  ▪▪▪▪▪▪▪▪ top and bottom with │ sides.
-Some frames rounded with ╭─────╮ style. Others broken, as if the stamp pad ran dry.
-
-④ Publication markers (editorial structure layer):
-Add 4–5 ALL-CAPS filler fragments in Special Elite:
-  「VOL.01」「EST.——」「NO.」「PAGE」「ISSUE III」「Circa ——」
-Placed as editorial bylines, folios, or publication dates. Some vertical, some horizontal. Opacity: 60–80%.
-
-⑤ DotGothic digital contrasts (retro-digital layer):
-Add 2–3 DotGothic16 vertical text strips spelling short Japanese phrases:
-  「かつて・いつか・また」or「きおく・きろく・きずな」
-Running alongside large Zen Old Mincho words — old LED display next to classical letterpress.
-
-⑥ Ink bleed marks (print artifact layer):
-Around 3–4 Special Elite words, add subtle ink-bleed artifacts: a faint shadow offset of the same character, 1–2px displaced, at 15–25% opacity — like ink that soaked into fibrous paper.
-
-⑦ Classified ad micro-text (texture layer):
-In one corner, place 3–4 lines of very small (8–9px) Special Elite text — repeating 「■ ■ ■」or「— — —」— at 20–30% opacity, as if old print is showing through from the other side of the paper.
-
-Mood: 1960s newspaper typographic spread, mid-century travel poster, vintage band flyer, hand-assembled zine.`
-  }
+    label: "レトロ",
+    val: "retro, vintage, nostalgic",
+    fontJa: "レトロフォント・タイプライター風・ヴィンテージ系",
+    fontEn: "retro display fonts, typewriter-inspired typefaces, vintage condensed fonts — aged, characterful, nostalgic",
+    referenceEn: "Packed Showa-era weekly magazine page, vintage poster covered wall-to-wall with type, hand-typed zine with no wasted space.",
+    layoutEn: `- Dense, packed layout — every inch filled like a vintage print page with no wasted space
+- Mix horizontal typewriter lines (40%), vertical tategumi newspaper columns (35%), diagonal cut-paste clippings (25%)
+- Within each keyword: mismatched character sizes like different letterpress type blocks — irregular and dramatic
+- Text-based ornaments: ———, *, [ ], ALL CAPS labels fill every gap
+- Words overlap and crowd — the page should feel overset, like too much content forced into too little space`,
+    colorEn: `- Primary: dark sepia brown (#3D2B1F) or aged black (#2C2416)
+- Accent 1: vermillion/brick red (#B33A2A) — rubber stamp effect on 2–3 headline words
+- Accent 2: mustard yellow (#C9A84C) for 1–2 keywords
+- Accent 3: faded teal/olive (#5C7A6A) subtle third tone
+- All colors faded/desaturated — aged by sunlight`,
+    illustStyle: "vintage woodblock print or letterpress style — rough edges, ink texture, aged and faded tones"
+  },
 ];
 
-const TASTE_ILLUST_STYLE = {
-  'ナチュラル': {
-    style: `hand-drawn botanical ink sketch — loose, wobbly contour lines as if drawn with a dip pen or fine brush. Stroke weight varies naturally along each stroke. Fill: none or a very light watercolor wash (10–20% opacity). Line weight: 1.5–2pt. Organic, imperfect, field-notebook aesthetic.`,
-    motifGuide: `Draw motifs from the natural world: plants, leaves, seeds, insects, stones, feathers, fruit, soil, weather, water, animals. Interpret each keyword's meaning through a nature/botanical lens. Example: "音楽" → a small sprouting seed with musical-note-shaped leaves; "旅" → a tiny paper boat on a wave.`,
-  },
-  'ガーリー': {
-    style: `delicate fine-line illustration — thin, precise, romantic contour lines. Tiny decorative details such as dots, small hearts, miniature stars along edges. Fill: soft pastel at 15–25% opacity. Stroke weight: 0.8–1.2pt. Whimsical, sweet, like a luxury stationery spot illustration.`,
-    motifGuide: `Draw motifs with a romantic, dreamy quality: flowers in bloom, ribbons, small crowns, teacups, macarons, perfume bottles, crescent moons, tiny stars, butterflies, bows. Interpret each keyword's emotion as a cute, feminine symbol. Example: "自由" → a small bird in mid-flight with a ribbon trailing; "夢" → a tiny crescent moon cradling a star.`,
-  },
-  'ポップ': {
-    style: `bold flat graphic icon — thick uniform outlines (3–4pt), solid 100% opaque fills in bright palette colors. Zero gradients, zero shadows, hard edges. Like a silk-screen sticker or comic panel icon. Maximum 4–5 shapes total per illustration.`,
-    motifGuide: `Draw motifs as punchy, graphic icons: lightning bolts, stars, speech bubbles, fists, rockets, crowns, eyes, cassette tapes, boom boxes, sneakers, spray cans, arrows. Interpret each keyword as a bold visual symbol with maximum graphic energy. Example: "音楽" → a bold star with a musical note inside; "情熱" → a solid flame icon with thick outline.`,
-  },
-  'エレガント': {
-    style: `ultra-refined single-weight hairline drawing — one precise stroke only (0.6–0.8pt), absolutely no fill. Maximum 6–8 lines total per illustration. Minimal, architectural, like a luxury perfume advertisement engraving or haute couture sketch.`,
-    motifGuide: `Draw motifs with extreme restraint and elegance: a single botanical sprig, a geometric crystal, a wine glass silhouette, a crescent, a single feather, a delicate key, an hourglass, a cameo oval. Interpret each keyword through the lens of luxury and refinement. Example: "静寂" → a single vertical feather drawn in three hairlines; "美" → a minimal rose bud, just the outline in 5 strokes.`,
-  },
-  'レトロ': {
-    style: `vintage woodcut or engraving vignette — hatching and cross-hatching for tone, slightly rough uneven stroke edges as if cut from a woodblock or etched in copper. Stroke weight: 1.5–2.5pt with natural variation. Like an illustration from a 1950s travel poster or encyclopedia.`,
-    motifGuide: `Draw motifs evoking mid-century nostalgia: old cameras, globes, compasses, trains, lighthouses, typewriters, vinyl records, binoculars, maps, retro radios, postage stamps, hourglasses. Interpret each keyword as a vintage artifact or retro symbol. Example: "旅" → a small globe with latitude lines in woodcut style; "音楽" → a vinyl record with etched grooves.`,
-  },
-};
+const namePlacements = [
+  "Place the name in the upper-left area, set horizontally, woven into the dense composition.",
+  "Place the name near the center-right, set vertically (tategumi), running within the dense vertical text.",
+  "Place the name in the lower-third, set horizontally, anchoring the dense composition like a signature.",
+  "Place the name diagonally across the upper-right, slightly tilted, overlapping surrounding keywords.",
+  "Place the name near the center, broken across two lines, interlocking with surrounding keywords.",
+  "Place the name along the left edge, set vertically, acting as a spine within the dense composition.",
+  "Place the name in the lower-right corner, horizontal, like an artist's signature almost buried in type.",
+  "Place the name in the upper-center, horizontal, as the first anchor point in the dense composition.",
+];
 
-function ILLUST_BLOCK(kwList, tasteLabel) {
-  const cfg = TASTE_ILLUST_STYLE[tasteLabel];
-  const illustStyle   = cfg ? cfg.style      : 'simple clean line art matching the overall style';
-  const motifGuide    = cfg ? cfg.motifGuide : 'Choose a simple, recognizable symbol that clearly represents the concept of the keyword.';
+const visualWeights = [
+  "Concentrate the XL and L text in the upper-left; S and XS text fills the lower-right — but all zones are dense.",
+  "Concentrate the XL and L text in the lower-right; upper-left has dense S and XS text.",
+  "Anchor XL text along a diagonal axis upper-left to lower-right; other sizes fill remaining zones densely.",
+  "Center the XL elements in the middle; surround them densely with M, S, and XS words radiating outward.",
+  "Push XL and L elements to the bottom half; top half densely packed with M and S words.",
+  "Scatter all size levels evenly but with a slight concentration of XL toward the left side.",
+  "Two clusters of XL text — upper-right and lower-left — with dense M and S words filling between them.",
+  "XL elements accumulate along the right edge; left side densely filled with M and S words.",
+];
 
-  const count = Math.max(1, Math.round(kwList.length * 0.2));
-  const rest  = kwList.length - count;
+const layoutVariants = [
+  "Let the largest XL keyword burst out of the canvas edges, cropped deliberately — too big to contain.",
+  "Stack several keywords in tight overlapping vertical columns on one side, crowding into scattered words on the other.",
+  "One enormous XL word spans nearly the full canvas width as a background layer behind other words.",
+  "Some keywords arranged in a loose spiral, with other words filling all gaps densely.",
+  "A dense horizontal band of large text cuts across the middle, with packed words above and below.",
+  "Cluster 4–5 keywords in a tight overlapping group in one corner, rest packed freely across the canvas.",
+  "One keyword used as a long diagonal stripe cutting corner to corner, with dense words filling around it.",
+  "One keyword repeated as a background texture layer, with primary keywords layered densely on top.",
+];
 
-  // 均等間隔でキーワードを選出（中央寄り）
-  const step = kwList.length / count;
-  const illustKws = [];
-  for (let k = 0; k < count; k++) {
-    const idx = Math.round(k * step + step * 0.4) % kwList.length;
-    illustKws.push(kwList[idx]);
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
   }
-  const illustList = illustKws.map((kw, n) => `  ${n + 1}. "${kw}" — draw a small illustration that captures the essence of this word`).join('\n');
-
-  return `[Keyword illustrations — STRICT 20% RULE]
-CRITICAL QUANTITY RULE: EXACTLY ${count} of the ${kwList.length} keywords receive a small paired illustration. The remaining ${rest} keyword${rest !== 1 ? 's' : ''} are pure typography — NO illustration of any kind near them. This ratio is non-negotiable.
-
-Keywords that receive an illustration (${count} total):
-${illustList}
-
-━━ What to draw ━━
-${motifGuide}
-
-The illustration must CLEARLY and RECOGNIZABLY depict the concept of its specific keyword. Do not use a generic shape; make it specific to the word's meaning or feeling.
-
-━━ Illustration style ━━
-${illustStyle}
-
-━━ Size & placement ━━
-- Size: 55–75% of the cap-height of its paired keyword (small accent, never dominant).
-- Position: flush beside (left or right) or just below the keyword, gap 6–12px from the word edge.
-- The illustration and its keyword form ONE visual unit — they should feel inseparable.
-- Distribute the illustrated keywords across different quadrants; do not cluster them.
-- Z-order: the illustration sits just behind (lower layer than) its keyword text.
-
-━━ Color & integration ━━
-- Use the same palette color as its paired keyword's text — no unrelated colors.
-- No background panel, no bounding box, no drop shadow on the illustration itself.
-- If its keyword is rotated, the illustration may share a similar angle (within ±8° of the keyword).
-- The illustration must feel like it was drawn by the same hand that laid out the typography.
-
-REMINDER: The ${rest} unillustrated keyword${rest !== 1 ? 's' : ''} must have zero imagery near them — text only.`;
+  return a;
 }
 
-// ─── UI初期化 ────────────────────────────────────────────────
+function parseColorToHex(colorStr) {
+  const s = colorStr.trim();
+  if (/^#([0-9a-fA-F]{3}){1,2}$/.test(s)) {
+    let hex = s.slice(1);
+    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+    return hex;
+  }
+  const ctx = document.createElement('canvas').getContext('2d');
+  ctx.fillStyle = s;
+  const resolved = ctx.fillStyle;
+  if (/^#[0-9a-fA-F]{6}$/.test(resolved)) return resolved.slice(1);
+  return null;
+}
 
-function makeChips(containerId, items) {
-  const el = document.getElementById(containerId);
-  items.forEach(item => {
+function lightenHex(hex, amount) {
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  const lr = Math.round(r + (255 - r) * amount);
+  const lg = Math.round(g + (255 - g) * amount);
+  const lb = Math.round(b + (255 - b) * amount);
+  return '#' + [lr, lg, lb].map(v => v.toString(16).padStart(2, '0')).join('');
+}
+
+function buildBgInstruction(colorList, tasteLabel) {
+  if (!colorList.length) {
+    const defaults = {
+      "ナチュラル": "Warm ivory or unbleached paper tone (#FAF7F2) with a faint paper-grain texture. The background will be mostly hidden behind dense typography.",
+      "ガーリー": "Very pale blush (#FDF0F3) or soft lavender (#F5F0FA) — almost entirely covered by dense typography.",
+      "ポップ": "Pure white (#FFFFFF) or one vivid solid color from the palette. Flat, no gradients or textures — almost entirely covered by typography.",
+      "エレガント": "Near-black charcoal (#1A1A1A) or very pale warm ivory (#FDFAF5) — one extreme only. Mostly covered by layered thin typography.",
+      "レトロ": "Aged warm paper (#F2E8D5) with noise/grain texture — almost entirely covered by dense vintage-style typography.",
+    };
+    return defaults[tasteLabel] || "A subtle neutral background almost entirely covered by dense typography.";
+  }
+  const chosen = pick(colorList);
+  const hex = parseColorToHex(chosen);
+  if (!hex) return `A very pale tint of "${chosen}" — almost entirely covered by dense typography.`;
+  const lightHex = lightenHex(hex, 0.80);
+  return `A pale, washed-out tint of the user's chosen color "${chosen}" — use ${lightHex} as the background color (this is the original color lightened ~80% toward white). The background will be almost entirely covered by dense typography.`;
+}
+
+function makeChips() {
+  const el = document.getElementById('taste-grid');
+  tastes.forEach(item => {
     const chip = document.createElement('span');
     chip.className = 'chip';
     chip.textContent = item.label;
-    Object.assign(chip.dataset, {
-      desc: item.desc,
-      fontBlock: item.fontBlock,
-      bgBlock: item.bgBlock,
-      designBlock: item.designBlock
-    });
     chip.onclick = () => {
       el.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
       chip.classList.add('active');
-      updatePreview();
+      chip._taste = item;
+      document.getElementById('font-hint').textContent = '使用フォントの方向性：' + item.fontJa;
     };
+    chip._taste = item;
     el.appendChild(chip);
   });
 }
 
-makeChips('taste-grid', tastes);
-
-// ─── プロンプト生成 ───────────────────────────────────────────
+makeChips();
 
 let lastPrompt = '';
-
-function generate() {
-  const name     = document.getElementById('inp-name').value.trim() || 'me';
-  const rawKw    = document.getElementById('inp-keywords').value.trim();
-  const rawColor = document.getElementById('inp-color').value.trim();
-
-  const kwList   = rawKw    ? rawKw.split(/\s+/).filter(Boolean) : ['design', 'my interests'];
-  const colorStr = rawColor ? rawColor.split(/\s+/).filter(Boolean).join(', ') : 'colors that suit the overall style';
-
-  const chip = document.querySelector('#taste-grid .chip.active');
-  const { px, ratio: ratioLabel } = SIZE_PRESETS.portrait;
-
-  const fontBlock   = chip ? chip.dataset.fontBlock   : '[Typography]\nUse a tasteful mix of Japanese gothic and Latin sans-serif fonts.';
-  const bgBlock     = chip ? chip.dataset.bgBlock     : '[Background]\nUse a clean, simple background that does not compete with the typography.';
-  const designBlock = chip ? chip.dataset.designBlock : '[Design direction]\nBalance visual energy with readability.';
-  const tasteLabel  = chip ? chip.dataset.desc        : 'stylish and contemporary';
-  const tasteName   = chip ? chip.textContent.trim()  : '';
-
-  lastPrompt = [
-    `Create a personal introduction typography poster. The composition is primarily typographic, with small thematic illustrations as accent elements for select keywords (see illustration rules below). No human figures, no photorealistic imagery, no decorative borders or frames.`,
-    ``,
-    `[Canvas]`,
-    `Size: ${px}`,
-    `Aspect ratio: ${ratioLabel}`,
-    ``,
-    `[Overall mood & style]`,
-    tasteLabel,
-    ``,
-    NAME_BLOCK(name),
-    ``,
-    fontBlock,
-    ``,
-    bgBlock,
-    ``,
-    `[Color palette]`,
-    `Use: ${colorStr}`,
-    `Apply these colors as fills on individual words or characters. Never use more than 4–5 distinct hues total.`,
-    ``,
-    `[Keywords to place on canvas]`,
-    kwList.join(' · '),
-    `Every keyword listed above MUST appear on the canvas. Do not omit any. Do not add words not listed here.`,
-    ``,
-    LAYOUT_BLOCK(),
-    ``,
-    CATCHPHRASE_BLOCK(kwList),
-    ``,
-    ILLUST_BLOCK(kwList, tasteName),
-    ``,
-    designBlock,
-    ``,
-    `[DALL-E rendering instructions]`,
-    `- Typography must have crisp, sharp edges consistent with the taste's text effects.`,
-    `- The composition must fill the entire canvas edge-to-edge. No large empty corners.`,
-    `- Output in portrait orientation. Do not add any border or frame.`
-  ].join('\n');
-
-  document.getElementById('output-box').textContent = lastPrompt;
-  document.getElementById('output-area').style.display = 'block';
-  document.getElementById('output-area').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
 
 function resetAll() {
   document.getElementById('inp-name').value = '';
   document.getElementById('inp-keywords').value = '';
   document.getElementById('inp-color').value = '';
   document.querySelectorAll('#taste-grid .chip').forEach(c => c.classList.remove('active'));
+  document.getElementById('font-hint').textContent = '';
   document.getElementById('output-area').style.display = 'none';
   document.getElementById('output-box').textContent = '';
-  document.getElementById('kw-preview').style.display = 'none';
-  document.getElementById('kw-preview-inner').innerHTML = '';
   lastPrompt = '';
 }
 
-// ─── キーワードプレビュー ─────────────────────────────────────
+function generate() {
+  const name = document.getElementById('inp-name').value.trim() || 'me';
+  const rawKw = document.getElementById('inp-keywords').value.trim();
+  const rawColor = document.getElementById('inp-color').value.trim();
+  const kwList = rawKw ? rawKw.split(/\s+/).filter(Boolean) : ['design', 'my interests'];
+  const colorList = rawColor ? rawColor.split(/\s+/).filter(Boolean) : [];
+  const activeChip = document.querySelector('#taste-grid .chip.active');
+  if (!activeChip) { alert('テイストを選択してください'); return; }
+  const tc = activeChip._taste;
 
-const TASTE_PREVIEW = {
-  'ナチュラル': {
-    bg: '#FAF7F2',
-    border: '#E2D9CC',
-    fonts: [
-      { f: "'Zen Maru Gothic', sans-serif", w: '300' },
-      { f: "'Caveat', cursive", w: '700' },
-      { f: "'Hachi Maru Pop', cursive", w: '400' },
-      { f: "'Lato', sans-serif", w: '300' },
-    ],
-    colors: ['#3D2B1F','#8A9E7B','#C47B5A','#C9A84C','#7A8C5E','#5C4033','#A0855B'],
-    sizePx: [13, 17, 22, 28, 34, 20, 15, 11],
-    rotations: [0, -8, 5, -3, 10, -15, 0, 7, -6, 12],
-    extraStyle: (i) => i % 4 === 2 ? 'letter-spacing:0.04em;' : '',
-    // インク滲み・かすれ・有機的揺らぎ（静的）
-    effectFn: (span, i, finalSize) => {
-      span.classList.add('effect-natural');
-      // かすれ: 一部のトークンに不透明度変動
-      if (i % 5 === 3) span.style.opacity = '0.72';
-      if (i % 7 === 0) span.style.opacity = '0.88';
-      // 有機的揺らぎ: 静的なtranslateY
-      const jitter = (Math.sin(i * 2.7) * 2.2).toFixed(1);
-      const currentTransform = span.style.transform || '';
-      span.style.transform = currentTransform + ` translateY(${jitter}px)`;
-    }
-  },
-  'ガーリー': {
-    bg: '#FDF0F3',
-    border: '#F4CEDD',
-    fonts: [
-      { f: "'Klee One', cursive", w: '400' },
-      { f: "'Dancing Script', cursive", w: '700' },
-      { f: "'Kosugi Maru', sans-serif", w: '400' },
-      { f: "'Playfair Display', serif", w: '400' },
-    ],
-    colors: ['#C47A95','#9B6BAE','#D4537E','#B8845A','#7A6BAE','#C47A95','#8A5A9A'],
-    sizePx: [13, 18, 24, 30, 20, 15, 26, 12],
-    rotations: [0, -10, 6, -4, 12, -8, 0, 9, -5, 14],
-    extraStyle: (i) => i % 3 === 1 ? 'font-style:italic;letter-spacing:0.05em;' : '',
-    // グロー・ソフトシャドウ・グリッタースパークル
-    effectFn: (span, i, finalSize) => {
-      if (i % 3 === 0 && finalSize > 18) {
-        span.classList.add('effect-girly-glow');
-      } else if (i % 3 === 1) {
-        span.classList.add('effect-girly-shadow');
-      } else {
-        // グリッタースパークル: 疑似要素でキラキラを再現
-        span.classList.add('effect-girly-glitter');
-      }
-    }
-  },
-  'ポップ': {
-    bg: '#111111',
-    border: '#333333',
-    fonts: [
-      { f: "'Dela Gothic One', sans-serif", w: '400' },
-      { f: "'Bebas Neue', sans-serif", w: '400' },
-      { f: "'RocknRoll One', sans-serif", w: '400' },
-      { f: "'Bebas Neue', sans-serif", w: '400' },
-    ],
-    colors: ['#FF3B3B','#FFD600','#00D4FF','#FF6B00','#B4FF00','#FF3B3B','#FF6B00'],
-    shadowColors: ['#FFD600','#00D4FF','#B4FF00','#FF3B3B','#FF6B00','#FFD600','#00D4FF'],
-    outlineColors: ['#FFD600','#FF3B3B','#B4FF00','#00D4FF','#FF6B00','#B4FF00','#FFD600'],
-    sizePx: [14, 20, 28, 36, 22, 16, 32, 12],
-    rotations: [0, -12, 8, -5, 15, -20, 0, 10, -8, 18],
-    extraStyle: (i) => i % 2 === 0 ? 'text-transform:uppercase;letter-spacing:-0.01em;' : 'text-transform:uppercase;',
-    // ハードシャドウ・アウトライン・ハーフトーンドット
-    effectFn: (span, i, finalSize, cfg) => {
-      const sc = cfg.shadowColors[i % cfg.shadowColors.length];
-      const oc = cfg.outlineColors[i % cfg.outlineColors.length];
-      if (i % 4 === 0 && finalSize > 20) {
-        // ソフトシャドウ
-        span.style.filter = `drop-shadow(3px 3px 5px ${sc})`;
-      } else if (i % 4 === 1) {
-        // アウトライン
-        span.style.webkitTextStroke = `2px ${oc}`;
-        span.style.paintOrder = 'stroke fill';
-      } else if (i % 4 === 2) {
-        // アウトライン＋ソフトシャドウ
-        span.style.webkitTextStroke = `1.5px ${oc}`;
-        span.style.filter = `drop-shadow(2px 3px 4px ${sc})`;
-      } else {
-        // ハーフトーン風: opacity変動でドット感
-        span.style.opacity = '0.85';
-        span.style.filter = `url(#halftone)`;
-      }
-    }
-  },
-  'エレガント': {
-    bg: '#1A1A1A',
-    border: '#2E2E2E',
-    fonts: [
-      { f: "'Shippori Mincho', serif", w: '400' },
-      { f: "'Cormorant Garamond', serif", w: '300' },
-      { f: "'Noto Serif JP', serif", w: '200' },
-      { f: "'EB Garamond', serif", w: '400' },
-    ],
-    colors: ['#F5F0E8','#EDE8DC','#C9A35A','#E8C97A','#D4C9A8','#F0EAD8','#C9A35A'],
-    sizePx: [13, 18, 24, 30, 20, 15, 26, 11],
-    rotations: [0, -6, 4, -2, 8, -10, 0, 6, -4, 10],
-    extraStyle: (i) => i % 3 === 2 ? 'font-style:italic;letter-spacing:0.08em;' : 'letter-spacing:0.06em;',
-    // ゴールドフォイル箔押し・ベルベットエンボス・微細グロー
-    effectFn: (span, i, finalSize) => {
-      if (i % 3 === 0 && finalSize > 18) {
-        // ゴールドフォイル箔押し
-        span.classList.add('effect-elegant-foil');
-      } else if (i % 3 === 1) {
-        // ベルベットエンボス
-        span.classList.add('effect-elegant-emboss');
-      } else {
-        // 微細グロー
-        span.classList.add('effect-elegant-glow');
-      }
-    }
-  },
-  'レトロ': {
-    bg: '#F2E8D5',
-    border: '#D4C4A0',
-    fonts: [
-      { f: "'Zen Old Mincho', serif", w: '400' },
-      { f: "'Special Elite', cursive", w: '400' },
-      { f: "'Arvo', serif", w: '400' },
-      { f: "'DotGothic16', sans-serif", w: '400' },
-    ],
-    colors: ['#2A1F14','#8B3A2A','#4A6B4A','#7A6B3A','#3A5A6B','#5A3A2A','#6B5A2A'],
-    sizePx: [13, 18, 24, 30, 20, 15, 26, 11],
-    rotations: [0, -8, 5, -3, 10, -14, 0, 7, -5, 12],
-    extraStyle: (i) => i % 4 === 1 ? 'text-transform:uppercase;letter-spacing:0.07em;' : 'letter-spacing:0.04em;',
-    // 活版印刷プレス跡・インクかすれ・ミスレジストレーション
-    effectFn: (span, i, finalSize) => {
-      if (i % 3 === 0 && finalSize > 16) {
-        // 活版プレス跡
-        span.classList.add('effect-retro-press');
-      } else if (i % 3 === 1) {
-        // ミスレジストレーション
-        span.classList.add('effect-retro-misreg');
-        span.setAttribute('data-word', span.textContent);
-      } else {
-        // インクかすれ: 不透明度 + ざらつきフィルター
-        span.style.opacity = String(0.72 + (i % 3) * 0.08);
-        span.style.filter = 'url(#letterpress)';
-      }
-    }
-  }
-};
+  const userColorNote = colorList.length
+    ? `The user has requested these colors be incorporated: ${colorList.join(', ')}. Blend them into the color scheme while keeping the overall mood intact.`
+    : '';
 
-// サイズ階調をランダムに割り当て（隣接が同じにならないよう）
-const SIZE_TIERS = [0.55, 0.75, 1.0, 1.35, 1.8];
-function assignSizes(count) {
-  const sizes = [];
-  let prev = -1;
-  for (let i = 0; i < count; i++) {
-    let t;
-    do { t = Math.floor(Math.random() * SIZE_TIERS.length); } while (t === prev);
-    sizes.push(SIZE_TIERS[t]);
-    prev = t;
-  }
-  return sizes;
-}
+  const bgInstruction = buildBgInstruction(colorList, tc.label);
 
-function updatePreview() {
-  const raw = document.getElementById('inp-keywords').value.trim();
-  const preview = document.getElementById('kw-preview');
-  const inner = document.getElementById('kw-preview-inner');
-  const chip = document.querySelector('#taste-grid .chip.active');
+  const illustCount = Math.max(1, Math.min(5, Math.round(kwList.length * 0.2)));
+  const illustTargets = shuffle(kwList).slice(0, illustCount);
 
-  if (!raw || !chip) { preview.style.display = 'none'; return; }
+  const illustSection = `[Keyword Illustrations & Decorative Accents]
+For exactly ${illustTargets.length} keyword(s) — "${illustTargets.join('", "')}" — add a small illustrative accent or decorative motif placed directly beside or beneath the keyword:
+- Each illustration should visually represent or evoke the meaning of its specific keyword
+- Size: small, roughly 40–80px, never larger than the keyword itself — it is a subtle accent, not a focal point
+- Style: ${tc.illustStyle}
+- Placement: tucked close to the keyword, either beside it or nestled just below — it should feel like a natural part of that keyword's typographic element
+- All other keywords have NO illustration — text only`;
 
-  const taste = chip.textContent.trim();
-  const cfg = TASTE_PREVIEW[taste];
-  if (!cfg) { preview.style.display = 'none'; return; }
+  const seed = Math.floor(Math.random() * 99999);
+  const namePlacement = pick(namePlacements);
+  const visualWeight = pick(visualWeights);
+  const layoutVariant = pick(layoutVariants);
 
-  const words = raw.split(/\s+/).filter(Boolean);
-  const sizes = assignSizes(words.length);
+  lastPrompt = `Generate an image of a personal introduction typography poster with the following specifications.
 
-  preview.style.display = 'block';
-  preview.style.background = cfg.bg;
-  preview.style.borderColor = cfg.border;
+[Random Seed]
+${seed} — use this as a creative seed to ensure this design is unique and different from any previous generation.
 
-  inner.innerHTML = '';
+[Name]
+${name}
 
-  words.forEach((word, i) => {
-    const font = cfg.fonts[i % cfg.fonts.length];
-    const color = cfg.colors[i % cfg.colors.length];
-    const baseSize = cfg.sizePx[i % cfg.sizePx.length];
-    const finalSize = Math.round(baseSize * sizes[i]);
-    const rot = cfg.rotations[i % cfg.rotations.length];
-    const extra = cfg.extraStyle(i);
+[Size]
+960px × 1280px (vertical / portrait)
 
-    const span = document.createElement('span');
-    span.className = 'kw-token';
-    span.textContent = word;
-    span.style.cssText = `
-      font-family: ${font.f};
-      font-weight: ${font.w};
-      font-size: ${finalSize}px;
-      color: ${color};
-      transform: rotate(${rot}deg);
-      ${extra}
-    `;
+[Style & Mood]
+${tc.val}
 
-    if (cfg.effectFn) {
-      cfg.effectFn(span, i, finalSize, cfg);
-    }
+[Visual Reference]
+Design this poster in the spirit of: ${tc.referenceEn}
 
-    inner.appendChild(span);
-  });
+[Background]
+${bgInstruction}
+
+[Font Direction (Japanese + Latin mix)]
+Use ${tc.fontEn}. Mix Japanese and Latin typefaces for rich typographic contrast suited to this mood.
+
+[Keywords to include]
+${kwList.join(', ')}
+
+${GLOBAL_SIZE_DENSITY}
+
+[Layout & Text Direction]
+${tc.layoutEn}
+
+[Name Placement]
+The name "${name}" should be set at a medium size (roughly 1/5 of canvas width) — clearly readable within the dense composition.
+${namePlacement}
+
+[Visual Weight Distribution]
+${visualWeight}
+
+[Layout Variation]
+${layoutVariant}
+
+[Color Rules]
+${tc.colorEn}
+${userColorNote}
+
+${illustSection}
+
+[Catchphrases]
+From the keyword list, select exactly 5 keywords that best represent the person's character or interests. For those 5 keywords only, pair each with a short punchy catchphrase (3–6 words). Place each catchphrase as small accent text directly beside or beneath its keyword, styled differently (italic, lighter weight, or contrasting font). All other keywords appear WITHOUT any catchphrase.
+
+[Final Note]
+- No photos or human figures — typography only (illustrations are allowed only for the ${illustTargets.length} keyword(s) listed above)
+- Every keyword in the list must appear somewhere in the composition
+- This design must look distinctly different from any other version generated with the same inputs`;
+
+  document.getElementById('output-box').textContent = lastPrompt;
+  document.getElementById('output-area').style.display = 'block';
+  document.getElementById('output-area').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function copyText(e) {
   navigator.clipboard.writeText(lastPrompt).then(() => {
     const btn = e.target.closest('button');
-    const orig = btn.textContent;
-    btn.textContent = 'コピーしました ✓';
-    setTimeout(() => btn.textContent = orig, 2000);
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<i class="ti ti-check" style="font-size:15px;vertical-align:-2px;margin-right:4px;"></i>コピーしました';
+    setTimeout(() => btn.innerHTML = orig, 2000);
   });
 }
-</script>
-
+  </script>
 </body>
 </html>
