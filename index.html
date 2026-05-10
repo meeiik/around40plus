@@ -424,6 +424,33 @@ function shuffle(arr) {
   return a;
 }
 
+const JA_COLOR_MAP = {
+  '白':'#FFFFFF','しろ':'#FFFFFF','ホワイト':'#FFFFFF',
+  '黒':'#000000','くろ':'#000000','ブラック':'#000000',
+  '赤':'#FF0000','あか':'#FF0000','レッド':'#FF0000',
+  '青':'#0000FF','あお':'#0000FF','ブルー':'#0000FF',
+  '緑':'#008000','みどり':'#008000','グリーン':'#008000',
+  '黄':'#FFFF00','きいろ':'#FFFF00','黄色':'#FFFF00','イエロー':'#FFFF00',
+  'オレンジ':'#FF8C00','橙':'#FF8C00','だいだい':'#FF8C00',
+  'ピンク':'#FF69B4','桃色':'#FF69B4','もも':'#FF69B4',
+  '紫':'#800080','むらさき':'#800080','パープル':'#800080','バイオレット':'#EE82EE',
+  '水色':'#87CEEB','みずいろ':'#87CEEB','スカイブルー':'#87CEEB','空色':'#87CEEB',
+  '紺':'#000080','こん':'#000080','ネイビー':'#000080','紺色':'#000080',
+  'ベージュ':'#F5F5DC','クリーム':'#FFFDD0','アイボリー':'#FFFFF0',
+  'グレー':'#808080','灰色':'#808080','はいいろ':'#808080','グレイ':'#808080',
+  '茶色':'#8B4513','ちゃいろ':'#8B4513','ブラウン':'#8B4513','茶':'#8B4513',
+  'ゴールド':'#FFD700','金色':'#FFD700','きんいろ':'#FFD700','金':'#FFD700',
+  'シルバー':'#C0C0C0','銀色':'#C0C0C0','ぎんいろ':'#C0C0C0','銀':'#C0C0C0',
+  'ラベンダー':'#E6E6FA','ライラック':'#C8A2C8',
+  'ミント':'#98FF98','民ト':'#98FF98',
+  'サーモン':'#FA8072','コーラル':'#FF7F50','珊瑚':'#FF7F50',
+  'ターコイズ':'#40E0D0','エメラルド':'#50C878',
+  'インディゴ':'#4B0082','マゼンタ':'#FF00FF',
+  'シアン':'#00FFFF','水':'#00FFFF',
+  'カーキ':'#C3B091','オリーブ':'#808000','オリーブグリーン':'#6B8E23',
+  'マロン':'#800000','えんじ':'#800000','臙脂':'#800000',
+};
+
 function parseColorToHex(colorStr) {
   const s = colorStr.trim();
   if (/^#([0-9a-fA-F]{3}){1,2}$/.test(s)) {
@@ -431,19 +458,21 @@ function parseColorToHex(colorStr) {
     if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
     return hex;
   }
+  if (JA_COLOR_MAP[s]) return JA_COLOR_MAP[s].slice(1);
   const ctx = document.createElement('canvas').getContext('2d');
+  ctx.fillStyle = '#000000';
   ctx.fillStyle = s;
   const resolved = ctx.fillStyle;
+  if (resolved !== '#000000' && /^#[0-9a-fA-F]{6}$/.test(resolved)) return resolved.slice(1);
   if (/^#[0-9a-fA-F]{6}$/.test(resolved)) return resolved.slice(1);
   return null;
 }
 
 function buildBgInstruction(bgColor) {
-  if (!bgColor) {
-    return "#FFFFFF";
-  }
+  if (!bgColor) return { label: '#FFFFFF', resolved: true };
   const hex = parseColorToHex(bgColor);
-  return hex ? `#${hex}` : bgColor;
+  if (hex) return { label: `#${hex}`, resolved: true };
+  return { label: bgColor, resolved: false };
 }
 
 function makeChips() {
@@ -493,7 +522,8 @@ function generate() {
     ? `The user has requested these colors be incorporated: ${colorList.join(', ')}. Blend them into the color scheme while keeping the overall mood intact.`
     : '';
 
-  const bgInstruction = buildBgInstruction(rawBgColor);
+  const bg = buildBgInstruction(rawBgColor);
+  const bgInstruction = bg.label;
 
   const illustCount = Math.max(1, Math.min(2, Math.round(kwList.length * 0.1)));
   const illustTargets = shuffle(kwList).slice(0, illustCount);
@@ -531,9 +561,13 @@ ${tc.val}
 [Visual Reference]
 Design this poster in the spirit of: ${tc.referenceEn}
 
-[Background]
-The background color is ${bgInstruction}.
-You MUST use this exact color for the entire canvas background without any modification — do not lighten, darken, substitute, or blend it. Use a flat solid fill only. No gradients, no textures, no patterns, and absolutely no text or typographic elements used as background decoration.
+[Background — CRITICAL REQUIREMENT]
+Background color: ${bgInstruction}
+- REQUIREMENT: Fill 100% of the canvas with this exact background color before placing any typography
+- Do NOT change, lighten, darken, tint, or substitute this color under any circumstances
+- Do NOT use gradients, textures, patterns, or any other visual treatment on the background
+- Do NOT place any text, typography, or decorative elements behind the main composition as a background layer
+- The background must be a single, flat, solid fill of ${bgInstruction} and nothing else
 
 [Font Direction (Japanese + Latin mix)]
 Use ${tc.fontEn}. Mix Japanese and Latin typefaces for rich typographic contrast suited to this mood.
@@ -547,7 +581,7 @@ ${GLOBAL_SIZE_DENSITY}
 ${tc.layoutEn}
 
 [Name Placement]
-The name "${name}" should be set at a medium size (roughly 1/5 of canvas width) — clearly readable within the dense composition.
+The name "${name}" must be set on a single line — never break it across multiple lines under any circumstances. Set at a medium size (roughly 1/5 of canvas width), clearly readable within the dense composition.
 ${namePlacement}
 
 [Visual Weight Distribution]
@@ -563,7 +597,7 @@ ${userColorNote}
 ${illustSection}
 
 [Catchphrases]
-From the keyword list, select exactly ${catchphraseCount} keyword(s) — roughly 25% of the total — that best represent the person's character or interests. For those ${catchphraseCount} keywords only, pair each with exactly one short punchy catchphrase (maximum 20 characters, single sentence only — never use multiple lines or multiple phrases per keyword).
+From the keyword list, select exactly ${catchphraseCount} keyword(s) — roughly 25% of the total — that best represent the person's character or interests. For those ${catchphraseCount} keywords only, pair each with exactly one very short catchphrase (maximum 10 characters — as short as possible, single line only, never wrap to multiple lines).
 - Catchphrases must be legible, readable body text — NOT treated as decorative elements, background texture, or graphic ornamentation
 - Set each catchphrase at a small but clearly readable size (14–18px equivalent), with sufficient contrast against the background
 - Do not distort, rotate excessively, overlap with other text, or use as a visual flourish — it must be readable as a sentence
