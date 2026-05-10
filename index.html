@@ -191,18 +191,18 @@
             let keywords = inputRaw.split(/[\s,、]+/).map(k => k.trim().toUpperCase()).filter(k => k !== "");
             if (keywords.length === 0) keywords = ["ART", "SOUL", "LIFE", "FUTURE", "DREAM"];
             
-            // キーワードの処理
+            // キーワードのシャッフルと処理
             keywords.sort(() => Math.random() - 0.5);
             const halfCount = Math.ceil(keywords.length / 2);
             
             const processedKeywords = keywords.map((k, index) => {
                 let finalK = k;
-                // 半分にキャッチコピーを付ける
+                // キーワードの半分に日本語キャッチコピーを付与
                 if (index < halfCount) {
                     const adj = theme.adjectives[Math.floor(Math.random() * theme.adjectives.length)];
                     finalK = `${adj} ${finalK}`;
                 }
-                // 半分（別基準での半分）に連想イラスト(アイコン)を付ける
+                // キーワードの半分に連想イラスト(絵文字)を付与
                 if ((index + 1) % 2 === 0) {
                     const icon = theme.icons[Math.floor(Math.random() * theme.icons.length)];
                     finalK = `${finalK} ${icon}`;
