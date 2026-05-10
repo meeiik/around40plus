@@ -166,7 +166,7 @@ Allow keywords to overlap slightly at edges. Use z-ordering so smaller words app
 function CATCHPHRASE_BLOCK(kwList) {
   const count = Math.max(1, Math.round(kwList.length * 0.3));
   return `[Catchphrase accents]
-From the keyword list, select exactly ${count} keyword${count > 1 ? 's' : ''} (roughly 30% of the total) that best capture the person's character or passions. For each selected keyword, compose a short, punchy English or Japanese catchphrase (3–7 words) that distills the essence of that keyword — like an editorial caption or personal motto fragment.
+From the keyword list, select exactly ${count} keyword${count > 1 ? 's' : ''} (roughly 30% of the total) that best capture the person's character or passions. For each selected keyword, compose a short, punchy Japanese-language catchphrase (8–16文字程度) that distills the essence of that keyword — like an editorial caption, a personal motto fragment, or a poetic one-liner. Write ONLY in Japanese (hiragana, katakana, or kanji); do NOT use English or romaji in any catchphrase.
 - Place each catchphrase as small accent text (roughly 60–70% the size of its paired keyword), positioned directly beside or below it.
 - Style catchphrases differently from the main keywords: use italic, extra-light weight, or a contrasting font family (e.g. a serif caption next to a bold gothic headline).
 - Leave the remaining ${kwList.length - count} keyword${kwList.length - count !== 1 ? 's' : ''} without catchphrases — they stand alone as pure typographic elements.
@@ -199,6 +199,13 @@ Optional texture: a barely-perceptible fine paper-grain or micro-linen texture a
 No gradients, no vignettes.`,
     designBlock: `[Design direction — Natural]
 Color strategy: warm, muted palette. Use deep warm brown or dark charcoal in place of pure black for text. Accent colors should be earthy — dusty sage, faded terracotta, muted ochre, or soft olive. Avoid bright saturated hues.
+
+Typographic embellishments (あしらい) — all text-based, no illustrations:
+  • Scatter 4–6 single botanical characters or text symbols — ✿ ❀ ✾ ⊹ ∘ — at varied small sizes across the canvas, placed between keywords as breathing punctuation. These must feel incidental and handplaced, not symmetrical.
+  • Add 2–3 thin horizontal rules (────) or wavy tildes (〜〜〜) as gentle dividers between dense keyword clusters. Weight should be hairline-thin.
+  • Around 2 keywords, add a faint hand-drawn-style enclosure: a loose oval or irregular rectangle made of repeated dots or dashes (·····  ╌╌╌╌) that frames the word without boxing it in tightly.
+  • Use 1–2 small parenthetical labels in hiragana — e.g.「ていねいに」「そのままで」— set in Hachi Maru Pop at micro size, placed as quiet editorial whispers near the edges of the composition.
+
 Mood reference: a handcrafted nature journal, a botanical field sketchbook, a sustainable brand's editorial page.
 Even with the dynamic mixed-direction layout and size variation, the overall feeling must remain calm, organic, and human — as if assembled by hand rather than generated.`
   },
@@ -226,7 +233,14 @@ Optional pattern: an extremely faint fine dot-grid at ≤5% opacity — like a b
 No harsh shadows or gradients.`,
     designBlock: `[Design direction — Girly]
 Color strategy: pastel tones as the base — blush pink, lavender, soft peach — with one deeper accent (dusty rose, mauve, or antique gold) used sparingly for featured words. Avoid neon or overly saturated colors.
-Decorative elements: scatter small typographic ornaments — ✳ ✦ † ✿ ◇ — randomly among the keywords at a small size. These act as visual punctuation without adding imagery.
+
+Typographic embellishments (あしらい) — all text-based, no illustrations:
+  • Scatter 6–8 small decorative glyphs — ✦ ✧ ✩ ✿ ◇ ❋ † ✱ — randomly across the canvas at 3 distinct sizes (large accent, medium fill, tiny dust). Distribute them so they appear throughout every region of the canvas, not clustered.
+  • Around 2–3 featured keywords, draw a delicate typographic frame using corner flourishes made from bracket characters:「 」『 』or repeated dashes ──── forming an open, airy border. The frame should feel like stationery embossing, not a hard box.
+  • Add 3–4 thin lines of decorative text running vertically or diagonally at micro size — e.g. repeating「＊ ＊ ＊」or「· · · ·」as a subtle texture strip between keyword clusters.
+  • Place 1–2 small ribbon-style text banners: a curved or diagonal strip of repeating dots or stars (✦ ✦ ✦ ✦ ✦) that acts as a visual underline beneath a featured keyword.
+  • Use 2–3 small hiragana whisper labels — e.g.「ときめき」「さりげなく」— in Kosugi Maru at micro size, set at a slight diagonal, as secret editorial notes hidden in the composition.
+
 Mood reference: a fashion lookbook spread, a curated Instagram flat-lay, a Parisian stationery brand. The chaotic multi-direction layout should feel intentional and chic — not messy.`
   },
   {
@@ -254,6 +268,14 @@ Two options — choose the one that maximizes visual impact given the palette:
 No gradients. No noise. Purely graphic.`,
     designBlock: `[Design direction — Pop]
 Color strategy: saturated, high-contrast palette. Apply solid color fills to individual words or even individual characters. Use color blocking freely — different words in different solid colors. Restrict the palette to 3–4 strongly saturated hues to avoid chaos becoming muddy.
+
+Typographic embellishments (あしらい) — all text-based, no illustrations:
+  • Place 3–4 large solid-filled text shapes as background layer elements: oversized single characters (e.g. a giant「！」「★」「×」) rendered at near-canvas-filling scale and set at very low opacity (10–20%) in one of the palette colors. These act as graphic backdrops behind the keyword layer.
+  • Add 4–5 bold typographic accent marks — ★ ● ▲ ■ ◆ — at large display sizes (comparable to a medium keyword) scattered around the canvas. Fill each with a different palette color for maximum chromatic punch.
+  • Around 2 keywords, apply a solid-color rectangular highlight block behind the word — like a printed marker highlight or screen-printing registration block. The block color should contrast sharply with the text color on top.
+  • Use 2–3 short ALL-CAPS Latin filler phrases in Bebas Neue at small size — e.g.「VS」「NO.1」「×100」— placed as kinetic punctuation between keyword clusters.
+  • Add 1–2 diagonal bold stripes made of repeated characters (e.g. ／／／／／ or ＼＼＼＼) at medium size, running across a corner of the canvas as a graphic speed-line effect.
+
 Energy: the collision of vertical Japanese tategumi, diagonal Latin, and horizontal text — all at varied scales with internal character size variation — should feel intentional, kinetic, and high-energy.
 Mood reference: a concert or festival poster, a streetwear brand graphic, a pop-art silk-screen print. Maximum visual tension through controlled chaos.`
   },
@@ -281,6 +303,14 @@ Two mood options — choose based on the color palette:
 No textures. The background must feel like a premium editorial print surface.`,
     designBlock: `[Design direction — Elegant]
 Color strategy: restrained, two-to-three-tone palette. On dark backgrounds: ivory white, warm cream, and a single metallic or gold accent. On light backgrounds: deep navy, warm charcoal, and one muted accent (dusty gold, sage, or deep burgundy).
+
+Typographic embellishments (あしらい) — all text-based, no illustrations:
+  • Place 3–4 thin hairline rules — a single em-dash stretched to full width (─────────────────) or a row of fine dots (· · · · · · · · · ·) — as elegant horizontal or vertical dividers between major keyword clusters. These should be barely visible, at 30–50% opacity, like watermarks.
+  • Around 1–2 featured keywords, add a refined typographic enclosure: a pair of thin brackets or guillemets 〔 〕《 》 set at the same weight as the word, creating a subtle editorial frame that does not touch the text.
+  • Add 3–5 small ornamental glyphs — ✦ ❖ ◆ ✶ ∴ — at micro-to-small sizes, placed with precise intentionality at the intersection points between keyword clusters. Spacing must feel deliberate, never scattered.
+  • Use 2–3 single kanji or hiragana characters — e.g.「美」「静」「雅」— set in Noto Serif JP ExtraLight at very large display size (near the name's size) with opacity at 15–25%, functioning as a ghosted background layer of meaning.
+  • Add 1–2 very fine vertical text columns of decorative repeated characters (e.g. ║ or │ or ┊) running the full height of the canvas at the edges, like a typographic margin rule.
+
 Despite the random mixed-direction layout and internal character size variation, preserve elegance through generous negative space between word clusters. The size variation should feel like a deliberate calligraphic choice — intentional asymmetry, not disorder.
 Mood reference: a luxury fashion brand editorial, a prestige cultural institution, a high-end perfume campaign. Restraint is strength.`
   },
@@ -308,7 +338,14 @@ Background color: aged warm paper — muted sepia (#F2E8D5), worn cream (#EDE0C8
 Texture: apply a subtle noise grain at 10–15% opacity — enough to simulate aged paper without overwhelming the typography. A faint foxing or yellowing gradient at the very edges (≤5% opacity) adds period-appropriate aging.`,
     designBlock: `[Design direction — Retro]
 Color strategy: sepia, cream, faded ink colors. Use deep brown or aged black for primary text — never pure #000000 (too digital). Accent colors should be vintage: brick red, faded olive, dusty teal, or aged gold.
-Decorative elements: scatter small vintage ornamental devices — thin horizontal rules, asterisms (⁂), old-style brackets, or ornamental dashes — among the keywords to evoke hand-composed type.
+
+Typographic embellishments (あしらい) — all text-based, no illustrations:
+  • Scatter 4–6 vintage ornamental glyphs — ⁂ ✦ ※ ◉ ★ ☆ — at varied sizes across the canvas. These should feel like printer's marks or compositor's ornaments from a letterpress shop, not decorative icons.
+  • Add 3–4 thin ruled lines made of repeated typewriter characters — e.g. ─────── or ═══════ or ·········· — as horizontal dividers between keyword zones. Give them slight misalignment or irregularity to mimic imprecise manual typesetting.
+  • Around 2–3 keywords, add a vintage stamp or label frame: a rectangle of repeated characters — e.g. ▪▪▪▪▪▪▪▪ top and bottom with │ sides — that evokes a printed border from an old postal label or newspaper classified ad.
+  • Use 2–3 ALL-CAPS filler text fragments in Special Elite at small size — e.g.「VOL.01」「EST.——」「NO.」— placed as editorial bylines or publication markers, as if this poster is a page from a vintage periodical.
+  • Add 1–2 DotGothic16 vertical text strips spelling out a repeated short Japanese phrase — e.g.「かつて・いつか・また」— at micro size running alongside a large Zen Old Mincho word, creating a retro-digital texture contrast.
+
 Mood reference: a 1960s newspaper typographic spread, a mid-century travel poster, a hand-assembled zine, a vintage band flyer. The mix of vertical Japanese tategumi, diagonal vintage display, and horizontal typewriter text should feel like a nostalgic collage — each element from a different era, unified by the aged palette.`
   }
 ];
