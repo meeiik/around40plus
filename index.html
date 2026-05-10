@@ -255,12 +255,14 @@
     </div>
 
     <div id="output-area" class="output-area">
-      <p class="output-label">生成されたプロンプト <span>— ChatGPTにそのまま貼り付けてください</span></p>
-      <div id="output-box" class="output-box"></div>
-      <div class="output-actions">
-        <button onclick="copyText(event)"><i class="ti ti-copy" style="font-size:15px;vertical-align:-2px;margin-right:4px;"></i>コピー</button>
-        <button onclick="window.open('https://chatgpt.com/','_blank')"><i class="ti ti-external-link" style="font-size:15px;vertical-align:-2px;margin-right:4px;"></i>ChatGPTを開く</button>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+        <p class="output-label" style="margin-bottom:0;">生成されたプロンプト <span>— ChatGPTにそのまま貼り付けてください</span></p>
+        <div class="output-actions" style="margin-top:0;">
+          <button onclick="copyText(event)"><i class="ti ti-copy" style="font-size:15px;vertical-align:-2px;margin-right:4px;"></i>コピー</button>
+          <button onclick="window.open('https://chatgpt.com/','_blank')"><i class="ti ti-external-link" style="font-size:15px;vertical-align:-2px;margin-right:4px;"></i>ChatGPTを開く</button>
+        </div>
       </div>
+      <div id="output-box" class="output-box"></div>
     </div>
   </div>
 
@@ -287,7 +289,7 @@ const tastes = [
     label: "ナチュラル",
     val: "natural, organic, handmade and earthy",
     fontJa: "手書き風・丸ゴシック・やわらかいゴシック",
-    fontEn: "exclusively handwritten or brush-lettered fonts for XL and L size words; rounded gothic (e.g. Zen Maru Gothic) for M size words; loose casual sans-serif for S and XS words — NO clean geometric or serif fonts; everything must feel hand-touched and imperfect",
+    fontEn: "use these 4 fonts only — (1) 'Caveat' (Google Fonts, handwritten) for XL keywords; (2) 'Zen Maru Gothic' (Google Fonts, rounded gothic) for L and M keywords; (3) 'Patrick Hand' (Google Fonts, casual handwritten) for S keywords; (4) 'Kosugi Maru' (Google Fonts, soft rounded gothic) for XS keywords — minimum weight Regular (400) for all fonts; NO geometric or sharp sans-serif; every letterform must feel hand-touched and organic",
     referenceEn: "Hand-illustrated botanical ZINE packed with text, nature journaling spread with dense handwritten notes, Scandinavian craft market poster — type fills every corner like pressed flowers covering a page.",
     layoutEn: `- Words are scattered and packed densely across the full canvas — hand-scattered, as if poured onto the page
 - Each word tilts at a slightly different angle: horizontal words tilt ±5–15°, diagonal words go up to ±35°, vertical-leaning words lean top-to-bottom with a slight wobble (±5–10°)
@@ -305,7 +307,7 @@ const tastes = [
     label: "ガーリー",
     val: "girly, feminine, romantic and fashion-forward",
     fontJa: "スクリプト体・極細ゴシックの激しいコントラスト",
-    fontEn: "two font styles used in extreme contrast: (1) flowing cursive script fonts for XL and L size keywords — sweeping, looping, expressive; (2) ultra-thin hairline gothic or sans-serif for M, S, and XS keywords — the violent contrast between lush script and razor-thin gothic IS the design's identity; mix both styles throughout the dense composition",
+    fontEn: "use these 4 fonts only — (1) 'Playfair Display' italic (Google Fonts, elegant serif) for XL keywords; (2) 'Great Vibes' (Google Fonts, flowing script) for L keywords; (3) 'Zen Kaku Gothic New' Regular (Google Fonts, clean gothic) for M keywords; (4) 'Raleway' Light (Google Fonts, refined sans-serif) for S and XS keywords — contrast between expressive script and clean slim gothic IS the design's identity; minimum weight 300 (Light) for all fonts",
     referenceEn: "Densely typeset Korean fashion magazine spread, packed Parisian editorial layout, personal brand zine with text covering every inch — type is wallpaper.",
     layoutEn: `- Canvas is packed densely — words fill every zone, overlapping and layering like magazine clippings glued together
 - Mix horizontal (40%), vertical tategumi (30%), diagonal (30%) — all directions crowd the same areas
@@ -324,7 +326,7 @@ const tastes = [
     label: "ポップ",
     val: "pop, colorful, bold and energetic",
     fontJa: "極太ゴシック・ポップ体・デザイン書体",
-    fontEn: "extra-bold gothic, pop display fonts, expressive design typefaces — loud, punchy, high-impact",
+    fontEn: "use these 4 fonts only — (1) 'Boogaloo' (Google Fonts, bold rounded display) for XL keywords; (2) 'Lilita One' (Google Fonts, ultra-bold display) for L keywords; (3) 'Zen Kaku Gothic New' Bold (Google Fonts, heavy gothic) for M keywords; (4) 'Fredoka One' (Google Fonts, chunky rounded) for S and XS keywords — minimum weight Bold (700) for all fonts; every font must feel loud, punchy, and high-energy",
     referenceEn: "90s street flyer with zero empty space, Harajuku fashion zine packed wall-to-wall with text, Tokyo concert poster where type is the image.",
     layoutEn: `- Absolute maximum chaos and density — words crash, collide, and overlap aggressively everywhere
 - Equal mix of horizontal (35%), vertical tategumi (35%), diagonal up to ±60° (30%)
@@ -339,8 +341,8 @@ const tastes = [
   {
     label: "エレガント",
     val: "elegant, ultra-refined, austere and luxurious",
-    fontJa: "極細明朝体・ヘアライン一択（太字禁止）",
-    fontEn: "exclusively ultra-thin or hairline weight mincho (Japanese serif) and classic Latin serif fonts — NO bold, NO medium weight anywhere; thinness IS elegance; but use dramatically varied sizes to create visual power despite the thin weight",
+    fontJa: "明朝体・細〜レギュラーウェイト（ヘアラインは使わない、太字禁止）",
+    fontEn: "use these 4 fonts only — (1) 'Cormorant Garamond' SemiBold (Google Fonts, refined Latin serif) for XL keywords; (2) 'Shippori Mincho' Medium (Google Fonts, elegant Japanese mincho) for L and M keywords; (3) 'EB Garamond' Regular (Google Fonts, classic roman serif) for S keywords; (4) 'Shippori Mincho' Regular (Google Fonts) for XS keywords — use Regular (400) for XS–S, Medium (500) for M–L, SemiBold (600) for XL; minimum weight Regular (400) for all fonts; NO heavy or display-bold weight",
     referenceEn: "Densely layered Celine campaign typography, stacked art museum poster with many text elements, high-fashion editorial where thin type fills the frame completely.",
     layoutEn: `- Despite being elegant, the canvas is DENSE — thin words stack, layer, and overlap throughout
 - Vertical tategumi words dominate (55%): tall thin columns of characters crowd the canvas like a forest of reeds
@@ -358,7 +360,7 @@ const tastes = [
     label: "レトロ",
     val: "retro, vintage, nostalgic",
     fontJa: "レトロフォント・タイプライター風・ヴィンテージ系",
-    fontEn: "retro display fonts, typewriter-inspired typefaces, vintage condensed fonts — aged, characterful, nostalgic",
+    fontEn: "use these 4 fonts only — (1) 'Alfa Slab One' (Google Fonts, bold slab serif) for XL keywords; (2) 'Special Elite' (Google Fonts, typewriter-style) for L and M keywords; (3) 'Rye' (Google Fonts, vintage western display) for S keywords; (4) 'Courier Prime' (Google Fonts, classic monospace) for XS keywords — minimum weight Regular (400) for all fonts; all fonts must feel aged, mechanical, or letterpress-printed; NO clean modern sans-serif",
     referenceEn: "Packed Showa-era weekly magazine page, vintage poster covered wall-to-wall with type, hand-typed zine with no wasted space.",
     layoutEn: `- Dense, packed layout — every inch filled like a vintage print page with no wasted space
 - Mix horizontal typewriter lines (40%), vertical tategumi newspaper columns (35%), diagonal cut-paste clippings (25%)
@@ -445,34 +447,33 @@ function lightenHex(hex, amount) {
 function buildBgInstruction(colorList, tasteLabel) {
   if (!colorList.length) {
     const defaults = {
-      "ナチュラル": "Warm ivory or unbleached paper tone (#FAF7F2) with a faint paper-grain texture. The background will be mostly hidden behind dense typography.",
-      "ガーリー": "Very pale blush (#FDF0F3) or soft lavender (#F5F0FA) — almost entirely covered by dense typography.",
-      "ポップ": "Pure white (#FFFFFF) or one vivid solid color from the palette. Flat, no gradients or textures — almost entirely covered by typography.",
-      "エレガント": "Near-black charcoal (#1A1A1A) or very pale warm ivory (#FDFAF5) — one extreme only. Mostly covered by layered thin typography.",
-      "レトロ": "Aged warm paper (#F2E8D5) with noise/grain texture — almost entirely covered by dense vintage-style typography.",
+      "ナチュラル": "Near-white with the faintest warm ivory hint (#FDFCF9) — almost pure white, not cream or paper-toned. No grain or texture. The background will be mostly hidden behind dense typography.",
+      "ガーリー": "Near-white with the faintest blush hint (#FEF8F9) — almost pure white, not pink or lavender. Clean and bright. Almost entirely covered by dense typography.",
+      "ポップ": "Pure white (#FFFFFF). Flat, no gradients or textures — almost entirely covered by typography.",
+      "エレガント": "Near-black charcoal (#1A1A1A) or pure white (#FFFFFF) — one extreme only, no grey or ivory. Mostly covered by layered thin typography.",
+      "レトロ": "Near-white with the faintest warm hint (#FEFCF8) — almost pure white, not aged or yellowed. Almost entirely covered by dense vintage-style typography.",
     };
-    return defaults[tasteLabel] || "A subtle neutral background almost entirely covered by dense typography.";
+    return defaults[tasteLabel] || "Near-white (#FEFEFE) — almost pure white, clean and bright. Almost entirely covered by dense typography.";
   }
   const chosen = pick(colorList);
   const hex = parseColorToHex(chosen);
   if (!hex) return `A very pale tint of "${chosen}" — almost entirely covered by dense typography.`;
-  const lightHex = lightenHex(hex, 0.80);
-  return `A pale, washed-out tint of the user's chosen color "${chosen}" — use ${lightHex} as the background color (this is the original color lightened ~80% toward white). The background will be almost entirely covered by dense typography.`;
+  const lightHex = lightenHex(hex, 0.95);
+  return `A very pale, near-white tint of the user's chosen color "${chosen}" — use ${lightHex} as the background color (this is the original color mixed 95% toward white). The color must look almost white with just a faint hint of hue — NOT pastel, NOT muted or dusty, NOT grey-toned. Think: the lightest possible tint you can still perceive. The background will be almost entirely covered by dense typography.`;
 }
 
 function makeChips() {
   const el = document.getElementById('taste-grid');
-  tastes.forEach(item => {
+  tastes.forEach((item, i) => {
     const chip = document.createElement('span');
     chip.className = 'chip';
     chip.textContent = item.label;
+    chip.dataset.index = i;
     chip.onclick = () => {
       el.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
       chip.classList.add('active');
-      chip._taste = item;
       document.getElementById('font-hint').textContent = '使用フォントの方向性：' + item.fontJa;
     };
-    chip._taste = item;
     el.appendChild(chip);
   });
 }
@@ -500,7 +501,7 @@ function generate() {
   const colorList = rawColor ? rawColor.split(/\s+/).filter(Boolean) : [];
   const activeChip = document.querySelector('#taste-grid .chip.active');
   if (!activeChip) { alert('テイストを選択してください'); return; }
-  const tc = activeChip._taste;
+  const tc = tastes[activeChip.dataset.index];
 
   const userColorNote = colorList.length
     ? `The user has requested these colors be incorporated: ${colorList.join(', ')}. Blend them into the color scheme while keeping the overall mood intact.`
@@ -518,6 +519,9 @@ For exactly ${illustTargets.length} keyword(s) — "${illustTargets.join('", "')
 - Style: ${tc.illustStyle}
 - Placement: tucked close to the keyword, either beside it or nestled just below — it should feel like a natural part of that keyword's typographic element
 - All other keywords have NO illustration — text only`;
+
+  // キャッチコピーを付けるキーワード数：全体の約4割（最低1つ）
+  const catchphraseCount = Math.max(1, Math.round(kwList.length * 0.25));
 
   const seed = Math.floor(Math.random() * 99999);
   const namePlacement = pick(namePlacements);
@@ -572,7 +576,13 @@ ${userColorNote}
 ${illustSection}
 
 [Catchphrases]
-From the keyword list, select exactly 5 keywords that best represent the person's character or interests. For those 5 keywords only, pair each with a short punchy catchphrase (3–6 words). Place each catchphrase as small accent text directly beside or beneath its keyword, styled differently (italic, lighter weight, or contrasting font). All other keywords appear WITHOUT any catchphrase.
+From the keyword list, select exactly ${catchphraseCount} keyword(s) — roughly 25% of the total — that best represent the person's character or interests. For those ${catchphraseCount} keywords only, pair each with a short punchy catchphrase (maximum 20 characters — keep it tight and impactful).
+- Catchphrases must be legible, readable body text — NOT treated as decorative elements, background texture, or graphic ornamentation
+- Set each catchphrase at a small but clearly readable size (14–18px equivalent), with sufficient contrast against the background
+- Do not distort, rotate excessively, overlap with other text, or use as a visual flourish — it must be readable as a sentence
+- Place each catchphrase directly beside or beneath its paired keyword, as a grounded caption-like element
+- Style it differently from keywords (italic, lighter weight, or contrasting font) to distinguish it, but keep it fully legible
+- All other keywords appear WITHOUT any catchphrase
 
 [Final Note]
 - No photos or human figures — typography only (illustrations are allowed only for the ${illustTargets.length} keyword(s) listed above)
@@ -585,11 +595,19 @@ From the keyword list, select exactly 5 keywords that best represent the person'
 }
 
 function copyText(e) {
+  if (!lastPrompt) return;
   navigator.clipboard.writeText(lastPrompt).then(() => {
     const btn = e.target.closest('button');
     const orig = btn.innerHTML;
     btn.innerHTML = '<i class="ti ti-check" style="font-size:15px;vertical-align:-2px;margin-right:4px;"></i>コピーしました';
     setTimeout(() => btn.innerHTML = orig, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = lastPrompt;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
   });
 }
   </script>
