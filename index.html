@@ -120,7 +120,7 @@
                 ornament: 'Small hand-drawn leaf line-icons and botanical silhouettes',
                 decoration: 'Double-line strikes, thin outlines, and soft paper-grain effects',
                 aesthetic: 'Breathable, tactile, and keyword-focused',
-                adjectives: ['Gentle', 'Flowing', 'Deep', 'Calm', 'Pure', 'Quiet', '穏やかな', '心地よい', '澄んだ', '素朴な', '柔らかな', 'ありのままの'],
+                adjectives: ['心が深呼吸する', '自然と溶け合う', 'ありのままの自分', '静かな朝の光', '土の匂いを感じる', '風が吹き抜ける'],
                 icons: ['🍃', '🌱', '☀️', '💧', '☁️', '🪵']
             },
             girly: {
@@ -131,7 +131,7 @@
                 ornament: 'Miniature star, ribbon, and bubble icons',
                 decoration: 'Holographic strokes, inner glows, and small sparkle dots',
                 aesthetic: 'Luminous, cute, and detailed',
-                adjectives: ['Sweet', 'Shiny', 'Lovely', 'Magic', 'Fancy', 'Sparkling', 'ときめく', 'きらめく', '甘い', '夢見る', '愛らしい', '可憐な'],
+                adjectives: ['魔法にかかる瞬間', '甘い夢のつづき', 'ときめきが止まらない', 'きらめく恋心', 'お気に入りを集めて', '宝石のような毎日'],
                 icons: ['🎀', '✨', '💖', '🍭', '🦋', '💄']
             },
             pop: {
@@ -142,7 +142,7 @@
                 ornament: 'Comic-style icon stamps, bolt icons, and flat-design symbols',
                 decoration: '3D block shadows, chromatic aberration, and sticker-like thick white borders',
                 aesthetic: 'Impactful, energetic, and graphic',
-                adjectives: ['Crazy', 'Dynamic', 'Boom', 'Wild', 'Happy', 'Super', '弾ける', '無敵の', '最高な', '刺激的な', '遊び心のある', '自由な'],
+                adjectives: ['エネルギーが弾ける', '無敵のヒーロー気分', '遊び心をフル稼働', '常識をぶち破れ', '最高にハッピーな日', '世界をカラフルに'],
                 icons: ['⚡', '💥', '🔥', '🚀', '🌈', '👾']
             },
             elegant: {
@@ -153,7 +153,7 @@
                 ornament: 'Minimalist geometric line-icons and tiny jewelry motifs',
                 decoration: 'Hairline serifs, golden foil gradients, and elegant drop shadows',
                 aesthetic: 'Refined, sharp, and luxurious',
-                adjectives: ['Graceful', 'Noble', 'Eternal', 'Royal', 'Sharp', 'Splendid', '気品ある', '優雅な', '洗練された', '永遠の', '極上の', '凛とした'],
+                adjectives: ['凛とした美しさ', '極上の安らぎ', '気品を身に纏う', '永遠に続く輝き', '洗練された日常', '優雅な時の流れ'],
                 icons: ['💎', '🥂', '🌹', '🕊️', '🌙', '🗝️']
             },
             retro: {
@@ -164,7 +164,7 @@
                 ornament: 'Iconic retro stamps, old-style logo symbols, and pixel-art icons',
                 decoration: 'Ink bleed effects, halftone dots on characters, and distress textures',
                 aesthetic: 'Authentic, nostalgic, and character-driven',
-                adjectives: ['Classic', 'Old-school', 'Memory', 'Warm', 'Soul', 'Analog', '懐かしい', '色褪せない', '味わい深い', 'ぬくもりの', '古き良き', '情緒的な'],
+                adjectives: ['古き良き記憶', '色褪せないメロディ', 'アナログの温もり', 'あの日の帰り道', '時間を旅する', '懐かしい物語'],
                 icons: ['📻', '📸', '📼', '☕', '🕯️', '🎞️']
             }
         };
@@ -191,21 +191,16 @@
             let keywords = inputRaw.split(/[\s,、]+/).map(k => k.trim().toUpperCase()).filter(k => k !== "");
             if (keywords.length === 0) keywords = ["ART", "SOUL", "LIFE", "FUTURE", "DREAM"];
             
-            // 全キーワードをシャッフル
             keywords.sort(() => Math.random() - 0.5);
             
-            // キャッチコピーをつけるキーワードは「最大6個まで」
             const captionLimit = 6;
             
             const processedKeywords = keywords.map((k, index) => {
                 let caption = "";
-                
-                // リストの先頭から指定数（最大6個）までにのみキャッチコピーを付与
                 if (index < captionLimit) {
                     caption = theme.adjectives[Math.floor(Math.random() * theme.adjectives.length)];
                 }
                 
-                // アイコンの生成（こちらは全キーワード対象のランダムとする）
                 let iconStr = "";
                 if (Math.random() > 0.5) {
                     iconStr = theme.icons[Math.floor(Math.random() * theme.icons.length)];
@@ -231,8 +226,8 @@
 - 余白の厳格制御: キャンバス全体の「15%」のみを余白とし、残りの85%を要素で密に埋めよ。
 - 圧倒的ジャンプ率: フォントサイズを 1%〜500% の範囲で劇的に変化させ、要素ごとにサイズ、位置、角度をバラバラにすること。
 
-■ キーワードとサブコピーの特殊配置 (TEXT HIERARCHY):
-- リスト内の {SUB-COPY: "..."} は、直前のキーワードに対応する「短いキャッチコピー」である。
+■ キーワードとサブコピー（短い文章）の特殊配置 (TEXT HIERARCHY):
+- リスト内の {SUB-COPY: "..."} は、直前のキーワードに対応する「情緒的な短い文章（サブコピー）」である。
 - **配置**: サブコピーは、メインキーワードの「すぐ傍ら」または「直下」に配置せよ。
 - **サイズ**: サブコピーはメインキーワードの「1/5以下」の極小サイズとし、注釈のように控えめに配置せよ。
 - **フォント**: サブコピーにはメインキーワードとは「異なる種類のフォント」を割り当て、視覚的な強弱をつけよ。
@@ -256,7 +251,7 @@
 - 背景: ${bgInput} (質感: ${theme.bgDesign}, フィルムグレイン・微細なノイズを追加)
 
 ■ 最終指示:
-- 指定されたベース色、差し色、フォント群を活用し、巨大なメインキーワードの傍らに極小のキャッチコピーが注釈的に添えられた、高密度なタイポグラフィ作品を生成せよ。文字は常に判読可能な向きを維持すること。
+- 指定されたベース色、差し色、フォント群を活用し、巨大なメインキーワードの傍らに、極小の情緒的な短い文章（サブコピー）が注釈的に添えられた、高密度なタイポグラフィ作品を生成せよ。
 - Final Output Format: --ar 3:4`;
 
             document.getElementById('generatedPrompt').innerText = prompt;
