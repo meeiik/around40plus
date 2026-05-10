@@ -153,8 +153,17 @@ Text direction — three modes, distributed unpredictably:
   (C) Diagonal: rotated freely between −50° and +50° for horizontal-origin words only. NEVER apply diagonal rotation to a word set in tategumi.
 Mix all three directions across every region of the canvas. No single direction should dominate more than 40% of the keywords.
 
-Internal character size variation:
-Within a single multi-character keyword, vary the size of individual characters to create internal rhythm — for example: first character large, second tiny, third medium. This creates micro-level contrast inside each word, separate from the macro-level size differences between words.
+Internal character size variation (MANDATORY for every keyword of 2+ characters):
+Within every multi-character keyword, independently vary the font size of EACH individual character. This is not optional — every keyword must show visible internal size contrast. Rules:
+  - Assign each character one of four distinct size tiers: enormous (150–200% of the word's base size), large (110–140%), small (60–80%), or micro (30–50%).
+  - No two adjacent characters should share the same tier.
+  - Example patterns (apply randomly, not the same pattern for every word):
+      · 大→微→中→大 (large, micro, medium, large)
+      · 微→大→微→大→微 (micro, large, micro, large, micro)
+      · 中→大→微→中 (medium, large, micro, medium)
+  - The internal jump must be clearly visible even from a distance — subtle shifts do not qualify.
+  - Vertical tategumi words must also apply this per-character size variation along the vertical axis; each stacked character has its own size.
+  - This per-character size variation stacks on top of the global word-level size contrast — a word that is globally "small" still has internal character size jumps within it.
 
 Global size contrast:
 ${CONTRAST_INSTRUCTIONS[contrast]}
@@ -166,11 +175,19 @@ Allow keywords to overlap slightly at edges. Use z-ordering so smaller words app
 function CATCHPHRASE_BLOCK(kwList) {
   const count = Math.max(1, Math.round(kwList.length * 0.3));
   return `[Catchphrase accents]
-From the keyword list, select exactly ${count} keyword${count > 1 ? 's' : ''} (roughly 30% of the total) that best capture the person's character or passions. For each selected keyword, compose a short, punchy Japanese-language catchphrase (8–16文字程度) that distills the essence of that keyword — like an editorial caption, a personal motto fragment, or a poetic one-liner. Write ONLY in Japanese (hiragana, katakana, or kanji); do NOT use English or romaji in any catchphrase.
+From the keyword list, select exactly ${count} keyword${count > 1 ? 's' : ''} (roughly 30% of the total) that best capture the person's character or passions.
+
+CRITICAL LANGUAGE RULE: Every single catchphrase MUST be written entirely in Japanese. Use hiragana, katakana, and/or kanji ONLY. The use of any English letters, romaji, or Latin characters in a catchphrase is strictly forbidden — even a single letter is a violation.
+
+For each selected keyword, compose a short Japanese-language catchphrase (8〜16文字) in one of these styles:
+  - 詩的な一言: 短く詩的な表現（例：「静かに、でも確かに」「光を追いかけて」）
+  - 座右の銘風: 自分の信念を表すフレーズ（例：「丁寧に生きる」「好きを貫く」）
+  - 編集的キャプション: 雑誌の見出し風（例：「感性という名の羅針盤」「余白に宿る豊かさ」）
+
+Placement and styling:
 - Place each catchphrase as small accent text (roughly 60–70% the size of its paired keyword), positioned directly beside or below it.
-- Style catchphrases differently from the main keywords: use italic, extra-light weight, or a contrasting font family (e.g. a serif caption next to a bold gothic headline).
-- Leave the remaining ${kwList.length - count} keyword${kwList.length - count !== 1 ? 's' : ''} without catchphrases — they stand alone as pure typographic elements.
-- These accents add editorial depth and personality without cluttering the layout.`;
+- Style catchphrases differently from the main keywords: use extra-light weight, or a contrasting font family (e.g. a mincho caption next to a bold gothic headline).
+- Leave the remaining ${kwList.length - count} keyword${kwList.length - count !== 1 ? 's' : ''} without catchphrases — they stand alone as pure typographic elements.`;
 }
 
 // ─── テイストデータ ────────────────────────────────────────────
