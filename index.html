@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>タイポグラフィポスタープロンプトジェネレーター</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@300;400&family=Hachi+Maru+Pop&family=Caveat:wght@400;700&family=Lato:wght@300&family=Klee+One&family=Kosugi+Maru&family=Dancing+Script:wght@400;700&family=Playfair+Display:ital@1&family=Dela+Gothic+One&family=RocknRoll+One&family=Bebas+Neue&family=Shippori+Mincho:wght@400;500&family=Noto+Serif+JP:wght@200;300&family=Cormorant+Garamond:wght@300;400&family=EB+Garamond:ital@1&family=Zen+Old+Mincho&family=DotGothic16&family=Special+Elite&family=Arvo:ital@0;1&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; }
 body {
@@ -37,23 +40,36 @@ textarea { min-height: 72px; resize: vertical; }
 }
 .chip:hover { border-color: #999; color: #111; }
 .chip.active { background: #111; color: #fff; border-color: #111; }
+.gen-btn-row { display: flex; gap: 8px; margin-top: 1.5rem; flex-wrap: wrap; }
 .gen-btn {
-  margin-top: 1.5rem; padding: 11px 22px; font-size: 14px;
+  padding: 11px 22px; font-size: 14px;
   font-weight: 500; cursor: pointer; border: none;
   border-radius: 8px; background: #111; color: #fff;
   font-family: inherit; transition: background 0.15s;
 }
 .gen-btn:hover { background: #333; }
+.reset-btn {
+  padding: 11px 18px; font-size: 14px;
+  font-weight: 500; cursor: pointer;
+  border: 1px solid #ddd; border-radius: 8px;
+  background: #fff; color: #555;
+  font-family: inherit; transition: all 0.15s;
+}
+.reset-btn:hover { border-color: #999; color: #111; background: #f9f9f9; }
 #output-area { display: none; margin-top: 1.75rem; }
-.output-label { font-size: 12px; color: #555; font-weight: 500; margin: 0 0 8px; }
+.output-header {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 8px; margin-bottom: 8px;
+}
+.output-label { font-size: 12px; color: #555; font-weight: 500; margin: 0; }
 .output-label span { font-weight: 400; color: #aaa; }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
 #output-box {
   background: #f7f7f7; border: 1px solid #e8e8e8; border-radius: 8px;
   padding: 1rem 1.25rem; font-size: 13px; line-height: 1.9; color: #222;
   white-space: pre-wrap; word-break: break-word;
   font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif;
 }
-.btn-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
 .action-btn {
   font-size: 13px; padding: 7px 16px; cursor: pointer;
   border: 1px solid #ddd; border-radius: 8px;
@@ -65,6 +81,22 @@ textarea { min-height: 72px; resize: vertical; }
 .section-title {
   font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
   color: #bbb; text-transform: uppercase; margin: 0 0 1rem;
+}
+#kw-preview {
+  display: none; margin-top: 1rem;
+  border-radius: 10px; overflow: hidden;
+  min-height: 80px; padding: 18px 20px;
+  position: relative;
+  transition: background 0.4s, border-color 0.4s;
+  border: 1px solid #e8e8e8;
+}
+#kw-preview-inner {
+  display: flex; flex-wrap: wrap; gap: 8px 12px;
+  align-items: baseline; position: relative; z-index: 1;
+}
+.kw-token {
+  display: inline-block; line-height: 1.2;
+  transition: all 0.3s; cursor: default;
 }
 </style>
 </head>
@@ -82,7 +114,8 @@ textarea { min-height: 72px; resize: vertical; }
 
 <div class="section">
   <label class="label">キーワード <span>スペース区切り・5〜15個推奨</span></label>
-  <textarea id="inp-keywords"></textarea>
+  <textarea id="inp-keywords" oninput="updatePreview()"></textarea>
+  <div id="kw-preview"><div id="kw-preview-inner"></div></div>
 </div>
 
 <hr class="section-divider">
@@ -98,15 +131,20 @@ textarea { min-height: 72px; resize: vertical; }
   <input id="inp-color" type="text" />
 </div>
 
-<button class="gen-btn" onclick="generate()">プロンプトを生成する ↗</button>
+<div class="gen-btn-row">
+  <button class="gen-btn" onclick="generate()">プロンプトを生成する ↗</button>
+  <button class="reset-btn" onclick="resetAll()">リセット</button>
+</div>
 
 <div id="output-area">
-  <p class="output-label">生成されたプロンプト <span>— ChatGPT (DALL-E) にそのまま貼り付けてください</span></p>
-  <div id="output-box"></div>
-  <div class="btn-row">
-    <button class="action-btn" onclick="copyText(event)">コピー</button>
-    <button class="action-btn" onclick="window.open('https://chatgpt.com/','_blank')">ChatGPTを開く ↗</button>
+  <div class="output-header">
+    <p class="output-label">生成されたプロンプト <span>— ChatGPT (DALL-E) にそのまま貼り付けてください</span></p>
+    <div class="btn-row">
+      <button class="action-btn" onclick="copyText(event)">コピー</button>
+      <button class="action-btn" onclick="window.open('https://chatgpt.com/','_blank')">ChatGPTを開く ↗</button>
+    </div>
   </div>
+  <div id="output-box"></div>
 </div>
 
 <script>
@@ -184,7 +222,20 @@ Fonts (use ONLY these four):
   • Japanese accent: "Hachi Maru Pop" — playful balloon-round, small-to-medium sizes only.
   • Latin primary: "Caveat" Regular/Bold — informal handwritten script, diagonal words.
   • Latin accent: "Lato" Light — humanist sans for catchphrases.
-Weight range: Light to Regular only. Letter-spacing: +0.02em to +0.05em on Lato Light.`,
+Weight range: Light to Regular only. Letter-spacing: +0.02em to +0.05em on Lato Light.
+
+[Text effects — Natural / Organic]
+Apply these effects to the typographic elements to reinforce the handcrafted, organic feel:
+
+① Ink-bleed softening: All text edges are very slightly softened (0.3–0.5px blur), as if ink has soaked 1–2 fibers into the paper surface. This is NOT a glow — it is a matte, directional ink absorption. Apply more strongly to Caveat and Hachi Maru Pop; keep Zen Maru Gothic and Lato nearly crisp.
+
+② Stroke-pressure variation (Caveat and Hachi Maru Pop only): Simulate natural brush/pen pressure — strokes that feel thicker at entry and exit, thinner mid-stroke. Achieved by rendering glyphs with slightly uneven stroke weight, as if painted with a soft brush.
+
+③ Gentle organic warp: Large keywords (Zen Maru Gothic and Caveat at display sizes) have an extremely subtle baseline warp — individual characters shifted ±1–2px vertically at random, as if hand-set on an uneven surface. Not a wave — a slight organic irregularity.
+
+④ Matte ink texture on fill: All text fill colors have a very fine grain texture (noise at 8–12% opacity) overlaid on the color itself, making the ink feel pigment-dense and matte rather than digital-flat. Apply to every keyword regardless of color.
+
+⑤ Faded-edge characters: 2–3 keywords (the smallest or most lightly-weighted ones) have their outer edges very slightly faded, as if the ink was running low — opacity drops to 70–80% at the outermost strokes only. Creates the illusion of a worn stamp or near-dry brush.`,
     bgBlock: `[Background — Natural / Organic]
 Base tone: warm ivory #FAF7F2 or unbleached linen #F2EBE0 — never stark white.
 
@@ -244,7 +295,20 @@ Fonts (use ONLY these four):
   • Japanese accent: "Kosugi Maru" — soft rounded gothic, small-to-medium sizes.
   • Latin primary: "Dancing Script" Bold/Regular — flowing connected cursive.
   • Latin accent: "Playfair Display" Italic — high-contrast editorial serif for catchphrases.
-Weight range: Regular to Bold. Letter-spacing: +0.04em on Playfair Display Italic.`,
+Weight range: Regular to Bold. Letter-spacing: +0.04em on Playfair Display Italic.
+
+[Text effects — Girly / Feminine]
+Apply these effects to create a dreamy, luminous, fashion-editorial atmosphere:
+
+① Soft luminous glow (hero and large keywords only): The 3–4 largest keywords have a very soft, diffuse outer glow matching the keyword's own color at 25–35% opacity, spread 6–10px. This is NOT a hard drop shadow — it is a dreamy halo, as if the text is lit from within. Apply only to large keywords; do not apply to micro-text or catchphrases.
+
+② Delicate pastel drop shadow (medium keywords): Medium-sized keywords have a soft pastel shadow — offset 2–3px diagonally, blur 4–6px, in a deeper shade of the blush/lavender background at 20–30% opacity. Barely perceptible, adding depth without drama.
+
+③ Glitter sparkle on select characters (Dancing Script Bold only): For 2–3 keywords, individual characters have tiny bright highlights — 1–2px white or gold flecks — placed along their upstrokes, as if glitter adheres to the raised ink. These are point highlights, not a uniform shimmer.
+
+④ Hairline stroke outline (Playfair Display Italic only): Catchphrases have an ultra-thin outline (0.3px) in a slightly deeper tone of the text color — reinforcing the crisp editorial quality of the hairline serifs.
+
+⑤ Color transparency layering at overlaps: Where keywords overlap, the upper keyword is set at 88–95% opacity, so the collision zone shows a subtle color blend — like two translucent overlays creating a stained-glass luminosity.`,
     bgBlock: `[Background — Girly / Feminine]
 Base tone: pale blush #FDF0F3 or soft lavender #F5F0FA — delicate as premium stationery.
 
@@ -300,7 +364,20 @@ Fonts (use ONLY these four):
   • Japanese accent: "RocknRoll One" — bold, energetic, slightly irregular gothic.
   • Latin primary: "Bebas Neue" — all-caps condensed sans-serif, uniform boldness.
   • Latin accent: "Boogaloo" — bold informal display font, loose and slightly wonky.
-Weight range: Bold to Black throughout. Tracking: −0.02em to 0 on Bebas Neue and Dela Gothic One.`,
+Weight range: Bold to Black throughout. Tracking: −0.02em to 0 on Bebas Neue and Dela Gothic One.
+
+[Text effects — Pop / Bold]
+Apply these effects to maximize graphic impact and streetwear/silk-screen energy:
+
+① Hard offset shadow (hero and large keywords): The 2–3 largest keywords have a hard drop shadow with ZERO blur — a solid-color duplicate offset exactly 4–6px right and 4–6px down (or in one consistent direction per keyword). The shadow color is a strongly contrasting palette hue, fully opaque. This is a graphic design move, not a realistic shadow — it must look intentional and bold, like a risograph offset.
+
+② Outline stroke (Bebas Neue and Dela Gothic One, selected keywords): 3–4 keywords have a thick stroke outline (2–4px) in a contrasting palette color, creating a bold comic-book or sticker effect. On some keywords, the outline color differs from the fill — e.g. yellow fill with red outline, or white fill with black outline.
+
+③ Halftone dot fill (1–2 keywords): One or two keywords have their fill rendered as a coarse halftone dot pattern — the letter shape is formed by clusters of large dots (10–18px diameter) in the palette color rather than a solid fill. This evokes classic pop-art Ben-Day dots.
+
+④ Color split / chromatic aberration (hero keyword only): The single largest keyword shows a deliberate chromatic aberration — the same word rendered twice, with the two copies offset by 3–5px in opposite directions (left/right or at a diagonal), each in a different palette color. Where they overlap, the colors mix. This creates the look of a misregistered silk-screen print.
+
+⑤ Flat inner highlight: On all solid-filled keywords, add a single thin highlight stripe — 1–2px wide, in near-white at 60–80% opacity — along the top edge of the letters. This gives the flat fills a slightly dimensional, sticker-like quality without adding gradients.`,
     bgBlock: `[Background — Pop / Bold]
 Base: flat near-black #111111.
 
@@ -354,7 +431,20 @@ Fonts (use ONLY these four):
   • Japanese accent: "Noto Serif JP" Light/ExtraLight — refined modern mincho, excellent small-size legibility.
   • Latin primary: "Cormorant Garamond" Light/Regular — ultra-refined high-contrast display serif.
   • Latin accent: "EB Garamond" Italic — classical Garamond revival, footnote-like editorial quality.
-Weight range: ExtraLight to Regular only. Bold strictly forbidden. Letter-spacing: +0.05em to +0.10em on all fonts.`,
+Weight range: ExtraLight to Regular only. Bold strictly forbidden. Letter-spacing: +0.05em to +0.10em on all fonts.
+
+[Text effects — Elegant / Refined]
+Apply these effects to evoke gold foil printing, embossing, and luxury editorial production:
+
+① Gold foil simulation (name and 1–2 hero keywords): These elements are rendered in a metallic gold gradient — NOT a flat gold, but a vertical or diagonal gradient cycling through: deep gold (#8B6914) → bright gold (#E8C97A) → pale champagne (#F5EDCA) → bright gold → deep gold. This replicates the way gold foil catches and reflects light from different angles. Apply ONLY to the name and the largest keyword; all other text remains in ivory or cream.
+
+② Emboss / letterpress press effect (Shippori Mincho and Cormorant Garamond, large sizes): Large keywords have a dual-shadow emboss: a very subtle highlight (1px offset, near-white at 15–20% opacity) on the top-left edge, and a very subtle shadow (1px offset, near-black at 20–25% opacity) on the bottom-right edge. Together these simulate text pressed into a dark surface — like blind embossing on luxury packaging.
+
+③ Luminous glow on ivory text (medium keywords): Medium-sized ivory/cream keywords have a faint warm glow (5–8px spread, same color as the text at 15–20% opacity) that makes them appear to emit soft light against the dark background — like text on a backlit menu card.
+
+④ Ultra-fine stroke on Cormorant Garamond hairlines: The thinnest hairline strokes of Cormorant Garamond Light are given an imperceptible boost — rendered at 105% stroke weight — to prevent them from disappearing against the dark background. The thick/thin contrast is preserved but the hairlines remain legible.
+
+⑤ Vellum-overlay transparency: 3–4 small keywords are rendered at 60–75% opacity, as if printed on a translucent vellum sheet laid over the composition. These recede visually, creating a sense of layered depth — like pages of a luxury book overlapping.`,
     bgBlock: `[Background — Elegant / Refined]
 Base: deep charcoal #1A1A1A or dark navy #0E1629.
 Typography glows in ivory, warm white, or gold against it.
@@ -407,7 +497,20 @@ Fonts (use ONLY these four):
   • Japanese accent: "DotGothic16" — pixel/dot-matrix gothic, sparse use (max 2–3 words).
   • Latin primary: "Special Elite" — typewriter-style, ALL-CAPS strongly encouraged.
   • Latin accent: "Arvo" Regular/Italic — geometric slab-serif, 1950s–60s print advertising.
-Weight range: Regular to Bold. Tracking: +0.05em to +0.10em on Special Elite.`,
+Weight range: Regular to Bold. Tracking: +0.05em to +0.10em on Special Elite.
+
+[Text effects — Retro / Vintage]
+Apply these effects to simulate aged print, letterpress production, and worn typographic artifacts:
+
+① Letterpress impression (Zen Old Mincho, large sizes): Large Zen Old Mincho keywords are rendered with a subtle deboss/impression effect — a very faint inner shadow (1–2px, dark brown at 15–20% opacity) along the bottom and right edges of each stroke, as if the type was pressed hard into the paper surface and the fibers compressed slightly. The fill color itself shifts 5–8% darker on these pressed edges.
+
+② Ink-spread uneven fill (Special Elite, all sizes): Every Special Elite word has a slightly uneven fill — the ink density varies across individual characters, with some strokes at full opacity and others at 80–90%, as if the typewriter ribbon had inconsistent ink across its width. Additionally, 2–4 characters per word have a very faint ink-bleed halo (0.5–1px spread, same color at 25% opacity) suggesting ink absorbed into paper fibers.
+
+③ Ghosting / mis-registration echo (Zen Old Mincho and Arvo, large keywords only): 2–3 large keywords show a ghosting artifact — a duplicate of the word at 8–15% opacity, offset 2–3px in a slightly different direction (e.g. 2px right, 1px up). The ghost copy is in a slightly different hue (more sepia-tinted). This replicates the double-printing artifact of misaligned letterpress runs.
+
+④ Ink-oxidation color shift: All text colors are rendered with a slight warm oxidation shift — pure blacks become deep warm brown, pure reds become brick-rust, blues become dusty teal. No color should be a clean digital hue; every color must feel like aged ink that has oxidized over decades.
+
+⑤ Halftone dot erosion (DotGothic16 only): The pixel/dot characters of DotGothic16 have their individual dots rendered with slight size variation — some dots at 90%, some at 70%, a few at 50% of their normal diameter — creating the look of a worn dot-matrix printout where the ink has faded unevenly.`,
     bgBlock: `[Background — Retro / Vintage]
 Base tone: aged warm paper — muted sepia (#F2E8D5), worn cream (#EDE0C8), or faded manila (#E8DEC0).
 
@@ -475,6 +578,7 @@ function makeChips(containerId, items) {
     chip.onclick = () => {
       el.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
       chip.classList.add('active');
+      updatePreview();
     };
     el.appendChild(chip);
   });
@@ -541,6 +645,150 @@ function generate() {
   document.getElementById('output-box').textContent = lastPrompt;
   document.getElementById('output-area').style.display = 'block';
   document.getElementById('output-area').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function resetAll() {
+  document.getElementById('inp-name').value = '';
+  document.getElementById('inp-keywords').value = '';
+  document.getElementById('inp-color').value = '';
+  document.querySelectorAll('#taste-grid .chip').forEach(c => c.classList.remove('active'));
+  document.getElementById('output-area').style.display = 'none';
+  document.getElementById('output-box').textContent = '';
+  document.getElementById('kw-preview').style.display = 'none';
+  document.getElementById('kw-preview-inner').innerHTML = '';
+  lastPrompt = '';
+}
+
+// ─── キーワードプレビュー ─────────────────────────────────────
+
+const TASTE_PREVIEW = {
+  'ナチュラル': {
+    bg: '#FAF7F2',
+    border: '#E2D9CC',
+    fonts: [
+      { f: "'Zen Maru Gothic', sans-serif", w: '300' },
+      { f: "'Caveat', cursive", w: '700' },
+      { f: "'Hachi Maru Pop', cursive", w: '400' },
+      { f: "'Lato', sans-serif", w: '300' },
+    ],
+    colors: ['#3D2B1F','#8A9E7B','#C47B5A','#C9A84C','#7A8C5E','#5C4033','#A0855B'],
+    sizePx: [13, 17, 22, 28, 34, 20, 15, 11],
+    rotations: [0, -8, 5, -3, 10, -15, 0, 7, -6, 12],
+    extraStyle: (i) => i % 4 === 2 ? 'letter-spacing:0.04em;' : '',
+  },
+  'ガーリー': {
+    bg: '#FDF0F3',
+    border: '#F4CEDD',
+    fonts: [
+      { f: "'Klee One', cursive", w: '400' },
+      { f: "'Dancing Script', cursive", w: '700' },
+      { f: "'Kosugi Maru', sans-serif", w: '400' },
+      { f: "'Playfair Display', serif", w: '400' },
+    ],
+    colors: ['#C47A95','#9B6BAE','#D4537E','#B8845A','#7A6BAE','#C47A95','#8A5A9A'],
+    sizePx: [13, 18, 24, 30, 20, 15, 26, 12],
+    rotations: [0, -10, 6, -4, 12, -8, 0, 9, -5, 14],
+    extraStyle: (i) => i % 3 === 1 ? 'font-style:italic;letter-spacing:0.05em;' : '',
+  },
+  'ポップ': {
+    bg: '#111111',
+    border: '#333333',
+    fonts: [
+      { f: "'Dela Gothic One', sans-serif", w: '400' },
+      { f: "'Bebas Neue', sans-serif", w: '400' },
+      { f: "'RocknRoll One', sans-serif", w: '400' },
+      { f: "'Bebas Neue', sans-serif", w: '400' },
+    ],
+    colors: ['#FF3B3B','#FFD600','#00D4FF','#FF6B00','#B4FF00','#FF3B3B','#FF6B00'],
+    sizePx: [14, 20, 28, 36, 22, 16, 32, 12],
+    rotations: [0, -12, 8, -5, 15, -20, 0, 10, -8, 18],
+    extraStyle: (i) => i % 2 === 0 ? 'text-transform:uppercase;letter-spacing:-0.01em;' : 'text-transform:uppercase;',
+  },
+  'エレガント': {
+    bg: '#1A1A1A',
+    border: '#2E2E2E',
+    fonts: [
+      { f: "'Shippori Mincho', serif", w: '400' },
+      { f: "'Cormorant Garamond', serif", w: '300' },
+      { f: "'Noto Serif JP', serif", w: '200' },
+      { f: "'EB Garamond', serif", w: '400' },
+    ],
+    colors: ['#F5F0E8','#EDE8DC','#C9A35A','#E8C97A','#D4C9A8','#F0EAD8','#C9A35A'],
+    sizePx: [13, 18, 24, 30, 20, 15, 26, 11],
+    rotations: [0, -6, 4, -2, 8, -10, 0, 6, -4, 10],
+    extraStyle: (i) => i % 3 === 2 ? 'font-style:italic;letter-spacing:0.08em;' : 'letter-spacing:0.06em;',
+  },
+  'レトロ': {
+    bg: '#F2E8D5',
+    border: '#D4C4A0',
+    fonts: [
+      { f: "'Zen Old Mincho', serif", w: '400' },
+      { f: "'Special Elite', cursive", w: '400' },
+      { f: "'Arvo', serif", w: '400' },
+      { f: "'DotGothic16', sans-serif", w: '400' },
+    ],
+    colors: ['#2A1F14','#8B3A2A','#4A6B4A','#7A6B3A','#3A5A6B','#5A3A2A','#6B5A2A'],
+    sizePx: [13, 18, 24, 30, 20, 15, 26, 11],
+    rotations: [0, -8, 5, -3, 10, -14, 0, 7, -5, 12],
+    extraStyle: (i) => i % 4 === 1 ? 'text-transform:uppercase;letter-spacing:0.07em;' : 'letter-spacing:0.04em;',
+  }
+};
+
+// サイズ階調をランダムに割り当て（隣接が同じにならないよう）
+const SIZE_TIERS = [0.55, 0.75, 1.0, 1.35, 1.8];
+function assignSizes(count) {
+  const sizes = [];
+  let prev = -1;
+  for (let i = 0; i < count; i++) {
+    let t;
+    do { t = Math.floor(Math.random() * SIZE_TIERS.length); } while (t === prev);
+    sizes.push(SIZE_TIERS[t]);
+    prev = t;
+  }
+  return sizes;
+}
+
+function updatePreview() {
+  const raw = document.getElementById('inp-keywords').value.trim();
+  const preview = document.getElementById('kw-preview');
+  const inner = document.getElementById('kw-preview-inner');
+  const chip = document.querySelector('#taste-grid .chip.active');
+
+  if (!raw || !chip) { preview.style.display = 'none'; return; }
+
+  const taste = chip.textContent.trim();
+  const cfg = TASTE_PREVIEW[taste];
+  if (!cfg) { preview.style.display = 'none'; return; }
+
+  const words = raw.split(/\s+/).filter(Boolean);
+  const sizes = assignSizes(words.length);
+
+  preview.style.display = 'block';
+  preview.style.background = cfg.bg;
+  preview.style.borderColor = cfg.border;
+
+  inner.innerHTML = '';
+  words.forEach((word, i) => {
+    const font = cfg.fonts[i % cfg.fonts.length];
+    const color = cfg.colors[i % cfg.colors.length];
+    const baseSize = cfg.sizePx[i % cfg.sizePx.length];
+    const finalSize = Math.round(baseSize * sizes[i]);
+    const rot = cfg.rotations[i % cfg.rotations.length];
+    const extra = cfg.extraStyle(i);
+
+    const span = document.createElement('span');
+    span.className = 'kw-token';
+    span.textContent = word;
+    span.style.cssText = `
+      font-family: ${font.f};
+      font-weight: ${font.w};
+      font-size: ${finalSize}px;
+      color: ${color};
+      transform: rotate(${rot}deg);
+      ${extra}
+    `;
+    inner.appendChild(span);
+  });
 }
 
 function copyText(e) {
