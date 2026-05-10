@@ -8,7 +8,7 @@
   * { box-sizing: border-box; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif;
-    max-width: 640px; margin: 0 auto; padding: 2rem 1.25rem;
+    max-width: 660px; margin: 0 auto; padding: 2rem 1.25rem;
     background: #fff; color: #111;
   }
   h1 { font-size: 16px; font-weight: 600; margin: 0 0 0.4rem; }
@@ -36,9 +36,7 @@
     transition: all 0.15s; user-select: none;
   }
   .chip:hover { border-color: #999; color: #111; }
-  .chip.active { background: #111; color: #fff; border-color: #111; }
-  .font-hint { margin: 8px 0 0; font-size: 12px; color: #aaa; min-height: 1.4em; }
-  .gen-btn {
+  .chip.active { background: #111; color: #fff; border-color: #111; }  .gen-btn {
     margin-top: 1.5rem; padding: 11px 22px; font-size: 14px;
     font-weight: 500; cursor: pointer; border: none;
     border-radius: 8px; background: #111; color: #fff;
@@ -62,12 +60,24 @@
     transition: background 0.15s;
   }
   .action-btn:hover { background: #f4f4f4; }
+
+  .section-divider {
+    border: none; border-top: 1px solid #f0f0f0;
+    margin: 1.5rem 0;
+  }
+  .section-title {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+    color: #bbb; text-transform: uppercase; margin: 0 0 1rem;
+  }
+
 </style>
 </head>
 <body>
 
 <h1>タイポグラフィポスタープロンプトジェネレーター</h1>
-<p class="sub">情報を入力してChatGPT用プロンプトを生成します</p>
+<p class="sub">入力情報をもとにDALL-E向けの詳細プロンプトを生成します</p>
+
+<p class="section-title">基本情報</p>
 
 <div class="section">
   <label class="label">あなたの名前 / ニックネーム</label>
@@ -75,108 +85,235 @@
 </div>
 
 <div class="section">
-  <label class="label">キーワード <span>スペース区切り</span></label>
+  <label class="label">キーワード <span>スペース区切り・5〜15個推奨</span></label>
   <textarea id="inp-keywords"></textarea>
 </div>
+
+<hr class="section-divider">
+<p class="section-title">スタイル</p>
 
 <div class="section">
   <label class="label">テイスト <span>1つ選択</span></label>
   <div class="chip-group" id="taste-grid"></div>
-  <p class="font-hint" id="font-hint"></p>
 </div>
 
 <div class="section">
-  <label class="label">使いたい色 <span>スペース区切り</span></label>
+  <label class="label">使いたい色 <span>スペース区切り・色名やカラーコードも可</span></label>
   <input id="inp-color" type="text" />
 </div>
+
 
 <button class="gen-btn" onclick="generate()">プロンプトを生成する ↗</button>
 
 <div id="output-area">
-  <p class="output-label">生成されたプロンプト <span>— ChatGPTにそのまま貼り付けてください</span></p>
+  <p class="output-label">生成されたプロンプト <span>— ChatGPT (DALL-E) にそのまま貼り付けてください</span></p>
   <div id="output-box"></div>
   <div class="btn-row">
     <button class="action-btn" onclick="copyText(event)">コピー</button>
-    <button class="action-btn" onclick="window.open('https://chatgpt.com/', '_blank')">ChatGPTを開く</button>
+    <button class="action-btn" onclick="window.open('https://chatgpt.com/', '_blank')">ChatGPTを開く ↗</button>
   </div>
 </div>
 
 <script>
-const NAME_SIZE = `The name "NAME" should be set at a medium size — large enough to be clearly readable and noticeable as a personal identifier, but not the largest element on the canvas (roughly 1/5 of the canvas width). It should feel like a confident title card within the composition, balanced among the surrounding keywords.`;
+// ─── 定数ブロック ──────────────────────────────────────────────
 
-const KW_LAYOUT = `- Arrange all keywords randomly across the full canvas with no alignment or grid
-- For each keyword, independently and randomly assign one of three text directions:
-  (1) Horizontal (yokogumi) — standard left-to-right
-  (2) Vertical (tategumi) — strict top-to-bottom, NO rotation or diagonal tilt whatsoever; vertical text must remain perfectly upright
-  (3) Diagonal — rotated at a free angle between -45° and +45° for horizontal-origin words only; never apply diagonal rotation to vertical tategumi text
-  Distribute all three directions roughly equally and unpredictably so that horizontal, vertical, and diagonal words appear mixed together throughout every area of the canvas
-- Within a single keyword, vary the size of individual characters: for example, make the first character very large, the second tiny, the third medium — creating an internal rhythm of size contrast inside each word itself, not just between different words
-- Apply a very strong jump rate across all keywords: use at least 4 clearly distinct size levels — enormous, large, medium, and tiny — so the overall size difference is dramatic
-- Distribute size levels randomly across the entire canvas; mix enormous and tiny words in the same area`;
+const SIZE_PRESETS = {
+  portrait:  { px: '960 × 1280 px', ratio: '3:4 portrait' },
+  square:    { px: '1080 × 1080 px', ratio: '1:1 square' },
+  landscape: { px: '1280 × 960 px', ratio: '4:3 landscape' }
+};
+
+const DENSITY_INSTRUCTIONS = {
+  dense:    'Pack keywords tightly so almost no canvas area is empty. Overlapping or very close placement is acceptable and encouraged.',
+  balanced: 'Distribute keywords so they fill the canvas well with moderate breathing room between elements.',
+  airy:     'Leave generous whitespace between keywords. Let negative space function as a design element.'
+};
+
+const CONTRAST_INSTRUCTIONS = {
+  extreme:  'Use at least five drastically different size levels — enormous (headline-scale), large, medium, small, and micro (nearly illegible). The largest element should be at least 10× taller than the smallest. Push contrast to the limit.',
+  strong:   'Use four clearly distinct size levels — very large, large, medium, and small. The largest element should be roughly 6× taller than the smallest. Size jumps should feel bold and intentional.',
+  moderate: 'Use three size levels — large, medium, and small — with a comfortable hierarchy. Less chaos, more readability.'
+};
+
+const NAME_BLOCK = (name) =>
+`[Name treatment]
+The name "${name}" is the personal identifier of the poster owner and must be treated with typographic clarity:
+- Set "${name}" at a medium-prominent size (roughly 1/5 of the canvas width) — larger than most keywords but not the single dominant element.
+- Choose a font weight and style that reflects the overall taste of the poster.
+- Place it at a natural anchor point in the composition (e.g. upper-left, lower-right, or center-stage) where it reads confidently without overpowering the surrounding keywords.
+- Do NOT place it in isolation — let nearby keywords slightly overlap or orbit around it for integration.`;
+
+const LAYOUT_BLOCK = (density, contrast) =>
+`[Layout & composition rules]
+${DENSITY_INSTRUCTIONS[density]}
+
+Text direction — three modes, distributed unpredictably:
+  (A) Horizontal (yokogumi): standard left-to-right.
+  (B) Vertical (tategumi): strict top-to-bottom column — no rotation, no diagonal tilt whatsoever. Each character stacks directly below the previous.
+  (C) Diagonal: rotated freely between −50° and +50° for horizontal-origin words only. NEVER apply diagonal rotation to a word set in tategumi.
+Mix all three directions across every region of the canvas. No single direction should dominate more than 40% of the keywords.
+
+Internal character size variation:
+Within a single multi-character keyword, vary the size of individual characters to create internal rhythm — for example: first character large, second tiny, third medium. This creates micro-level contrast inside each word, separate from the macro-level size differences between words.
+
+Global size contrast:
+${CONTRAST_INSTRUCTIONS[contrast]}
+Distribute size levels randomly — do not cluster all large words at center or all small words at edges.
+
+Collision and layering:
+Allow keywords to overlap slightly at edges. Use z-ordering so smaller words appear to slip behind larger ones. No word should be completely obscured.`;
+
+function CATCHPHRASE_BLOCK(kwList) {
+  const count = Math.max(1, Math.round(kwList.length * 0.3));
+  return `[Catchphrase accents]
+From the keyword list, select exactly ${count} keyword${count > 1 ? 's' : ''} (roughly 30% of the total) that best capture the person's character or passions. For each selected keyword, compose a short, punchy English or Japanese catchphrase (3–7 words) that distills the essence of that keyword — like an editorial caption or personal motto fragment.
+- Place each catchphrase as small accent text (roughly 60–70% the size of its paired keyword), positioned directly beside or below it.
+- Style catchphrases differently from the main keywords: use italic, extra-light weight, or a contrasting font family (e.g. a serif caption next to a bold gothic headline).
+- Leave the remaining ${kwList.length - count} keyword${kwList.length - count !== 1 ? 's' : ''} without catchphrases — they stand alone as pure typographic elements.
+- These accents add editorial depth and personality without cluttering the layout.`;
+}
+
+// ─── テイストデータ ────────────────────────────────────────────
 
 const tastes = [
   {
-    label: "ナチュラル",
-    val: "natural, organic, calm and earthy",
-    fontJa: "手書き風・丸ゴシック・やわらかいゴシック",
-    fontEn: "handwritten-style fonts, rounded gothic (e.g. Zen Maru Gothic), and soft sans-serif fonts — warm, approachable, and organic in feel",
-    bgEn: "Use a very subtle off-white or warm ivory background (#FAF7F2 or similar), optionally with an extremely faint paper-grain texture. The background should feel like natural unbleached paper — quiet and warm, never stark white.",
-    designEn: `- NAME_PLACEHOLDER Write it in a soft handwritten or rounded font, placed naturally among the other words.
-- KW_PLACEHOLDER
-- Use a warm, muted color palette with soft contrast; avoid harsh blacks — prefer deep browns or dusty tones
-- Overall feel: airy and organic despite the dynamic mixed-direction layout, like a hand-crafted nature journal`
+    label: 'ナチュラル',
+    hint: 'Zen Maru Gothic · Hachi Maru Pop · Caveat · Lato',
+    desc: '自然素材・オーガニック・温かみのある落ち着いたトーン',
+    fontBlock: `[Typography — Natural / Organic]
+Use exactly these four fonts and no others:
+  • Japanese primary (tategumi & yokogumi large keywords): "Zen Maru Gothic" — a rounded gothic with softly weather-worn corners. Use weight Light or Regular. This is the workhorse of the composition.
+  • Japanese accent (small tategumi words, name, catchphrase labels in Japanese): "Hachi Maru Pop" — a playful balloon-round display font with a hand-drawn, sticker-like bounce. Use at small-to-medium sizes only.
+  • Latin primary (horizontal and diagonal large keywords): "Caveat" — an informal handwritten script with natural stroke variation. Use Regular or Bold weight. It should feel like ink on paper, not a polished font.
+  • Latin accent (catchphrases, small horizontal words): "Lato" Light — a humanist sans-serif with warmth; its thin weight adds quiet contrast against the handwritten Caveat.
+Mixing rules:
+  - Tategumi (vertical) words: alternate between Zen Maru Gothic and Hachi Maru Pop across the canvas.
+  - Diagonal words: use Caveat almost exclusively.
+  - Horizontal large words: mix Zen Maru Gothic (Japanese) with Caveat (Latin).
+  - All catchphrases: Lato Light, italic.
+Weight range: Light to Regular only — never bold. The composition must breathe.
+Letter-spacing: +0.02em to +0.05em on Lato Light catchphrases. Normal on Caveat and Zen Maru Gothic.`,
+    bgBlock: `[Background — Natural]
+Background color: very soft off-white or warm ivory — suggest #FAF7F2 or #F5EFE3. The surface should evoke unbleached natural paper, never stark digital white.
+Optional texture: a barely-perceptible fine paper-grain or micro-linen texture at very low opacity (≤8%) — just enough to feel tactile, not visually noisy.
+No gradients, no vignettes.`,
+    designBlock: `[Design direction — Natural]
+Color strategy: warm, muted palette. Use deep warm brown or dark charcoal in place of pure black for text. Accent colors should be earthy — dusty sage, faded terracotta, muted ochre, or soft olive. Avoid bright saturated hues.
+Mood reference: a handcrafted nature journal, a botanical field sketchbook, a sustainable brand's editorial page.
+Even with the dynamic mixed-direction layout and size variation, the overall feeling must remain calm, organic, and human — as if assembled by hand rather than generated.`
   },
   {
-    label: "ガーリー",
-    val: "girly, feminine, romantic and stylish",
-    fontJa: "丸ゴシック・ポップ体・かわいい系フォント",
-    fontEn: "rounded gothic fonts, script and handwritten display fonts, and elegant-cute mixed typefaces — feminine, charming, and fashion-forward",
-    bgEn: "Use a very pale blush or soft lavender background (e.g. #FDF0F3 or #F5F0FA), delicate enough to feel like high-quality stationery. Optionally add a barely-visible fine dot grid pattern for a notebook aesthetic. The background should enhance femininity without competing with the text.",
-    designEn: `- NAME_PLACEHOLDER Set it in a stylish script or rounded font with a romantic, fashion-magazine feel.
-- KW_PLACEHOLDER
-- Mix delicate thin fonts with slightly bolder accent words for chic contrast
-- Use pastel tones, blush pinks, lavender, or rose gold accents
-- Scatter small decorative symbols (✳ † ✿) randomly among the keywords as typographic ornaments
-- Overall feel: a playful fashion lookbook where vertical, horizontal, and diagonal words collide unexpectedly — sweet but stylish`
+    label: 'ガーリー',
+    hint: 'Klee One · Kosugi Maru · Dancing Script · Playfair Display',
+    desc: 'フェミニン・ロマンティック・ファッション誌的なおしゃれさ',
+    fontBlock: `[Typography — Girly / Feminine]
+Use exactly these four fonts and no others:
+  • Japanese primary (tategumi columns, large yokogumi keywords): "Klee One" — an elegant semi-cursive (kaisho-adjacent) Japanese font that blends calligraphic stroke contrast with modern readability. Use Regular weight. It reads as refined yet approachable.
+  • Japanese accent (small tategumi words, name treatment): "Kosugi Maru" — a soft rounded gothic with a friendly, round silhouette. Use at small-to-medium sizes as a gentle contrast to Klee One's calligraphic strokes.
+  • Latin primary (diagonal display words, featured horizontal keywords): "Dancing Script" — a flowing connected cursive with natural letterform bounce. Use Bold weight for large display words, Regular for medium.
+  • Latin accent (catchphrases, small horizontal labels): "Playfair Display" — a high-contrast editorial serif with a strong thick/thin distinction. Use Italic weight only; it reads like a fashion magazine caption.
+Mixing rules:
+  - Tategumi columns: alternate between Klee One (large) and Kosugi Maru (small).
+  - Diagonal words: Dancing Script exclusively.
+  - Large horizontal keywords (Latin): Dancing Script Bold.
+  - All catchphrases: Playfair Display Italic.
+  - Name: Klee One Regular or Dancing Script Bold depending on the name's language.
+Weight range: Regular to Bold. Use thin weights only for Playfair Display Italic catchphrases.
+Letter-spacing: generous (+0.04em) on Playfair Display Italic. Normal on Dancing Script.`,
+    bgBlock: `[Background — Girly]
+Background color: very pale blush, soft lavender, or powder pink — suggest #FDF0F3, #F7F0FA, or #FEF5F7. Delicate enough to feel like high-quality stationery.
+Optional pattern: an extremely faint fine dot-grid at ≤5% opacity — like a blank notebook page.
+No harsh shadows or gradients.`,
+    designBlock: `[Design direction — Girly]
+Color strategy: pastel tones as the base — blush pink, lavender, soft peach — with one deeper accent (dusty rose, mauve, or antique gold) used sparingly for featured words. Avoid neon or overly saturated colors.
+Decorative elements: scatter small typographic ornaments — ✳ ✦ † ✿ ◇ — randomly among the keywords at a small size. These act as visual punctuation without adding imagery.
+Mood reference: a fashion lookbook spread, a curated Instagram flat-lay, a Parisian stationery brand. The chaotic multi-direction layout should feel intentional and chic — not messy.`
   },
   {
-    label: "ポップ",
-    val: "pop, colorful, bold and energetic",
-    fontJa: "極太ゴシック・ポップ体・デザイン書体",
-    fontEn: "extra-bold gothic fonts, pop display fonts, and expressive design typefaces — loud, punchy, and high-impact",
-    bgEn: "Use a clean, pure white (#FFFFFF) background to maximize contrast with the bold, saturated typography. Alternatively, a single vivid solid color block (matching one of the palette colors) can be used as a full-bleed background for extra pop energy. Keep it flat and graphic — no gradients or textures.",
-    designEn: `- NAME_PLACEHOLDER Set it in an ultra-bold font as a confident anchor amid the energetic surrounding text.
-- KW_PLACEHOLDER
-- Apply strong, saturated color fills to individual letters or words; use color blocking freely
-- The collision of vertical Japanese words, diagonal Latin text, and varied internal character sizes should feel intentional and high-energy
-- Overall feel: a chaotic-yet-designed concert poster where direction, scale, and internal size contrast create maximum visual tension`
+    label: 'ポップ',
+    hint: 'Dela Gothic One · RocknRoll One · Bebas Neue · Boogaloo',
+    desc: '大胆・カラフル・エネルギッシュ・インパクト重視',
+    fontBlock: `[Typography — Pop / Bold]
+Use exactly these four fonts and no others:
+  • Japanese primary (large tategumi columns, dominant yokogumi headlines): "Dela Gothic One" — an ultra-bold, ultra-wide Japanese display gothic with extreme stroke weight and maximum visual mass. This is the loudest font on the canvas.
+  • Japanese accent (medium tategumi words, secondary keywords): "RocknRoll One" — a bold Japanese gothic with an energetic, slightly irregular stroke quality that evokes hand-drawn pop lettering. Provides kinetic contrast against Dela Gothic One's rigidity.
+  • Latin primary (large horizontal and diagonal display words): "Bebas Neue" — an all-caps condensed sans-serif with uniform stroke weight and zero-compromise boldness. Classic poster-headline energy.
+  • Latin accent (medium diagonal words, catchphrases): "Boogaloo" — a bold informal display font with loose, slightly wonky letterforms. It injects humor and irregularity against Bebas Neue's discipline.
+Mixing rules:
+  - Large tategumi: Dela Gothic One exclusively.
+  - Medium/small tategumi: RocknRoll One.
+  - Large horizontal & diagonal Latin: Bebas Neue, all caps.
+  - Medium diagonal Latin & all catchphrases: Boogaloo.
+  - Name: Dela Gothic One (Japanese name) or Bebas Neue (Latin name).
+Weight range: Bold to Black throughout — this aesthetic has no thin weights.
+Tracking: −0.02em to 0 on Bebas Neue and Dela Gothic One (tight, maximized density). Normal on RocknRoll One and Boogaloo.`,
+    bgBlock: `[Background — Pop]
+Two options — choose the one that maximizes visual impact given the palette:
+  Option A: pure flat white (#FFFFFF) to make saturated colors explode off the surface.
+  Option B: a single vivid flat-color block matching one of the palette colors — used as a full-bleed background. Keep it a single flat tone with zero texture.
+No gradients. No noise. Purely graphic.`,
+    designBlock: `[Design direction — Pop]
+Color strategy: saturated, high-contrast palette. Apply solid color fills to individual words or even individual characters. Use color blocking freely — different words in different solid colors. Restrict the palette to 3–4 strongly saturated hues to avoid chaos becoming muddy.
+Energy: the collision of vertical Japanese tategumi, diagonal Latin, and horizontal text — all at varied scales with internal character size variation — should feel intentional, kinetic, and high-energy.
+Mood reference: a concert or festival poster, a streetwear brand graphic, a pop-art silk-screen print. Maximum visual tension through controlled chaos.`
   },
   {
-    label: "エレガント",
-    val: "elegant, refined, luxurious",
-    fontJa: "明朝体・細字フォント・クラシック体",
-    fontEn: "mincho (Japanese serif) fonts, thin-weight typefaces, and classic serif fonts — graceful, refined, and timeless",
-    bgEn: "Use a deep, rich background such as a near-black charcoal (#1A1A1A), a dark navy, or a very pale ivory (#FDFAF5) — choose based on the palette. If dark, let the typography glow against it in gold, ivory, or soft white. If light, keep the background almost imperceptibly warm. Either way, the background must feel premium and editorial.",
-    designEn: `- NAME_PLACEHOLDER Set it in a delicate thin-weight mincho or serif font with generous letter-spacing, placed with quiet confidence.
-- KW_PLACEHOLDER
-- Despite the random mixed-direction layout, maintain elegance through generous negative space and restrained color
-- The internal size variation within a single word should feel like a deliberate calligraphic choice, not chaos
-- Limit the color palette to two or three tones; gold, ivory, or deep navy as accents`
+    label: 'エレガント',
+    hint: 'Shippori Mincho · Noto Serif JP · Cormorant Garamond · EB Garamond',
+    desc: '洗練・上質・ラグジュアリー・時代を超えたクラシック感',
+    fontBlock: `[Typography — Elegant / Refined]
+Use exactly these four fonts and no others:
+  • Japanese primary (large tategumi columns, dominant horizontal keywords): "Shippori Mincho" — a high-quality old-style mincho based on the Meiji-era Tsukiji Type Foundry cuts. Its strong thick/thin stroke contrast and classical kana forms exude editorial luxury. Use Regular or Medium weight.
+  • Japanese accent (name treatment, small tategumi words): "Noto Serif JP" — a refined modern mincho with harmonious proportions and excellent legibility at small sizes. Use Light or ExtraLight weight as a quiet counterpoint to Shippori Mincho.
+  • Latin primary (large diagonal and horizontal display words): "Cormorant Garamond" — a high-contrast, ultra-refined display serif inspired by Claude Garamond's punches. Its dramatic thick/thin strokes echo the rhythm of Japanese mincho. Use Light or Regular; the delicate hairlines are central to its elegance.
+  • Latin accent (catchphrases, small horizontal labels): "EB Garamond" — a faithful revival of the classical Garamond letterforms. Use Italic weight for catchphrases; the optical rhythm of the italic's inclined axis creates an editorial, footnote-like quality.
+Mixing rules:
+  - Large tategumi: Shippori Mincho Regular.
+  - Small tategumi & name: Noto Serif JP Light or ExtraLight.
+  - Large diagonal & horizontal Latin: Cormorant Garamond Light or Regular.
+  - All catchphrases: EB Garamond Italic.
+Weight range: ExtraLight to Regular only. Bold is strictly forbidden in this aesthetic.
+Letter-spacing: +0.05em to +0.10em on all fonts — generous spacing is non-negotiable for the luxury feel.`,
+    bgBlock: `[Background — Elegant]
+Two mood options — choose based on the color palette:
+  Dark mood: deep charcoal near-black (#1A1A1A or #181818) or dark navy (#0E1629). Typography should glow against it in ivory, warm white, or gold.
+  Light mood: pale warm ivory (#FDFAF5 or #FAF7EF) — almost imperceptibly warm, never stark white.
+No textures. The background must feel like a premium editorial print surface.`,
+    designBlock: `[Design direction — Elegant]
+Color strategy: restrained, two-to-three-tone palette. On dark backgrounds: ivory white, warm cream, and a single metallic or gold accent. On light backgrounds: deep navy, warm charcoal, and one muted accent (dusty gold, sage, or deep burgundy).
+Despite the random mixed-direction layout and internal character size variation, preserve elegance through generous negative space between word clusters. The size variation should feel like a deliberate calligraphic choice — intentional asymmetry, not disorder.
+Mood reference: a luxury fashion brand editorial, a prestige cultural institution, a high-end perfume campaign. Restraint is strength.`
   },
   {
-    label: "レトロ",
-    val: "retro, vintage, nostalgic",
-    fontJa: "レトロフォント・タイプライター風・ヴィンテージ系",
-    fontEn: "retro-style fonts, typewriter-inspired typefaces, and vintage display fonts — aged, characterful, and nostalgic",
-    bgEn: "Use an aged, warm background that evokes old paper — a muted sepia tone (#F2E8D5), a worn cream, or a faded manila color. Apply a subtle noise or grain texture to simulate aging. The background should look like a page torn from a vintage magazine or old notebook, never crisp or digital.",
-    designEn: `- NAME_PLACEHOLDER Set it in a typewriter or vintage display font, styled like a confident byline.
-- KW_PLACEHOLDER
-- The mix of vertical Japanese tategumi, diagonal Latin, and horizontal typewriter text should evoke a vintage collage or cut-and-paste zine
-- Internal character size variation within a word should feel like mismatched vintage type blocks — characterful and nostalgic
-- Incorporate ornamental dividers, all-caps headlines, and condensed type scattered randomly among the keywords
-- Use sepia, faded cream, or aged tones; avoid pure white or pure black`
-  },
+    label: 'レトロ',
+    hint: 'Zen Old Mincho · DotGothic16 · Special Elite · Arvo',
+    desc: 'ノスタルジア・古雑誌・ヴィンテージコラージュ・手刷り活版',
+    fontBlock: `[Typography — Retro / Vintage]
+Use exactly these four fonts and no others:
+  • Japanese primary (large tategumi columns, dominant horizontal keywords): "Zen Old Mincho" — a classical old-style mincho that revives the aesthetic of pre-war Japanese book typography. Its slightly rough stroke terminals and period-correct kana forms evoke hand-set metal type from a letterpress era.
+  • Japanese accent (small tategumi words, secondary keywords): "DotGothic16" — a pixel/dot-matrix gothic originally designed for early digital displays, now repurposed as a retro-digital ornamental font. Its rigid, grid-based structure creates a jarring but fascinating contrast against the classical Zen Old Mincho — like old newspaper text alongside a vintage LED readout.
+  • Latin primary (large diagonal and horizontal display words): "Special Elite" — a typewriter-style font that faithfully mimics the uneven ink deposit and mechanical imperfections of a mid-century typewriter. ALL-CAPS usage is strongly encouraged for headline words.
+  • Latin accent (catchphrases, small horizontal labels): "Arvo" — a geometric slab-serif with Egyptian proportions, evoking the bold condensed display type of 1950s–60s print advertising. Use Regular or Italic; its sturdy serifs and monolinear structure contrast cleanly against Special Elite's typewriter texture.
+Mixing rules:
+  - Large tategumi: Zen Old Mincho.
+  - Small/accent tategumi: DotGothic16 (sparse use — maximum 2–3 words — for maximum contrast effect).
+  - All diagonal Latin: Special Elite, preferably in ALL-CAPS.
+  - Large horizontal Latin: alternate between Special Elite (ALL-CAPS) and Arvo Bold.
+  - All catchphrases: Arvo Italic.
+  - Name: Zen Old Mincho (Japanese) or Special Elite (Latin).
+Weight range: Regular to Bold. DotGothic16 has only one weight — use size variation to create hierarchy.
+Tracking: +0.05em to +0.10em on Special Elite (typewriters have wide natural spacing). Normal on Zen Old Mincho and Arvo.`,
+    bgBlock: `[Background — Retro]
+Background color: aged warm paper — muted sepia (#F2E8D5), worn cream (#EDE0C8), or faded manila (#E8DEC0). The tone should feel like a page torn from a 1960s magazine or a vintage postal document.
+Texture: apply a subtle noise grain at 10–15% opacity — enough to simulate aged paper without overwhelming the typography. A faint foxing or yellowing gradient at the very edges (≤5% opacity) adds period-appropriate aging.`,
+    designBlock: `[Design direction — Retro]
+Color strategy: sepia, cream, faded ink colors. Use deep brown or aged black for primary text — never pure #000000 (too digital). Accent colors should be vintage: brick red, faded olive, dusty teal, or aged gold.
+Decorative elements: scatter small vintage ornamental devices — thin horizontal rules, asterisms (⁂), old-style brackets, or ornamental dashes — among the keywords to evoke hand-composed type.
+Mood reference: a 1960s newspaper typographic spread, a mid-century travel poster, a hand-assembled zine, a vintage band flyer. The mix of vertical Japanese tategumi, diagonal vintage display, and horizontal typewriter text should feel like a nostalgic collage — each element from a different era, unified by the aged palette.`
+  }
 ];
+
+// ─── UI初期化 ────────────────────────────────────────────────
 
 function makeChips(containerId, items) {
   const el = document.getElementById(containerId);
@@ -184,15 +321,16 @@ function makeChips(containerId, items) {
     const chip = document.createElement('span');
     chip.className = 'chip';
     chip.textContent = item.label;
-    chip.dataset.val = item.val;
-    chip.dataset.fontJa = item.fontJa;
-    chip.dataset.fontEn = item.fontEn;
-    chip.dataset.bgEn = item.bgEn;
-    chip.dataset.designEn = item.designEn;
+    Object.assign(chip.dataset, {
+      hint: item.hint,
+      desc: item.desc,
+      fontBlock: item.fontBlock,
+      bgBlock: item.bgBlock,
+      designBlock: item.designBlock
+    });
     chip.onclick = () => {
       el.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
       chip.classList.add('active');
-      document.getElementById('font-hint').textContent = '使用フォントの方向性：' + item.fontJa;
     };
     el.appendChild(chip);
   });
@@ -200,65 +338,79 @@ function makeChips(containerId, items) {
 
 makeChips('taste-grid', tastes);
 
+// ─── プロンプト生成 ───────────────────────────────────────────
+
 let lastPrompt = '';
 
-function buildDesignEn(rawDesignEn, name) {
-  const nameStr = NAME_SIZE.replace('NAME', name);
-  return rawDesignEn
-    .replace('NAME_PLACEHOLDER', nameStr)
-    .replace('KW_PLACEHOLDER', KW_LAYOUT);
-}
-
 function generate() {
-  const name = document.getElementById('inp-name').value.trim() || 'me';
-  const rawKw = document.getElementById('inp-keywords').value.trim();
+  const name     = document.getElementById('inp-name').value.trim() || 'me';
+  const rawKw    = document.getElementById('inp-keywords').value.trim();
   const rawColor = document.getElementById('inp-color').value.trim();
 
-  const kwList = rawKw ? rawKw.split(/\s+/).filter(Boolean) : ['design', 'my interests'];
-  const colorList = rawColor ? rawColor.split(/\s+/).filter(Boolean) : [];
+  // 固定設定
+  const density  = 'dense';
+  const contrast = 'extreme';
+  const ratio    = 'portrait';
 
-  const tasteChip = document.querySelector('#taste-grid .chip.active');
-  const tasteVal = tasteChip ? tasteChip.dataset.val : 'stylish and modern';
-  const fontEn = tasteChip ? tasteChip.dataset.fontEn : 'a tasteful mix of Japanese and Latin fonts';
-  const bgEn = tasteChip ? tasteChip.dataset.bgEn : 'Use a clean, simple background that does not distract from the typography.';
-  const designEn = tasteChip
-    ? buildDesignEn(tasteChip.dataset.designEn, name)
-    : `- Feature the name "${name}" at a medium size — confident but not dominant.\n- Scatter keywords with vertical (strictly upright), horizontal, and diagonal directions mixed randomly.\n- Vary individual character sizes within each word for internal rhythm.`;
-  const colorStr = colorList.length ? colorList.join(', ') : 'colors that match the overall style';
+  const kwList   = rawKw    ? rawKw.split(/\s+/).filter(Boolean)    : ['design', 'my interests'];
+  const colorStr = rawColor ? rawColor.split(/\s+/).filter(Boolean).join(', ') : 'colors that suit the overall style';
 
-  lastPrompt = `Generate an image of a personal introduction typography poster with the following specifications.
+  const chip = document.querySelector('#taste-grid .chip.active');
+  const { px, ratio: ratioLabel } = SIZE_PRESETS[ratio];
 
-[Name]
-${name}
+  const fontBlock   = chip ? chip.dataset.fontBlock   : defaultFont();
+  const bgBlock     = chip ? chip.dataset.bgBlock     : defaultBg();
+  const designBlock = chip ? chip.dataset.designBlock : defaultDesign();
+  const tasteLabel  = chip ? chip.dataset.desc        : 'stylish and contemporary';
 
-[Size]
-960px × 1280px (vertical / portrait)
-
-[Style & Mood]
-${tasteVal}
-
-[Color Palette]
-${colorStr}
-
-[Background]
-${bgEn}
-
-[Font Direction (Japanese + Latin mix)]
-Use ${fontEn}. Mix Japanese and Latin typefaces to create a rich typographic contrast that suits the overall mood.
-
-[Keywords to include]
-${kwList.join(', ')}
-
-[Design Direction]
-- No photos or human figures — text only
-- Fill the entire canvas with all the keywords above
-${designEn}
-- Subtly vary the color of keyword groups where it improves readability
-- Select 2 to 3 keywords that best represent the person's personality or interests, and pair each with a short, punchy catchphrase (3 to 6 words) that evokes the essence of that keyword — place these catchphrases as small accent text near the keyword, styled differently (e.g. italic, lighter weight, or a contrasting font) to add depth and an editorial feel without cluttering the layout`;
+  lastPrompt = [
+    `Create a text-only personal introduction typography poster with the following detailed specifications. Render ONLY typographic elements — no illustrations, no human figures, no decorative imagery of any kind. Every pixel of the canvas must be used for text or background only.`,
+    ``,
+    `[Canvas]`,
+    `Size: ${px}`,
+    `Aspect ratio: ${ratioLabel}`,
+    ``,
+    `[Overall mood & style]`,
+    tasteLabel,
+    ``,
+    NAME_BLOCK(name),
+    ``,
+    fontBlock,
+    ``,
+    bgBlock,
+    ``,
+    `[Color palette]`,
+    `Use: ${colorStr}`,
+    `Apply these colors as fills on individual words or characters. The background color should come from or harmonize with this palette. Never use more than 4–5 distinct hues in total across the composition.`,
+    ``,
+    `[Keywords to place on canvas]`,
+    kwList.join(' · '),
+    `Every keyword listed above must appear on the canvas. Do not omit any. Do not add words not listed here.`,
+    ``,
+    LAYOUT_BLOCK(density, contrast),
+    ``,
+    CATCHPHRASE_BLOCK(kwList),
+    ``,
+    `[DALL-E rendering instructions]`,
+    `- Render all text with crisp, sharp edges — no motion blur, no soft glows.`,
+    `- Ensure every word is fully legible at its intended size. Extremely small words may sacrifice readability for effect, but most keywords should be readable.`,
+    `- The composition must fill the entire canvas edge-to-edge. No large empty corners.`,
+    `- Output in portrait orientation as specified. Do not add any border or frame.`
+  ].filter(line => line !== null).join('\n');
 
   document.getElementById('output-box').textContent = lastPrompt;
   document.getElementById('output-area').style.display = 'block';
   document.getElementById('output-area').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function defaultFont() {
+  return `[Typography]\nUse a tasteful mix of Japanese gothic and Latin sans-serif fonts. Mix weights and styles freely.`;
+}
+function defaultBg() {
+  return `[Background]\nUse a clean, simple background that does not compete with the typography.`;
+}
+function defaultDesign() {
+  return `[Design direction]\nBalance visual energy with readability. Let typography be the sole design element.`;
 }
 
 function copyText(e) {
