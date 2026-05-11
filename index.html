@@ -7,27 +7,24 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', 'Noto Sans JP', sans-serif; background-color: #f8fafc; color: #1e293b; }
-        .random-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
+        body { font-family: 'Inter', 'Noto Sans JP', sans-serif; background-color: #f0f4f8; }
+        .random-gradient { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); }
         .theme-btn { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
-        .glass-panel { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
     </style>
 </head>
-<body class="p-4 md:p-8 min-h-screen">
-    <div class="max-w-2xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200">
-        <!-- Header -->
+<body class="p-4 md:p-8">
+    <div class="max-w-2xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
         <div class="random-gradient p-8 text-white text-center relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none flex flex-wrap gap-4 p-4 text-[10px] font-mono text-white">
-                SAFE DEPLOYMENT MODE ACTIVATED INTELLECTUAL PROPERTY PROTECTION GUIDELINES COMPLIANT RATIO OPTIMIZED
+                ULTRA RANDOMIZATION SEED GENERATOR COMPOSITION SHUFFLE CAMERA ANGLE SHIFT LIGHTING DIVERSITY TEXTURE VARIATION NO REPETITION ARTISTIC INTEGRITY ASPECT RATIO 3:4 ANY COLOR FORMAT UNLIMITED KEYWORDS SPACE SEPARATED
             </div>
             <div class="relative z-10 flex flex-col items-center">
-                <h1 class="text-3xl font-black tracking-tighter uppercase">PROMPT GENERATOR</h1>
-                <p class="text-[10px] opacity-80 mt-1">FOR TYPOGRAPHY DESIGN & ART DIRECTION</p>
+                <h1 class="text-3xl font-black tracking-tighter uppercase">TYPOGRAPHY PROMPT GENERATOR</h1>
+                <p class="text-[10px] opacity-80 mt-1">LAYOUT & DIRECTION RATIO OPTIMIZED EDITION</p>
             </div>
         </div>
 
         <div class="p-6 md:p-10 space-y-10">
-            <!-- 01 Theme Selection -->
             <section class="space-y-4">
                 <h2 class="text-lg font-bold flex items-center text-slate-800">
                     <span class="bg-indigo-600 text-white w-7 h-7 rounded-lg flex items-center justify-center mr-3 text-xs shadow-md font-mono">01</span>
@@ -42,50 +39,47 @@
                 </div>
             </section>
 
-            <!-- 02 Text Color -->
             <section class="space-y-2">
                 <h2 class="text-lg font-bold flex items-center text-slate-800">
                     <span class="bg-indigo-600 text-white w-7 h-7 rounded-lg flex items-center justify-center mr-3 text-xs shadow-md font-mono">02</span>
                     文字色（複数可）
                 </h2>
-                <input type="text" id="customColor" placeholder="例: #56c4ba Pink 紫" class="w-full rounded-xl border-slate-200 shadow-sm p-4 bg-slate-50 focus:ring-2 focus:ring-indigo-500 border outline-none font-medium">
+                <input type="text" id="customColor" placeholder="例: #56c4ba Pink 紫" class="w-full rounded-xl border-gray-200 shadow-sm p-4 bg-gray-50 focus:ring-2 focus:ring-indigo-500 border outline-none font-medium text-slate-700">
+                <p class="text-[11px] text-slate-500 pl-1">※ 入力したカラー以外にアクセントカラーが自動で入ります。</p>
             </section>
 
-            <!-- 03 Background Color -->
             <section class="space-y-4">
                 <h2 class="text-lg font-bold flex items-center text-slate-800">
                     <span class="bg-indigo-600 text-white w-7 h-7 rounded-lg flex items-center justify-center mr-3 text-xs shadow-md font-mono">03</span>
                     背景色（指定しない場合は白）
                 </h2>
-                <input type="text" id="bgColor" placeholder="例: White ホワイト" class="w-full rounded-xl border-slate-200 shadow-sm p-4 bg-slate-50 focus:ring-2 focus:ring-indigo-500 border outline-none font-medium">
+                <input type="text" id="bgColor" placeholder="例: #FFFFFF White ホワイト" class="w-full rounded-xl border-gray-200 shadow-sm p-4 bg-gray-50 focus:ring-2 focus:ring-indigo-500 border outline-none font-medium text-slate-700">
             </section>
 
-            <!-- 04 User Name -->
             <section class="space-y-4">
                 <h2 class="text-lg font-bold flex items-center text-slate-800">
                     <span class="bg-indigo-600 text-white w-7 h-7 rounded-lg flex items-center justify-center mr-3 text-xs shadow-md font-mono">04</span>
                     名前・ニックネーム
                 </h2>
-                <input type="text" id="userName" placeholder="英数字推奨" class="w-full rounded-xl border-slate-200 shadow-sm p-4 bg-slate-50 focus:ring-2 focus:ring-indigo-500 border outline-none font-bold">
+                <input type="text" id="userName" placeholder="" class="w-full rounded-xl border-gray-200 shadow-sm p-4 bg-gray-50 focus:ring-2 focus:ring-indigo-500 border outline-none font-bold text-slate-700">
             </section>
 
-            <!-- 05 Keywords -->
             <section class="space-y-4">
                 <h2 class="text-lg font-bold flex items-center text-slate-800">
                     <span class="bg-indigo-600 text-white w-7 h-7 rounded-lg flex items-center justify-center mr-3 text-xs shadow-md font-mono">05</span>
-                    キーワード
+                    キーワード（キーワードはスペース・、などで区切る）
                 </h2>
-                <textarea id="keywords" rows="6" placeholder="スペースまたは句読点で区切ってください" class="w-full rounded-2xl border-slate-200 shadow-inner p-5 bg-slate-50 focus:ring-2 focus:ring-indigo-500 border outline-none font-mono text-sm resize-y min-h-[120px]"></textarea>
+                <textarea id="keywords" rows="6" placeholder="例：学びを仕組みに変え未来を整える人、効率化・学習…" class="w-full rounded-2xl border-gray-200 shadow-inner p-5 bg-gray-50 focus:ring-2 focus:ring-indigo-500 border outline-none font-mono text-sm resize-y min-h-[120px]"></textarea>
             </section>
 
-            <div class="space-y-3 pt-6 border-t border-slate-100">
+            <div class="space-y-3 pt-6 border-t border-gray-100">
                 <div class="grid grid-cols-4 gap-3">
-                    <button onclick="resetForm()" class="col-span-1 bg-slate-100 hover:bg-slate-200 text-slate-500 font-bold py-4 rounded-xl transition-all flex flex-col items-center justify-center">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    <button onclick="resetForm()" class="col-span-1 bg-gray-100 hover:bg-gray-200 text-gray-500 font-bold py-4 rounded-xl transition-all flex flex-col items-center justify-center">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="mb-1"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         <span class="text-[10px]">リセット</span>
                     </button>
                     <button onclick="generatePrompt()" class="col-span-3 bg-slate-900 hover:bg-black text-white font-black py-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-3 text-lg">
-                        プロンプト生成
+                        プロンプトを生成
                     </button>
                 </div>
             </div>
@@ -95,38 +89,30 @@
                     <div class="flex flex-wrap gap-2 mb-4">
                         <span id="currentThemeBadge" class="text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter bg-indigo-600 text-white">THEME</span>
                         <span id="bgBadge" class="text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter bg-slate-800 text-white">BG</span>
+                        <span id="variationBadge" class="text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter bg-orange-500 text-white">V</span>
+                        <span id="layoutBadge" class="text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter bg-emerald-600 text-white">RATIO OK</span>
                     </div>
-                    <p id="generatedPrompt" class="text-xs text-slate-700 leading-relaxed font-mono whitespace-pre-wrap select-all mb-6 p-4 bg-white rounded-lg border border-slate-200"></p>
+                    <p id="generatedPrompt" class="text-xs text-slate-700 leading-relaxed font-mono whitespace-pre-wrap select-all mb-6"></p>
                     
                     <div class="flex flex-col sm:flex-row gap-3">
-                        <button id="quickCopyBtn" onclick="copyPrompt()" disabled class="flex-1 bg-slate-100 text-slate-300 font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                        <button id="quickCopyBtn" onclick="copyPrompt()" disabled class="flex-1 bg-gray-100 text-gray-300 font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2 disabled:cursor-not-allowed">
                             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                             <span id="copyText" class="text-sm">コピー</span>
                         </button>
-                        <button onclick="safeRedirect()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
-                            <span class="text-sm">ChatGPTを開く</span>
+                        <button onclick="window.open('https://chatgpt.com', '_blank')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M21.03 9.47c-.55-1.07-1.38-1.95-2.45-2.55s-2.31-.9-3.6-.9h-5.96c-1.29 0-2.53.3-3.6.9s-1.9 1.48-2.45 2.55-.84 2.22-.84 3.53.28 2.51.84 3.58 1.38 2.01 2.45 2.61 2.31.9 3.6.9h5.96c1.29 0 2.53-.3 3.6-.9s1.9-1.54 2.45-2.61.84-2.27.84-3.58c0-1.31-.28-2.46-.84-3.53z"/></svg>
+                            <span class="text-sm">chatgptへ移動</span>
                         </button>
                     </div>
                 </div>
             </section>
         </div>
-
-        <!-- Footer / Terms & Disclaimer -->
-        <footer class="p-8 bg-slate-50 border-t border-slate-100">
-            <div class="max-w-md mx-auto space-y-4">
-                <div class="space-y-2">
-                    <h3 class="text-[11px] font-bold text-slate-500 uppercase tracking-widest text-center">利用規約・免責事項</h3>
-                    <p class="text-[10px] text-slate-400 leading-relaxed">
-                        本ツールは個人利用を目的としたプロンプト作成補助ツールです。生成されたプロンプトの使用により発生したいかなる不利益・損害（知的財産権の侵害、AIサービスのアカウント凍結、生成画像の商用利用に関するトラブル等）についても、当サイトおよび管理者は一切の責任を負いません。
-                    </p>
-                    <p class="text-[10px] text-slate-400 leading-relaxed">
-                        AIによる生成物は、各AIサービス（OpenAI等）の利用規約に従って使用してください。プロンプトに含まれるフォント名等はデザインの方向性を示すための名称であり、フォントデータそのものを提供するものではありません。
-                    </p>
-                </div>
-                <div class="pt-4 border-t border-slate-200 text-center">
-                    <p class="text-[9px] text-slate-300">© 2024 TYPOGRAPHY PROMPT GENERATOR</p>
-                </div>
-            </div>
+        
+        <!-- フッター免責事項 -->
+        <footer class="p-8 border-t border-gray-100 bg-gray-50 text-center">
+            <p class="text-[10px] text-slate-400 leading-relaxed max-w-lg mx-auto">
+                【免責事項】入力された名前やキーワード等の情報はブラウザ内でのみ処理され、サーバーへ送信・保存されることはありません。本ツールはDALL-Eでの利用を想定していますが、その生成結果の品質や著作権、商用利用の可否については利用者の責任で確認・判断してください。本ツールで生成されたプロンプトおよび、それを用いて作成された成果物についての一切の責任を負いかねます。
+            </p>
         </footer>
     </div>
 
@@ -137,107 +123,131 @@
                 label: 'NATURAL (ナチュラル)',
                 defaultColor: 'Sage-green earthy-tones',
                 bgDesign: 'Clean, minimal flax paper texture. Solid color only.',
-                fonts: ['Klee (Hand-drawn style)', 'Kiwi Maru (Soft)', 'Yomogi (Notebook style)', 'Zen Maru Gothic (Warm)'],
-                ornament: 'Small hand-drawn leaf symbols',
-                icons: ['🍃', '🌱', '☀️', '💧', '☁️']
+                fonts: ['Klee (Textbook-style natural handwriting)', 'Kiwi Maru (Soft and gentle)', 'Yomogi (Diary and notebook style)', 'Zen Maru Gothic (Warm and minimal)'],
+                ornament: 'Small hand-drawn leaf symbols and organic flowing lines',
+                icons: ['🍃', '🌱', '☀️', '💧', '☁️', '🪵']
             },
             girly: {
                 label: 'GIRLY (ガーリー)',
                 defaultColor: 'Soft-lavender creamy-peach',
-                bgDesign: 'Pure flat surface. Solid color only.',
-                fonts: ['Mochiy Pop (Cute)', 'Didot (Modern Serif)', 'Cherry Bomb (Sticker style)', 'Nanum Pen Script (Korean style)'],
-                ornament: 'Thin sparkle lines',
-                icons: ['🎀', '✨', '💖', '🍭', '🦋']
+                bgDesign: 'Pure flat surface with a subtle pearly sheen. Solid color only.',
+                fonts: ['Mochiy Pop One (Cute and sweet)', 'Didot (High-fashion luxury serif)', 'Cherry Bomb (Sticker-style decoration)', 'Nanum Pen Script (Trendy Korean SNS style)'],
+                ornament: 'Thin sparkle lines, miniature stars, and soft curves',
+                icons: ['🎀', '✨', '💖', '🍭', '🦋', '💄']
             },
             pop: {
                 label: 'POP (ポップ)',
                 defaultColor: 'Electric-blue neon-accents',
-                bgDesign: 'Solid vibrant background. Solid color only.',
-                fonts: ['Ranobe POP (Comic style)', '851ChikaraYowaku (Loose style)', 'Fredoka (Kids pop)', 'Baloo 2 (Thick)'],
-                ornament: 'Half-tone dots',
-                icons: ['⚡', '💥', '🔥', '🚀', '🌈']
+                bgDesign: 'Solid vibrant background with subtle uniform noise. Solid color only.',
+                fonts: ['Ranobe POP (High-pressure comic style)', '851 Chikara Yowaku (Playful relaxed pop)', 'Fredoka (Global kids style)', 'Baloo 2 (Thick and fun existence)'],
+                ornament: 'Half-tone dots, thick outline offsets, and zig-zag lines',
+                icons: ['⚡', '💥', '🔥', '🚀', '🌈', '👾']
             },
             elegant: {
                 label: 'ELEGANT (エレガント)',
                 defaultColor: 'Champagne-gold deep-emerald',
                 bgDesign: 'High-quality satin texture. Solid color only.',
-                fonts: ['Sophisticated Japanese Mincho', 'Thin Sans-serif', 'Classic Calligraphy', 'Modern Serif'],
-                ornament: 'Minimalist geometric lines',
-                icons: ['💎', '🌹', '🕊️', '🌙', '🗝️']
+                fonts: ['High-contrast Sophisticated Japanese Mincho', 'Luxury Thin Spaced Sans-serif', 'Classic Royal Calligraphy', 'Modern High-fashion Serif'],
+                ornament: 'Minimalist geometric lines, delicate dividers, and fine serifs',
+                icons: ['💎', '🥂', '🌹', '🕊️', '🌙', '🗝️']
             },
             retro: {
                 label: 'RETRO (レトロ)',
                 defaultColor: 'Aged-mustard vintage-teal',
-                bgDesign: 'Vintage paper grain. Solid color only.',
-                fonts: ['Vintage Japanese Gothic', 'Heavy Slab Serif', 'Typewriter', 'Nostalgic Signboard'],
-                ornament: 'Old-style logo frames',
-                icons: ['📻', '📸', '📼', '☕', '🎞️']
+                bgDesign: 'Uniform yellowed vintage paper grain. Solid color only.',
+                fonts: ['Vintage Showa-era Japanese Gothic', 'Heavy Antique Slab Serif', 'Distressed Rusty Typewriter', 'Bold Nostalgic Signboard Font'],
+                ornament: 'Old-style logo frames, subtle print errors, and rough line-work',
+                icons: ['📻', '📸', '📼', '☕', '🕯️', '🎞️']
             }
         };
 
         function setTheme(themeKey) {
             selectedTheme = themeKey;
             document.querySelectorAll('.theme-btn').forEach(btn => {
-                btn.classList.remove('border-indigo-600', 'bg-indigo-50', 'text-indigo-700');
-                btn.classList.add('border-slate-200');
+                btn.classList.remove('border-indigo-600', 'bg-indigo-50', 'text-indigo-700', 'shadow-inner');
+                btn.classList.add('border-gray-200');
             });
-            document.getElementById(`btn-${themeKey}`).classList.add('border-indigo-600', 'bg-indigo-50', 'text-indigo-700');
+            document.getElementById(`btn-${themeKey}`).classList.add('border-indigo-600', 'bg-indigo-50', 'text-indigo-700', 'shadow-inner');
         }
 
         setTheme('natural');
 
-        function sanitize(str) {
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
-
         function generatePrompt() {
             const theme = themes[selectedTheme];
-            const name = sanitize(document.getElementById('userName').value) || "MUSE";
-            const colorInput = sanitize(document.getElementById('customColor').value) || theme.defaultColor;
-            const bgInput = sanitize(document.getElementById('bgColor').value) || "Pure White";
+            const name = document.getElementById('userName').value || "MUSE";
+            const colorInput = document.getElementById('customColor').value || theme.defaultColor;
+            const bgInput = document.getElementById('bgColor').value || "Pure White";
+            const vId = Math.floor(Math.random() * 10000);
             
             let inputRaw = document.getElementById('keywords').value;
-            let uniqueKeywords = [...new Set(inputRaw.split(/[\s,、\/・.／]+/).map(k => k.trim()).filter(k => k !== ""))];
-            if (uniqueKeywords.length === 0) uniqueKeywords = ["ART", "SOUL", "LIFE"];
+            let uniqueKeywords = [...new Set(inputRaw.split(/[\s,、\/・.／]+/).map(k => k.trim().toUpperCase()).filter(k => k !== ""))];
+            if (uniqueKeywords.length === 0) uniqueKeywords = ["ART", "SOUL", "LIFE", "FUTURE", "DREAM"];
             
-            const processedKeywords = uniqueKeywords.map(k => `"${k.toUpperCase()}"`);
+            const keywordsForSubCopy = uniqueKeywords.join('、');
+            uniqueKeywords.sort(() => Math.random() - 0.5);
+            
+            let availableIcons = [...theme.icons].sort(() => Math.random() - 0.5);
+            
+            const processedKeywords = uniqueKeywords.map((k, index) => {
+                let iconStr = "";
+                if (Math.random() > 0.4 && availableIcons.length > 0) {
+                    iconStr = availableIcons.pop();
+                }
+                return `"${k}" ${iconStr}`;
+            });
 
-            const prompt = `[SNSタイポグラフィ制作指令] 人物・写真・逆さま配置は禁止。
+            const prompt = `[SNSタイポグラフィ制作指令] プロフェッショナルなデジタルグラフィック。人物・写真禁止。
 
-■ 基本構成 (Mandatory):
-- アスペクト比: --ar 3:4 (ポスター形式)
-- レイアウト: 横書き40%、縦書き20%、斜め20%、自由流動20%
-- 余白制御: キャンバス全体の15%のみを余白とし、残りの85%を高密度に埋めよ。
-- ジャンプ率: フォントサイズを極端に（1%から500%）変化させよ。
+■ 構図比率の厳守事項 (MANDATORY DIRECTION RATIO):
+1. **横書き (Horizontal Layout): 40%**
+2. **縦書き (Vertical Layout): 20%**
+3. **斜め書き (Diagonal Layout): 20%**
+4. **自由形状 (Free/Abstract Flow): 20%**
+**注意: 文字の「逆さま（Upside-down）」配置は厳禁。**
 
-■ 指定要素 (Composition):
-- メインワード: [${processedKeywords.join(', ')}]
-- ユーザー名: "${name.toUpperCase()}"
-- 指定文字色: ${colorInput} (アクセントカラー1色をAIが補完)
-- 背景: ${bgInput} (${theme.bgDesign})
+■ 基本条件 (Essential Constraints):
+- アスペクト比: 3:4 ポスター形式
+- 余白の厳格制御: キャンバス全体の「15%」のみを余白とし、残りの85%を要素で密に埋めよ。
+- 圧倒的ジャンプ率: フォントサイズを 1%〜500% の範囲で劇的に変化させ、要素ごとにサイズ、位置、角度をバラバラにすること。
 
-■ 指定フォントミックス:
-以下の4種を全て均等に使用すること: [${theme.fonts.join(', ')}]
+■ カラー戦略 (Color Logic):
+- **ベース文字色**: ${colorInput}
+- **AI自動選定アクセントカラー**: ユーザー指定の色を主軸とし、テーマ「${theme.label}」に合致する最適な差し色を1色自動決定し、要素の「5%〜10%」に適用せよ。
 
-■ グラフィック装飾:
-- メインワードに寄り添うようにアイコン（${theme.icons.join(' ')}）を配置せよ。
-- キーワードから連想される情緒的なサブコピーを日本語で生成し、小さく配置せよ。
-- 巨大な文字をキャンバス外へはみ出させ（クロッピング）、一部を幾何学模様に変換せよ。
+■ グラフィック表現:
+- **クロッピング**: 巨大文字は意図的にキャンバス外へはみ出させ、躍動感を作れ.
+- **ディスラプション**: 文字の一部を細いラインや幾何学模様へと変換し、グラフィック要素として再構成せよ。
+
+■ 構成要素 (Composition Assets):
+- **メインタイトルリスト**: [${processedKeywords.join(', ')}]
+- **キーワード連動型イラスト (Contextual Illustration Focus)**:
+    - AI指示: 各メインタイトルの単語（キーワード）から連想される具体的なオブジェクトや象徴を、小さな線画イラストやアイコンとして、**必ずその単語のすぐ傍（左右または上下）に寄り添うように**配置せよ。単語とイラストが1つの視覚的ユニットを形成するようにすること。
+- **連想型・情緒的サブコピー (DYNAMIC EMOTIONAL SUB-COPY)**: 
+    - AI指示: 入力されたキーワード群「${keywordsForSubCopy}」から連想される、非常に情緒的で詩的な短い日本語文章を生成し、それをサブコピーとして使用せよ。
+    - 仕様: 小さめのサイズ（視認性を確保）でタイトルの傍らに配置。
+- **名前**: "${name.toUpperCase()}" (安定した中サイズでどこかに配置)
+- **フォントミックス (Mandatory Font Mix)**: 
+    - AI指示: 以下の4つのフォントリスト [${theme.fonts.join(', ')}] を**必ず4つすべて、バランスよく組み合わせて使用せよ。** どれか一つに偏ることなく、要素ごとにフォントを使い分けることで、テーマ「${theme.label}」の個性を最大限に引き出せ。
+
+■ 装飾・背景 (Theme Ornaments):
+- **テーマ装飾の限定配置 (Subtle Theme Decorations)**:
+    - AI指示: テーマ由来の装飾「${theme.ornament}」およびアイコン群（${theme.icons.join(' ')}）は、メインキーワードを邪魔しないよう、**背景のテクスチャの一部として、またはキャンバスの四隅（コーナー）にのみ**控えめに配置せよ。
+- 背景: ${bgInput} (質感: ${theme.bgDesign}, フィルムグレイン・微細なノイズを追加)
 
 ■ 最終指示:
-高密度でダイナミックなタイポグラフィ・ポスターを生成せよ。`;
+- 画面のどこを見ても視線の行き先がある、高密度でダイナミックなタイポグラフィ・ポスターを生成せよ。キーワードと連動イラストেরユニット化を優先しつつ、テーマ装飾はスパイス程度に抑えて全体の空気感を作れ。指定された4つのフォントは必ずすべてデザインに組み込むこと。
+- Final Output Format: --ar 3:4`;
 
             document.getElementById('generatedPrompt').innerText = prompt;
             document.getElementById('currentThemeBadge').innerText = theme.label.split(' ')[0];
-            document.getElementById('bgBadge').innerText = `BG: ${bgInput.substring(0, 8)}`;
+            document.getElementById('bgBadge').innerText = `BG: ${bgInput.substring(0, 10)}`;
+            document.getElementById('variationBadge').innerText = `V: ${vId}`;
             
             document.getElementById('resultArea').classList.remove('hidden');
             const copyBtn = document.getElementById('quickCopyBtn');
             copyBtn.disabled = false;
-            copyBtn.classList.replace('bg-slate-100', 'bg-slate-900');
-            copyBtn.classList.replace('text-slate-300', 'text-white');
+            copyBtn.classList.replace('bg-gray-100', 'bg-slate-900');
+            copyBtn.classList.replace('text-gray-300', 'text-white');
             
             window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
@@ -251,13 +261,11 @@
             document.execCommand('copy');
             document.body.removeChild(textarea);
             
+            const btn = document.getElementById('quickCopyBtn');
             const span = document.getElementById('copyText');
-            span.innerText = "完了！";
-            setTimeout(() => span.innerText = "コピー", 2000);
-        }
-
-        function safeRedirect() {
-            window.open('https://chatgpt.com', '_blank', 'noopener,noreferrer');
+            const originalText = "コピー";
+            span.innerText = "コピー完了！";
+            setTimeout(() => span.innerText = originalText, 2000);
         }
 
         function resetForm() {
@@ -266,6 +274,9 @@
             document.getElementById('bgColor').value = "";
             document.getElementById('keywords').value = "";
             document.getElementById('resultArea').classList.add('hidden');
+            document.getElementById('quickCopyBtn').disabled = true;
+            document.getElementById('quickCopyBtn').classList.replace('bg-slate-900', 'bg-gray-100');
+            document.getElementById('quickCopyBtn').classList.replace('text-white', 'text-gray-300');
             setTheme('natural');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
