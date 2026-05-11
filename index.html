@@ -9,11 +9,11 @@
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', 'Noto Sans JP', sans-serif; background-color: #f0f4f8; }
         .random-gradient { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); }
+        .theme-btn { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
     </style>
 </head>
 <body class="p-4 md:p-8">
     <div class="max-w-2xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
-        <!-- Header -->
         <div class="random-gradient p-8 text-white text-center relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none flex flex-wrap gap-4 p-4 text-[10px] font-mono text-white">
                 ULTRA RANDOMIZATION SEED GENERATOR COMPOSITION SHUFFLE CAMERA ANGLE SHIFT LIGHTING DIVERSITY TEXTURE VARIATION NO REPETITION ARTISTIC INTEGRITY ASPECT RATIO 3:4 ANY COLOR FORMAT UNLIMITED KEYWORDS SPACE SEPARATED
@@ -25,40 +25,37 @@
         </div>
 
         <div class="p-6 md:p-10 space-y-10">
-            <!-- 01 Theme Selection -->
             <section class="space-y-4">
                 <h2 class="text-lg font-bold flex items-center text-slate-800">
                     <span class="bg-indigo-600 text-white w-7 h-7 rounded-lg flex items-center justify-center mr-3 text-xs shadow-md font-mono">01</span>
                     デザインテーマ
                 </h2>
                 <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                    <button onclick="setTheme('natural')" id="btn-natural" class="theme-btn border-2 p-3 rounded-xl text-xs font-bold transition-all hover:bg-slate-50">🌿 ナチュラル</button>
-                    <button onclick="setTheme('girly')" id="btn-girly" class="theme-btn border-2 p-3 rounded-xl text-xs font-bold transition-all hover:bg-slate-50">🎀 ガーリー</button>
-                    <button onclick="setTheme('pop')" id="btn-pop" class="theme-btn border-2 p-3 rounded-xl text-xs font-bold transition-all hover:bg-slate-50">⚡ ポップ</button>
-                    <button onclick="setTheme('elegant')" id="btn-elegant" class="theme-btn border-2 p-3 rounded-xl text-xs font-bold transition-all hover:bg-slate-50">💎 エレガント</button>
-                    <button onclick="setTheme('retro')" id="btn-retro" class="theme-btn border-2 p-3 rounded-xl text-xs font-bold transition-all hover:bg-slate-50">📻 レトロ</button>
+                    <button onclick="setTheme('natural')" id="btn-natural" class="theme-btn border-2 p-3 rounded-xl text-xs font-bold hover:bg-slate-50">🌿 ナチュラル</button>
+                    <button onclick="setTheme('girly')" id="btn-girly" class="theme-btn border-2 p-3 rounded-xl text-xs font-bold hover:bg-slate-50">🎀 ガーリー</button>
+                    <button onclick="setTheme('pop')" id="btn-pop" class="theme-btn border-2 p-3 rounded-xl text-xs font-bold hover:bg-slate-50">⚡ ポップ</button>
+                    <button onclick="setTheme('elegant')" id="btn-elegant" class="theme-btn border-2 p-3 rounded-xl text-xs font-bold hover:bg-slate-50">💎 エレガント</button>
+                    <button onclick="setTheme('retro')" id="btn-retro" class="theme-btn border-2 p-3 rounded-xl text-xs font-bold hover:bg-slate-50">📻 レトロ</button>
                 </div>
             </section>
 
-            <!-- 02 Text Color -->
-            <section class="space-y-4">
+            <section class="space-y-2">
                 <h2 class="text-lg font-bold flex items-center text-slate-800">
                     <span class="bg-indigo-600 text-white w-7 h-7 rounded-lg flex items-center justify-center mr-3 text-xs shadow-md font-mono">02</span>
-                    ベースの文字色
+                    文字色（複数可）
                 </h2>
-                <input type="text" id="customColor" placeholder="例: #FF69B4 Pink ピンク" class="w-full rounded-xl border-gray-200 shadow-sm p-4 bg-gray-50 focus:ring-2 focus:ring-indigo-500 border outline-none font-medium text-slate-700">
+                <input type="text" id="customColor" placeholder="例: #56c4ba Pink 紫" class="w-full rounded-xl border-gray-200 shadow-sm p-4 bg-gray-50 focus:ring-2 focus:ring-indigo-500 border outline-none font-medium text-slate-700">
+                <p class="text-[11px] text-slate-500 pl-1">※ 入力したカラー以外にアクセントカラーが自動で入ります。</p>
             </section>
 
-            <!-- 03 Background Color -->
             <section class="space-y-4">
                 <h2 class="text-lg font-bold flex items-center text-slate-800">
                     <span class="bg-indigo-600 text-white w-7 h-7 rounded-lg flex items-center justify-center mr-3 text-xs shadow-md font-mono">03</span>
-                    背景色
+                    背景色（指定しない場合は白）
                 </h2>
                 <input type="text" id="bgColor" placeholder="例: #FFFFFF White ホワイト" class="w-full rounded-xl border-gray-200 shadow-sm p-4 bg-gray-50 focus:ring-2 focus:ring-indigo-500 border outline-none font-medium text-slate-700">
             </section>
 
-            <!-- 04 User Name -->
             <section class="space-y-4">
                 <h2 class="text-lg font-bold flex items-center text-slate-800">
                     <span class="bg-indigo-600 text-white w-7 h-7 rounded-lg flex items-center justify-center mr-3 text-xs shadow-md font-mono">04</span>
@@ -67,33 +64,26 @@
                 <input type="text" id="userName" placeholder="" class="w-full rounded-xl border-gray-200 shadow-sm p-4 bg-gray-50 focus:ring-2 focus:ring-indigo-500 border outline-none font-bold text-slate-700">
             </section>
 
-            <!-- 05 Keywords -->
             <section class="space-y-4">
                 <h2 class="text-lg font-bold flex items-center text-slate-800">
                     <span class="bg-indigo-600 text-white w-7 h-7 rounded-lg flex items-center justify-center mr-3 text-xs shadow-md font-mono">05</span>
-                    キーワード（スペース区切り）
+                    キーワード（キーワードはスペース・、などで区切る）
                 </h2>
-                <textarea id="keywords" rows="6" placeholder="例: つながり 共感 貢献..." class="w-full rounded-2xl border-gray-200 shadow-inner p-5 bg-gray-50 focus:ring-2 focus:ring-indigo-500 border outline-none font-mono text-sm resize-y min-h-[120px]"></textarea>
+                <textarea id="keywords" rows="6" placeholder="例：学びを仕組みに変え未来を整える人、効率化・学習…" class="w-full rounded-2xl border-gray-200 shadow-inner p-5 bg-gray-50 focus:ring-2 focus:ring-indigo-500 border outline-none font-mono text-sm resize-y min-h-[120px]"></textarea>
             </section>
 
-            <!-- Action Area -->
             <div class="space-y-3 pt-6 border-t border-gray-100">
                 <div class="grid grid-cols-4 gap-3">
                     <button onclick="resetForm()" class="col-span-1 bg-gray-100 hover:bg-gray-200 text-gray-500 font-bold py-4 rounded-xl transition-all flex flex-col items-center justify-center">
                         <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="mb-1"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         <span class="text-[10px]">リセット</span>
                     </button>
-                    <button onclick="generatePrompt()" class="col-span-2 bg-slate-900 hover:bg-black text-white font-black py-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-3 text-lg">
+                    <button onclick="generatePrompt()" class="col-span-3 bg-slate-900 hover:bg-black text-white font-black py-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-3 text-lg">
                         プロンプトを生成
-                    </button>
-                    <button id="quickCopyBtn" onclick="copyPrompt()" disabled class="col-span-1 bg-gray-100 text-gray-300 font-bold py-4 rounded-xl transition-all flex flex-col items-center justify-center disabled:cursor-not-allowed">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="mb-1"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                        <span id="copyText" class="text-[10px]">コピー</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Result Display -->
             <section id="resultArea" class="hidden space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div class="bg-slate-50 p-6 rounded-2xl border-2 border-indigo-100 relative shadow-inner">
                     <div class="flex flex-wrap gap-2 mb-4">
@@ -101,9 +91,19 @@
                         <span id="bgBadge" class="text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter bg-slate-800 text-white">BG</span>
                         <span id="variationBadge" class="text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter bg-orange-500 text-white">V</span>
                         <span id="layoutBadge" class="text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter bg-emerald-600 text-white">RATIO OK</span>
-                        <span class="text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter bg-rose-600 text-white">SIZE: 3:4</span>
                     </div>
-                    <p id="generatedPrompt" class="text-xs text-slate-700 leading-relaxed font-mono whitespace-pre-wrap select-all"></p>
+                    <p id="generatedPrompt" class="text-xs text-slate-700 leading-relaxed font-mono whitespace-pre-wrap select-all mb-6"></p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <button id="quickCopyBtn" onclick="copyPrompt()" disabled class="flex-1 bg-gray-100 text-gray-300 font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2 disabled:cursor-not-allowed">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                            <span id="copyText" class="text-sm">コピー</span>
+                        </button>
+                        <button onclick="window.open('https://chatgpt.com', '_blank')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M21.03 9.47c-.55-1.07-1.38-1.95-2.45-2.55s-2.31-.9-3.6-.9h-5.96c-1.29 0-2.53.3-3.6.9s-1.9 1.48-2.45 2.55-.84 2.22-.84 3.53.28 2.51.84 3.58 1.38 2.01 2.45 2.61 2.31.9 3.6.9h5.96c1.29 0 2.53-.3 3.6-.9s1.9-1.54 2.45-2.61.84-2.27.84-3.58c0-1.31-.28-2.46-.84-3.53z"/></svg>
+                            <span class="text-sm">chatgptへ移動</span>
+                        </button>
+                    </div>
                 </div>
             </section>
         </div>
@@ -116,55 +116,40 @@
                 label: 'NATURAL (ナチュラル)',
                 defaultColor: 'Sage-green earthy-tones',
                 bgDesign: 'Clean, minimal flax paper texture. Solid color only.',
-                fonts: ['Organic Japanese Serif', 'Rustic Serif with rough edges', 'Minimalist Geometric Sans-serif', 'Delicate Thin Handwriting'],
-                ornament: 'Small hand-drawn leaf line-icons and botanical silhouettes',
-                decoration: 'Double-line strikes, thin outlines, and soft paper-grain effects',
-                aesthetic: 'Breathable, tactile, and keyword-focused',
-                adjectives: ['心が深呼吸する', '自然と溶け合う', 'ありのままの自分', '静かな朝の光', '土の匂いを感じる', '風が吹き抜ける'],
+                fonts: ['Klee (Textbook-style natural handwriting)', 'Kiwi Maru (Soft and gentle)', 'Yomogi (Diary and notebook style)', 'Zen Maru Gothic (Warm and minimal)'],
+                ornament: 'Small hand-drawn leaf symbols and organic flowing lines',
                 icons: ['🍃', '🌱', '☀️', '💧', '☁️', '🪵']
             },
             girly: {
                 label: 'GIRLY (ガーリー)',
                 defaultColor: 'Soft-lavender creamy-peach',
                 bgDesign: 'Pure flat surface with a subtle pearly sheen. Solid color only.',
-                fonts: ['Rounded Japanese Gothic', 'Bouncy Modern Script', 'Fashionable Chic Serif', 'Cute Hand-drawn Dot Font'],
-                ornament: 'Miniature star, ribbon, and bubble icons',
-                decoration: 'Holographic strokes, inner glows, and small sparkle dots',
-                aesthetic: 'Luminous, cute, and detailed',
-                adjectives: ['魔法にかかる瞬間', '甘い夢のつづき', 'ときめきが止まらない', 'きらめく恋心', 'お気に入りを集めて', '宝石のような毎日'],
+                fonts: ['Mochiy Pop One (Cute and sweet)', 'Didot (High-fashion luxury serif)', 'Cherry Bomb (Sticker-style decoration)', 'Nanum Pen Script (Trendy Korean SNS style)'],
+                ornament: 'Thin sparkle lines, miniature stars, and soft curves',
                 icons: ['🎀', '✨', '💖', '🍭', '🦋', '💄']
             },
             pop: {
                 label: 'POP (ポップ)',
                 defaultColor: 'Electric-blue neon-accents',
                 bgDesign: 'Solid vibrant background with subtle uniform noise. Solid color only.',
-                fonts: ['Ultra-heavy Japanese Sans-serif', 'Thick Comic Bubble Font', 'Stencil Display Font', 'Distorted Wide Sans-serif'],
-                ornament: 'Comic-style icon stamps, bolt icons, and flat-design symbols',
-                decoration: '3D block shadows, chromatic aberration, and sticker-like thick white borders',
-                aesthetic: 'Impactful, energetic, and graphic',
-                adjectives: ['エネルギーが弾ける', '無敵のヒーロー気分', '遊び心をフル稼働', '常識をぶち破れ', '最高にハッピーな日', '世界をカラフルに'],
+                fonts: ['Ranobe POP (High-pressure comic style)', '851 Chikara Yowaku (Playful relaxed pop)', 'Fredoka (Global kids style)', 'Baloo 2 (Thick and fun existence)'],
+                ornament: 'Half-tone dots, thick outline offsets, and zig-zag lines',
                 icons: ['⚡', '💥', '🔥', '🚀', '🌈', '👾']
             },
             elegant: {
                 label: 'ELEGANT (エレガント)',
                 defaultColor: 'Champagne-gold deep-emerald',
                 bgDesign: 'High-quality satin texture. Solid color only.',
-                fonts: ['Sophisticated Japanese Mincho', 'High-contrast Modern Serif', 'Classic Royal Calligraphy', 'Luxury Thin Spaced Sans-serif'],
-                ornament: 'Minimalist geometric line-icons and tiny jewelry motifs',
-                decoration: 'Hairline serifs, golden foil gradients, and elegant drop shadows',
-                aesthetic: 'Refined, sharp, and luxurious',
-                adjectives: ['凛とした美しさ', '極上の安らぎ', '気品を身に纏う', '永遠に続く輝き', '洗練された日常', '優雅な時の流れ'],
+                fonts: ['High-contrast Sophisticated Japanese Mincho', 'Luxury Thin Spaced Sans-serif', 'Classic Royal Calligraphy', 'Modern High-fashion Serif'],
+                ornament: 'Minimalist geometric lines, delicate dividers, and fine serifs',
                 icons: ['💎', '🥂', '🌹', '🕊️', '🌙', '🗝️']
             },
             retro: {
                 label: 'RETRO (レトロ)',
                 defaultColor: 'Aged-mustard vintage-teal',
                 bgDesign: 'Uniform yellowed vintage paper grain. Solid color only.',
-                fonts: ['Vintage Showa Japanese Gothic', 'Heavy Antique Slab Serif', 'Distressed Retro Display', 'Classic Monospaced Typewriter'],
-                ornament: 'Iconic retro stamps, old-style logo symbols, and pixel-art icons',
-                decoration: 'Ink bleed effects, halftone dots on characters, and distress textures',
-                aesthetic: 'Authentic, nostalgic, and character-driven',
-                adjectives: ['古き良き記憶', '色褪せないメロディ', 'アナログの温もり', 'あの日の帰り道', '時間を旅する', '懐かしい物語'],
+                fonts: ['Vintage Showa-era Japanese Gothic', 'Heavy Antique Slab Serif', 'Distressed Rusty Typewriter', 'Bold Nostalgic Signboard Font'],
+                ornament: 'Old-style logo frames, subtle print errors, and rough line-work',
                 icons: ['📻', '📸', '📼', '☕', '🕯️', '🎞️']
             }
         };
@@ -188,26 +173,18 @@
             const vId = Math.floor(Math.random() * 10000);
             
             let inputRaw = document.getElementById('keywords').value;
-            let keywords = inputRaw.split(/[\s,、]+/).map(k => k.trim().toUpperCase()).filter(k => k !== "");
-            if (keywords.length === 0) keywords = ["ART", "SOUL", "LIFE", "FUTURE", "DREAM"];
+            let uniqueKeywords = [...new Set(inputRaw.split(/[\s,、\/・.／]+/).map(k => k.trim().toUpperCase()).filter(k => k !== ""))];
+            if (uniqueKeywords.length === 0) uniqueKeywords = ["ART", "SOUL", "LIFE", "FUTURE", "DREAM"];
             
-            keywords.sort(() => Math.random() - 0.5);
+            const keywordsForSubCopy = uniqueKeywords.join('、');
+            uniqueKeywords.sort(() => Math.random() - 0.5);
             
-            const captionLimit = 6;
+            let availableIcons = [...theme.icons].sort(() => Math.random() - 0.5);
             
-            const processedKeywords = keywords.map((k, index) => {
-                let caption = "";
-                if (index < captionLimit) {
-                    caption = theme.adjectives[Math.floor(Math.random() * theme.adjectives.length)];
-                }
-                
+            const processedKeywords = uniqueKeywords.map((k, index) => {
                 let iconStr = "";
-                if (Math.random() > 0.5) {
-                    iconStr = theme.icons[Math.floor(Math.random() * theme.icons.length)];
-                }
-
-                if (caption) {
-                    return `"${k}" {SUB-COPY: "${caption}"} ${iconStr}`;
+                if (Math.random() > 0.4 && availableIcons.length > 0) {
+                    iconStr = availableIcons.pop();
                 }
                 return `"${k}" ${iconStr}`;
             });
@@ -219,39 +196,39 @@
 2. **縦書き (Vertical Layout): 20%**
 3. **斜め書き (Diagonal Layout): 20%**
 4. **自由形状 (Free/Abstract Flow): 20%**
-**注意: 文字の「逆さま（Upside-down）」配置は視認性維持のため禁止。**
+**注意: 文字の「逆さま（Upside-down）」配置は厳禁。**
 
 ■ 基本条件 (Essential Constraints):
 - アスペクト比: 3:4 ポスター形式
 - 余白の厳格制御: キャンバス全体の「15%」のみを余白とし、残りの85%を要素で密に埋めよ。
 - 圧倒的ジャンプ率: フォントサイズを 1%〜500% の範囲で劇的に変化させ、要素ごとにサイズ、位置、角度をバラバラにすること。
 
-■ キーワードとサブコピー（短い文章）の特殊配置 (TEXT HIERARCHY):
-- リスト内の {SUB-COPY: "..."} は、直前のキーワードに対応する「情緒的な短い文章（サブコピー）」である。
-- **配置**: サブコピーは、メインキーワードの「すぐ傍ら」または「直下」に配置せよ。
-- **サイズ**: サブコピーはメインキーワードの「1/5以下」の極小サイズとし、注釈のように控えめに配置せよ。
-- **フォント**: サブコピーにはメインキーワードとは「異なる種類のフォント」を割り当て、視覚的な強弱をつけよ。
-
 ■ カラー戦略 (Color Logic):
 - **ベース文字色**: ${colorInput}
-- **AI自動選定アクセントカラー**: テーマ「${theme.label}」に合う色を1色自動決定し、要素の「5%〜10%」に適用。
-- **オーバーラップ効果**: 重なる部分での色彩反転や透明度変化を活用せよ。
+- **AI自動選定アクセントカラー**: ユーザー指定の色を主軸とし、テーマ「${theme.label}」に合致する最適な差し色を1色自動決定し、要素の「5%〜10%」に適用せよ。
 
 ■ グラフィック表現:
-- **クロッピング**: 巨大文字は意図的にキャンバス外へはみ出させよ。
-- **ディスラプション**: 文字の一部を細いラインや図形へと変換し、グラフィック要素として再構築せよ。
+- **クロッピング**: 巨大文字は意図的にキャンバス外へはみ出させ、躍動感を作れ.
+- **ディスラプション**: 文字の一部を細いラインや幾何学模様へと変換し、グラフィック要素として再構成せよ。
 
-■ フォント & 構成:
-- **使用フォントミックス**: [${theme.fonts.join(', ')}]
-- 名前 "${name.toUpperCase()}": 視認性を保つ「中サイズ」で配置。
-- 要素構成リスト: [${processedKeywords.join(', ')}]
-- 装飾: "${theme.ornament}" を文字間の隙間に散りばめよ。
+■ 構成要素 (Composition Assets):
+- **メインタイトルリスト**: [${processedKeywords.join(', ')}]
+- **キーワード連動型イラスト (Contextual Illustration Focus)**:
+    - AI指示: 各メインタイトルの単語（キーワード）から連想される具体的なオブジェクトや象徴を、小さな線画イラストやアイコンとして、**必ずその単語のすぐ傍（左右または上下）に寄り添うように**配置せよ。単語とイラストが1つの視覚的ユニットを形成するようにすること。
+- **連想型・情緒的サブコピー (DYNAMIC EMOTIONAL SUB-COPY)**: 
+    - AI指示: 入力されたキーワード群「${keywordsForSubCopy}」から連想される、非常に情緒的で詩的な短い日本語文章を生成し、それをサブコピーとして使用せよ。
+    - 仕様: 小さめのサイズ（視認性を確保）でタイトルの傍らに配置。
+- **名前**: "${name.toUpperCase()}" (安定した中サイズでどこかに配置)
+- **フォントミックス (Mandatory Font Mix)**: 
+    - AI指示: 以下の4つのフォントリスト [${theme.fonts.join(', ')}] を**必ず4つすべて、バランスよく組み合わせて使用せよ。** どれか一つに偏ることなく、要素ごとにフォントを使い分けることで、テーマ「${theme.label}」の個性を最大限に引き出せ。
 
-■ 背景・質感:
+■ 装飾・背景 (Theme Ornaments):
+- **テーマ装飾の限定配置 (Subtle Theme Decorations)**:
+    - AI指示: テーマ由来の装飾「${theme.ornament}」およびアイコン群（${theme.icons.join(' ')}）は、メインキーワードを邪魔しないよう、**背景のテクスチャの一部として、またはキャンバスの四隅（コーナー）にのみ**控えめに配置せよ。
 - 背景: ${bgInput} (質感: ${theme.bgDesign}, フィルムグレイン・微細なノイズを追加)
 
 ■ 最終指示:
-- 指定されたベース色、差し色、フォント群を活用し、巨大なメインキーワードの傍らに、極小の情緒的な短い文章（サブコピー）が注釈的に添えられた、高密度なタイポグラフィ作品を生成せよ。
+- 画面のどこを見ても視線の行き先がある、高密度でダイナミックなタイポグラフィ・ポスターを生成せよ。キーワードと連動イラストのユニット化を優先しつつ、テーマ装飾はスパイス程度に抑えて全体の空気感を作れ。指定された4つのフォントは必ずすべてデザインに組み込むこと。
 - Final Output Format: --ar 3:4`;
 
             document.getElementById('generatedPrompt').innerText = prompt;
@@ -279,8 +256,9 @@
             
             const btn = document.getElementById('quickCopyBtn');
             const span = document.getElementById('copyText');
-            span.innerText = "完了！";
-            setTimeout(() => span.innerText = "コピー", 2000);
+            const originalText = "コピー";
+            span.innerText = "コピー完了！";
+            setTimeout(() => span.innerText = originalText, 2000);
         }
 
         function resetForm() {
