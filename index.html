@@ -109,9 +109,9 @@
         </div>
         
         <!-- フッター免責事項 -->
-        <footer class="p-8 border-t border-gray-100 bg-gray-50 text-center">
+        <footer class="p-8 border-t border-gray-100 bg-gray-50 text-left">
             <p class="text-[10px] text-slate-400 leading-relaxed max-w-lg mx-auto">
-                【免責事項】入力された名前やキーワード等の情報はブラウザ内でのみ処理され、サーバーへ送信・保存されることはありません。本ツールはDALL-Eでの利用を想定していますが、その生成結果の品質や著作権、商用利用の可否については利用者の責任で確認・判断してください。本ツールで生成されたプロンプトおよび、それを用いて作成された成果物についての一切の責任を負いかねます。
+                【重要事項・免責事項】入力された情報はブラウザ内でのみ処理され、外部へ保存されません。公序良俗に反する内容や個人情報の入力はお控えください。本ツールは、AIに対してデザインの方向性やスタイルをテキストで指示するためのプロンプトを生成するものであり、特定のフォントソフトウェア、フォントファイル、またはプログラムそのものを配布・提供・複製する機能は一切含まれていません。生成されたプロンプトおよびAIによる成果物の著作権、商用利用の可否については利用者の責任で確認・判断してください。本ツールの利用によって生じた一切の責任を負いかねます。
             </p>
         </footer>
     </div>
@@ -123,7 +123,7 @@
                 label: 'NATURAL (ナチュラル)',
                 defaultColor: 'Sage-green earthy-tones',
                 bgDesign: 'Clean, minimal flax paper texture. Solid color only.',
-                fonts: ['Klee (Textbook-style natural handwriting)', 'Kiwi Maru (Soft and gentle)', 'Yomogi (Diary and notebook style)', 'Zen Maru Gothic (Warm and minimal)'],
+                fonts: ['Textbook-style natural handwriting', 'Soft and gentle rounded Maru-Gothic', 'Diary-style casual script', 'Warm and minimal Japanese Sans-serif'],
                 ornament: 'Small hand-drawn leaf symbols and organic flowing lines',
                 icons: ['🍃', '🌱', '☀️', '💧', '☁️', '🪵']
             },
@@ -131,7 +131,7 @@
                 label: 'GIRLY (ガーリー)',
                 defaultColor: 'Soft-lavender creamy-peach',
                 bgDesign: 'Pure flat surface with a subtle pearly sheen. Solid color only.',
-                fonts: ['Mochiy Pop One (Cute and sweet)', 'Didot (High-fashion luxury serif)', 'Cherry Bomb (Sticker-style decoration)', 'Nanum Pen Script (Trendy Korean SNS style)'],
+                fonts: ['Cute and sweet bubble-pop font', 'High-fashion luxury modern serif', 'Glossy sticker-style decoration font', 'Trendy handwriting SNS-style script'],
                 ornament: 'Thin sparkle lines, miniature stars, and soft curves',
                 icons: ['🎀', '✨', '💖', '🍭', '🦋', '💄']
             },
@@ -139,7 +139,7 @@
                 label: 'POP (ポップ)',
                 defaultColor: 'Electric-blue neon-accents',
                 bgDesign: 'Solid vibrant background with subtle uniform noise. Solid color only.',
-                fonts: ['Ranobe POP (High-pressure comic style)', '851 Chikara Yowaku (Playful relaxed pop)', 'Fredoka (Global kids style)', 'Baloo 2 (Thick and fun existence)'],
+                fonts: ['High-pressure dynamic comic font', 'Playful relaxed hand-drawn pop style', 'Global friendly geometric rounded font', 'Thick and fun heavy display font'],
                 ornament: 'Half-tone dots, thick outline offsets, and zig-zag lines',
                 icons: ['⚡', '💥', '🔥', '🚀', '🌈', '👾']
             },
@@ -147,7 +147,7 @@
                 label: 'ELEGANT (エレガント)',
                 defaultColor: 'Champagne-gold deep-emerald',
                 bgDesign: 'High-quality satin texture. Solid color only.',
-                fonts: ['High-contrast Sophisticated Japanese Mincho', 'Luxury Thin Spaced Sans-serif', 'Classic Royal Calligraphy', 'Modern High-fashion Serif'],
+                fonts: ['High-contrast sophisticated Japanese Mincho', 'Luxury thin-spaced Sans-serif', 'Classic royal calligraphy script', 'Modern high-fashion editorial serif'],
                 ornament: 'Minimalist geometric lines, delicate dividers, and fine serifs',
                 icons: ['💎', '🥂', '🌹', '🕊️', '🌙', '🗝️']
             },
@@ -155,7 +155,7 @@
                 label: 'RETRO (レトロ)',
                 defaultColor: 'Aged-mustard vintage-teal',
                 bgDesign: 'Uniform yellowed vintage paper grain. Solid color only.',
-                fonts: ['Vintage Showa-era Japanese Gothic', 'Heavy Antique Slab Serif', 'Distressed Rusty Typewriter', 'Bold Nostalgic Signboard Font'],
+                fonts: ['Vintage Showa-era Japanese Gothic', 'Heavy antique slab-serif', 'Distressed rusty typewriter font', 'Bold nostalgic hand-painted signboard font'],
                 ornament: 'Old-style logo frames, subtle print errors, and rough line-work',
                 icons: ['📻', '📸', '📼', '☕', '🕯️', '🎞️']
             }
@@ -227,7 +227,7 @@
     - 仕様: 小さめのサイズ（視認性を確保）でタイトルの傍らに配置。
 - **名前**: "${name.toUpperCase()}" (安定した中サイズでどこかに配置)
 - **フォントミックス (Mandatory Font Mix)**: 
-    - AI指示: 以下の4つのフォントリスト [${theme.fonts.join(', ')}] を**必ず4つすべて、バランスよく組み合わせて使用せよ。** どれか一つに偏ることなく、要素ごとにフォントを使い分けることで、テーマ「${theme.label}」の個性を最大限に引き出せ。
+    - AI指示: 以下の4つのフォントスタイル [${theme.fonts.join(', ')}] を**必ず4つすべて、バランスよく組み合わせて使用せよ。** どれか一つに偏ることなく、要素ごとにフォントを使い分けることで、テーマ「${theme.label}」の個性を最大限に引き出せ。
 
 ■ 装飾・背景 (Theme Ornaments):
 - **テーマ装飾の限定配置 (Subtle Theme Decorations)**:
@@ -235,7 +235,7 @@
 - 背景: ${bgInput} (質感: ${theme.bgDesign}, フィルムグレイン・微細なノイズを追加)
 
 ■ 最終指示:
-- 画面のどこを見ても視線の行き先がある、高密度でダイナミックなタイポグラフィ・ポスターを生成せよ。キーワードと連動イラストেরユニット化を優先しつつ、テーマ装飾はスパイス程度に抑えて全体の空気感を作れ。指定された4つのフォントは必ずすべてデザインに組み込むこと。
+- 画面のどこを見ても視線の行き先がある、高密度でダイナミックなタイポグラフィ・ポスターを生成せよ。キーワードと連動イラストのユニット化を優先しつつ、テーマ装飾はスパイス程度に抑えて全体の空気感を作れ。指定された4つのフォントスタイルは必ずすべてデザインに組み込むこと。
 - Final Output Format: --ar 3:4`;
 
             document.getElementById('generatedPrompt').innerText = prompt;
