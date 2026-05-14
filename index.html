@@ -108,7 +108,6 @@
             </section>
         </div>
         
-        <!-- フッター免責事項 -->
         <footer class="p-8 border-t border-gray-100 bg-gray-50 text-left">
             <p class="text-[10px] text-slate-400 leading-relaxed max-w-lg mx-auto">
                 【重要事項・免責事項】入力された情報はブラウザ内でのみ処理され、外部へ保存されません。公序良俗に反する内容や個人情報の入力はお控えください。本ツールは、AIに対してデザインの方向性やスタイルをテキストで指示するためのプロンプトを生成するものであり、特定のフォントソフトウェア、フォントファイル、またはプログラムそのものを配布・提供・複製する機能は一切含まれていません。生成されたプロンプトおよびAIによる成果物の著作権、商用利用の可否については利用者の責任で確認・判断してください。本ツールの利用によって生じた一切の責任を負いかねます。
@@ -125,7 +124,7 @@
                 bgDesign: 'Clean, minimal flax paper texture. Solid color only.',
                 fonts: ['Textbook-style natural handwriting', 'Soft and gentle rounded Maru-Gothic', 'Diary-style casual script', 'Warm and minimal Japanese Sans-serif'],
                 ornament: 'Small hand-drawn leaf symbols and organic flowing lines',
-                icons: ['🍃', '🌱', '☀️', '💧', '☁️', '🪵']
+                icons: ['🍃', '🌱', '🍀', '🦋', '🌈', '🌷', '🕊️']
             },
             girly: {
                 label: 'GIRLY (ガーリー)',
@@ -133,7 +132,7 @@
                 bgDesign: 'Pure flat surface with a subtle pearly sheen. Solid color only.',
                 fonts: ['Cute and sweet bubble-pop font', 'High-fashion luxury modern serif', 'Glossy sticker-style decoration font', 'Trendy handwriting SNS-style script'],
                 ornament: 'Thin sparkle lines, miniature stars, and soft curves',
-                icons: ['🎀', '✨', '💖', '🍭', '🦋', '💄']
+                icons: ['🎀', '✨', '💖', '🍭', '🦋', '🧸', '🍒']
             },
             pop: {
                 label: 'POP (ポップ)',
@@ -141,7 +140,7 @@
                 bgDesign: 'Solid vibrant background with subtle uniform noise. Solid color only.',
                 fonts: ['High-pressure dynamic comic font', 'Playful relaxed hand-drawn pop style', 'Global friendly geometric rounded font', 'Thick and fun heavy display font'],
                 ornament: 'Half-tone dots, thick outline offsets, and zig-zag lines',
-                icons: ['⚡', '💥', '🔥', '🚀', '🌈', '👾']
+                icons: ['💥', '🌈', '🍭', '🎈', '♥️', '🍧', '⭐']
             },
             elegant: {
                 label: 'ELEGANT (エレガント)',
@@ -149,7 +148,7 @@
                 bgDesign: 'High-quality satin texture. Solid color only.',
                 fonts: ['High-contrast sophisticated Japanese Mincho', 'Luxury thin-spaced Sans-serif', 'Classic royal calligraphy script', 'Modern high-fashion editorial serif'],
                 ornament: 'Minimalist geometric lines, delicate dividers, and fine serifs',
-                icons: ['💎', '🥂', '🌹', '🕊️', '🌙', '🗝️']
+                icons: ['💎', '🥂', '🌹', '🕊️', '🌙', '🗝️', '💄', '🫧']
             },
             retro: {
                 label: 'RETRO (レトロ)',
@@ -157,7 +156,7 @@
                 bgDesign: 'Uniform yellowed vintage paper grain. Solid color only.',
                 fonts: ['Vintage Showa-era Japanese Gothic', 'Heavy antique slab-serif', 'Distressed rusty typewriter font', 'Bold nostalgic hand-painted signboard font'],
                 ornament: 'Old-style logo frames, subtle print errors, and rough line-work',
-                icons: ['📻', '📸', '📼', '☕', '🕯️', '🎞️']
+                icons: ['📸', '☕', '🕯️', '🎞️', '✒️', '🧭', '⌛']
             }
         };
 
@@ -183,18 +182,8 @@
             let uniqueKeywords = [...new Set(inputRaw.split(/[\s,、\/・.／]+/).map(k => k.trim().toUpperCase()).filter(k => k !== ""))];
             if (uniqueKeywords.length === 0) uniqueKeywords = ["ART", "SOUL", "LIFE", "FUTURE", "DREAM"];
             
-            const keywordsForSubCopy = uniqueKeywords.join('、');
-            uniqueKeywords.sort(() => Math.random() - 0.5);
-            
-            let availableIcons = [...theme.icons].sort(() => Math.random() - 0.5);
-            
-            const processedKeywords = uniqueKeywords.map((k, index) => {
-                let iconStr = "";
-                if (Math.random() > 0.4 && availableIcons.length > 0) {
-                    iconStr = availableIcons.pop();
-                }
-                return `"${k}" ${iconStr}`;
-            });
+            // Icons are no longer attached to keywords to avoid being "near text"
+            const processedKeywords = uniqueKeywords.map((k) => `"${k}"`);
 
             const prompt = `[SNSタイポグラフィ制作指令] プロフェッショナルなデジタルグラフィック。人物・写真禁止。
 
@@ -220,22 +209,24 @@
 
 ■ 構成要素 (Composition Assets):
 - **メインタイトルリスト**: [${processedKeywords.join(', ')}]
-- **キーワード連動型イラスト (Contextual Illustration Focus)**:
-    - AI指示: 各メインタイトルの単語（キーワード）から連想される具体的なオブジェクトや象徴を、小さな線画イラストやアイコンとして、**必ずその単語のすぐ傍（左右または上下）に寄り添うように**配置せよ。単語とイラストが1つの視覚的ユニットを形成するようにすること。
-- **連想型・情緒的サブコピー (DYNAMIC EMOTIONAL SUB-COPY)**: 
-    - AI指示: 入力されたキーワード群「${keywordsForSubCopy}」から連想される、非常に情緒的で詩的な短い日本語文章を生成し、それをサブコピーとして使用せよ。
-    - 仕様: 小さめのサイズ（視認性を確保）でタイトルの傍らに配置。
+- **視覚ユニット構築指令 (Unitized Composition Strategy)**:
+    - AI指示: 各メインタイトルの単語（キーワード）に対して、以下の2要素を1組の「視覚的ユニット」として構成し、画面内にダイナミックに散らばらせよ。
+    1. **単語（キーワード）**: キーワードを単独でグラフィカルに配置。
+    2. **個別連想型サブコピー (INDIVIDUAL EMOTIONAL SUB-COPY)**: 各キーワードの意味を情緒的に補完する短い日本語フレーズをAIが独自生成し、必ずその単語のすぐ傍に配置せよ。
 - **名前**: "${name.toUpperCase()}" (安定した中サイズでどこかに配置)
 - **フォントミックス (Mandatory Font Mix)**: 
     - AI指示: 以下の4つのフォントスタイル [${theme.fonts.join(', ')}] を**必ず4つすべて、バランスよく組み合わせて使用せよ。** どれか一つに偏ることなく、要素ごとにフォントを使い分けることで、テーマ「${theme.label}」の個性を最大限に引き出せ。
 
 ■ 装飾・背景 (Theme Ornaments):
-- **テーマ装飾の限定配置 (Subtle Theme Decorations)**:
-    - AI指示: テーマ由来の装飾「${theme.ornament}」およびアイコン群（${theme.icons.join(' ')}）は、メインキーワードを邪魔しないよう、**背景のテクスチャの一部として、またはキャンバスの四隅（コーナー）にのみ**控えめに配置せよ。
+- **テーマ装飾とアイコンの配置指令 (Global Scattered Ornaments)**:
+    - AI指示: テーマ由来の装飾「${theme.ornament}」およびアイコン群（${theme.icons.join(' ')}）の配置については、以下のルールを厳守せよ。
+    1. **非干渉の徹底**: アイコンや装飾は、メインキーワード（文字）の付近を完全に避け、文字の可読性を一切邪魔しないこと。
+    2. **全域分散配置**: 特定の場所に固まらず、キャンバス全体にランダムかつ控えめに散りばめること。
+    3. **背景との統合**: 主張しすぎず、あくまで背景テクスチャの一部や、画面の密度を高めるための微細なアクセントとして機能させること。
 - 背景: ${bgInput} (質感: ${theme.bgDesign}, フィルムグレイン・微細なノイズを追加)
 
 ■ 最終指示:
-- 画面のどこを見ても視線の行き先がある、高密度でダイナミックなタイポグラフィ・ポスターを生成せよ。キーワードと連動イラストのユニット化を優先しつつ、テーマ装飾はスパイス程度に抑えて全体の空気感を作れ。指定された4つのフォントスタイルは必ずすべてデザインに組み込むこと。
+- 画面のどこを見ても視線の行き先がある、高密度でダイナミックなタイポグラフィ・ポスターを生成せよ。文字とサブコピーのユニット化を最優先し、アイコンや装飾は「文字から離れた位置」に散らすことで全体の空気感を作れ。指定された4つのフォントスタイルは必ずすべてデザインに組み込むこと。
 - Final Output Format: --ar 3:4`;
 
             document.getElementById('generatedPrompt').innerText = prompt;
